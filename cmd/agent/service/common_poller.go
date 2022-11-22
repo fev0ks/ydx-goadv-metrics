@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
 	"io"
 	"log"
 	"net/http"
@@ -18,13 +19,13 @@ var (
 
 type CommonMetricPoller struct {
 	mpCtx    context.Context
-	mr       model.MetricRepository
+	mr       agent.MetricRepository
 	host     string
 	port     string
 	interval time.Duration
 }
 
-func NewCommonMetricPoller(ctx context.Context, repository model.MetricRepository, host string, port string, pollInterval time.Duration) *CommonMetricPoller {
+func NewCommonMetricPoller(ctx context.Context, repository agent.MetricRepository, host string, port string, pollInterval time.Duration) *CommonMetricPoller {
 	cmpInitOnce.Do(func() {
 		cmpInstance = CommonMetricPoller{
 			mpCtx:    ctx,
@@ -77,14 +78,21 @@ func (cmp *CommonMetricPoller) sendMetricsAsUrl(metrics []*model.Metric) {
 				log.Printf("failed to poll metric %v: %v\n", metric, err)
 				continue
 			}
-			if resp.StatusCode != http.StatusOK {
-				respBody, err := io.ReadAll(resp.Body)
-				if err != nil {
-					log.Printf("failed to parse response body: %v\n", err)
-				}
-				log.Printf("request status is not OK %v: %v, %s\n", metric, resp.StatusCode, string(respBody))
-			}
+			parseSendMetricsResponse(resp, metric)
 		}
+	}
+}
+
+func parseSendMetricsResponse(resp *http.Response, metric *model.Metric) {
+	if resp.StatusCode != http.StatusOK {
+		defer resp.Body.Close()
+		respBody, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.Printf("failed to read response body: %v\n", err)
+		}
+		log.Printf("response status is not OK %v: %v, %s\n", metric, resp.StatusCode, string(respBody))
+	} else {
+		log.Printf("metric was succesfully pooled: %v\n", metric)
 	}
 }
 
@@ -93,7 +101,7 @@ func (cmp *CommonMetricPoller) getUrl(metric *model.Metric) (url string, err err
 	url = fmt.Sprintf("http://%s:%s/update/%s/%s/", cmp.host, cmp.port, metric.MType, metric.Name)
 	switch metric.MType {
 	case model.GaugeType:
-		url += fmt.Sprintf("%v", metric.Value)
+		url += fmt.Sprintf("%v", fmt.Sprintf("%f", metric.Value))
 	case model.CounterType:
 		url += fmt.Sprintf("%v", metric.Delta)
 	default:

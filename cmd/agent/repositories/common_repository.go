@@ -22,7 +22,7 @@ func GetCommonMetricsRepository() *CommonMetricRepository {
 	return &instance
 }
 
-func (cmr *CommonMetricRepository) SaveMetricsList(metrics []*model.Metric) {
+func (cmr *CommonMetricRepository) SaveMetric(metrics []*model.Metric) {
 	cmr.Cache = metrics
 	log.Printf("Saved %d metrics\n", len(cmr.Cache))
 }

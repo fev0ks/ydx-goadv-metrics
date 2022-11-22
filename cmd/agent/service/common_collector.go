@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
 	"log"
 	"math/rand"
 	"runtime"
@@ -17,11 +18,11 @@ var (
 
 type CommonMetricCollector struct {
 	mcCtx    context.Context
-	mr       model.MetricRepository
+	mr       agent.MetricRepository
 	interval time.Duration
 }
 
-func NewCommonMetricCollector(ctx context.Context, metricRepository model.MetricRepository, interval time.Duration) *CommonMetricCollector {
+func NewCommonMetricCollector(ctx context.Context, metricRepository agent.MetricRepository, interval time.Duration) *CommonMetricCollector {
 	cmcInitOnce.Do(func() {
 		cmcInstance = CommonMetricCollector{mcCtx: ctx, mr: metricRepository, interval: interval}
 	})
@@ -48,7 +49,7 @@ func (cmr *CommonMetricCollector) CollectMetrics() chan bool {
 				metrics := cmr.getMemStatsMetrics()
 				metrics = append(metrics, cmr.getPollCounterMetric(pollCount))
 				metrics = append(metrics, cmr.getRandomValueMetric(100))
-				cmr.mr.SaveMetricsList(metrics)
+				cmr.mr.SaveMetric(metrics)
 				log.Printf("[%v] Collect metrics finished\n", time.Now().Sub(start).String())
 			}
 		}
