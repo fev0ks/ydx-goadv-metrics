@@ -16,7 +16,7 @@ type MetricsHandler struct {
 
 func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		_ = context.WithValue(request.Context(), "execCtxId", "rm")
+		_ = context.WithValue(mh.Ctx, "execCtxId", "rm")
 		name := mux.Vars(request)["name"]
 		mType := mux.Vars(request)["mType"]
 		value := mux.Vars(request)["value"]
