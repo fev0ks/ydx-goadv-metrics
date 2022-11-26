@@ -30,6 +30,12 @@ func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWri
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
+		if metric.MType == model.NanType {
+			err = fmt.Errorf("type is not supported: %v", metric)
+			log.Printf("failed to save metric: %v\n", err)
+			http.Error(writer, err.Error(), http.StatusNotImplemented)
+			return
+		}
 		err = mh.Repository.SaveMetric(metric)
 		if err != nil {
 			log.Printf("failed to save metric: %v\n", err)

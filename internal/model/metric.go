@@ -1,7 +1,6 @@
 package model
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 )
@@ -36,7 +35,10 @@ func NewMetric(name string, mType MetricType, value string) (metric *Metric, err
 		}
 		metric = NewCounterMetric(name, CounterVT(vt))
 	default:
-		err = errors.New("metric type NaN is not supported")
+		metric = &Metric{
+			Name:  name,
+			MType: NanType,
+		}
 	}
 	return
 }
