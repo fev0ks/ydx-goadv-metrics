@@ -2,31 +2,22 @@ package rest
 
 import (
 	"context"
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"log"
 	"net/http"
 	"time"
 )
 
-func NewRouter(_ context.Context) *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
-	router.Use(timerTraceMdw)
-	router.Use(recoverMdw)
+func NewRouter(_ context.Context) *chi.Mux {
+	router := chi.NewRouter()
+	router.Use(timerTrace)
+	router.Use(middleware.RealIP)
+	router.Use(middleware.Recoverer)
 	return router
 }
 
-func recoverMdw(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		defer func() {
-			if r := recover(); r != nil {
-				log.Printf("Recovered. Error:%v\n", r)
-			}
-		}()
-		next.ServeHTTP(w, r)
-	})
-}
-
-func timerTraceMdw(next http.Handler) http.Handler {
+func timerTrace(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		next.ServeHTTP(w, r)

@@ -24,7 +24,7 @@ func GetMetricsPage(metrics map[string]*model.Metric) string {
 	metricsList := convertToList(metrics)
 	sortMetrics(metricsList)
 	for i, metric := range metricsList {
-		addMetricDataLine(hb, i, metric)
+		addMetricDataLine(hb, i+1, metric)
 	}
 	page := hb.
 		Add(CTable).
@@ -63,7 +63,8 @@ func addMetricDataLine(hb *htmlBuilder, number int, metric *model.Metric) {
 func sortMetrics(metrics []*model.Metric) {
 	sort.SliceStable(metrics, func(i, j int) bool {
 		return strings.Compare(string(metrics[i].MType), string(metrics[j].MType)) < 0 ||
-			strings.Compare(string(metrics[i].MType), string(metrics[j].MType)) == 0 && strings.Compare(metrics[i].Name, metrics[j].Name) < 0
+			strings.Compare(string(metrics[i].MType), string(metrics[j].MType)) == 0 &&
+				strings.Compare(metrics[i].Name, metrics[j].Name) < 0
 	})
 }
 

@@ -7,7 +7,7 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/pages"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
 )
@@ -20,9 +20,9 @@ type MetricsHandler struct {
 func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		_ = context.WithValue(request.Context(), "execCtxId", "recept-metric")
-		name := mux.Vars(request)["name"]
-		mType := mux.Vars(request)["mType"]
-		value := mux.Vars(request)["value"]
+		name := chi.URLParam(request, "name")
+		mType := chi.URLParam(request, "mType")
+		value := chi.URLParam(request, "value")
 		log.Printf("request vars - name: '%s', type: '%s', value: '%s'", name, mType, value)
 		metric, err := model.NewMetric(name, model.MTypeValueOf(mType), value)
 		if err != nil {
@@ -60,8 +60,8 @@ func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, r
 func (mh *MetricsHandler) GetMetricHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		_ = context.WithValue(request.Context(), "execCtxId", "get-metric")
-		name := mux.Vars(request)["name"]
-		mType := mux.Vars(request)["mType"]
+		name := chi.URLParam(request, "name")
+		mType := chi.URLParam(request, "mType")
 		log.Printf("Get metric: request vars - name: '%s', type: '%s'", name, mType)
 
 		if metric := mh.Repository.GetMetric(name); metric == nil {
