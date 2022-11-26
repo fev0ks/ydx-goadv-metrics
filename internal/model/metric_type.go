@@ -3,7 +3,7 @@ package model
 const (
 	gaugeTypeVal   = "gauge"
 	counterTypeVal = "counter"
-	nanVal         = "NaN"
+	NanVal         = "NaN"
 )
 
 var (
@@ -41,6 +41,6 @@ func initCounterType() MetricType {
 
 func initNanType() MetricType {
 	var metricType MetricType
-	metricType = nanVal
+	metricType = NanVal
 	return metricType
 }

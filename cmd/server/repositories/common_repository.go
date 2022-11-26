@@ -37,8 +37,8 @@ func (cr CommonRepository) SaveMetric(metric *model.Metric) error {
 		if current, ok := cr.storage[metric.Name]; ok {
 			//TODO counter, тип int64, новое значение должно добавляться к предыдущему (если оно ранее уже было известно серверу). - why?????
 			//counter is not cleared on agent every reportInterval => 10 - 30 - 70 etc...
-			current.Delta += metric.Delta
-			log.Printf("%s = %+v", current.Name, current.Delta)
+			current.Counter += metric.Counter
+			log.Printf("%s = %+v", current.Name, current.Counter)
 		} else {
 			cr.storage[metric.Name] = metric
 		}

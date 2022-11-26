@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 )
 
@@ -10,10 +11,10 @@ type GaugeVT float64
 type CounterVT uint64
 
 type Metric struct {
-	Name  string
-	MType MetricType
-	Delta CounterVT
-	Value GaugeVT
+	Name    string
+	MType   MetricType
+	Counter CounterVT
+	Gauge   GaugeVT
 }
 
 func NewMetric(name string, mType MetricType, value string) (metric *Metric, err error) {
@@ -40,14 +41,25 @@ func NewGaugeMetric(name string, value GaugeVT) *Metric {
 	return &Metric{
 		Name:  name,
 		MType: GaugeType,
-		Value: value,
+		Gauge: value,
 	}
 }
 
 func NewCounterMetric(name string, value CounterVT) *Metric {
 	return &Metric{
-		Name:  name,
-		MType: CounterType,
-		Delta: value,
+		Name:    name,
+		MType:   CounterType,
+		Counter: value,
+	}
+}
+
+func (m *Metric) GetValue() string {
+	switch m.MType {
+	case GaugeType:
+		return fmt.Sprintf("%v", fmt.Sprintf("%f", m.Gauge))
+	case CounterType:
+		return fmt.Sprintf("%v", m.Counter)
+	default:
+		return NanVal
 	}
 }

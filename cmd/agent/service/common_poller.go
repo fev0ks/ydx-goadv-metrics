@@ -99,13 +99,11 @@ func parseSendMetricsResponse(resp *http.Response, metric *model.Metric) {
 // "http://<АДРЕС_СЕРВЕРА>/update/<ТИП_МЕТРИКИ>/<ИМЯ_МЕТРИКИ>/<ЗНАЧЕНИЕ_МЕТРИКИ>"
 func (cmp *CommonMetricPoller) getUrl(metric *model.Metric) (url string, err error) {
 	url = fmt.Sprintf("http://%s:%s/update/%s/%s/", cmp.host, cmp.port, metric.MType, metric.Name)
-	switch metric.MType {
-	case model.GaugeType:
-		url += fmt.Sprintf("%v", fmt.Sprintf("%f", metric.Value))
-	case model.CounterType:
-		url += fmt.Sprintf("%v", metric.Delta)
-	default:
+	value := metric.GetValue()
+	if value != model.NanVal {
+		url += value
+	} else {
 		err = fmt.Errorf("metric type is not supported: %v", metric.MType)
 	}
-	return url, err
+	return
 }
