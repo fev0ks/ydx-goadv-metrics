@@ -17,6 +17,10 @@ type Metric struct {
 	Gauge   GaugeVT
 }
 
+func (m *Metric) String() string {
+	return fmt.Sprintf("Name: %s, Type: %s, Value: %v", m.Name, m.MType, m.GetValue())
+}
+
 func NewMetric(name string, mType MetricType, value string) (metric *Metric, err error) {
 	switch mType {
 	case GaugeType:
