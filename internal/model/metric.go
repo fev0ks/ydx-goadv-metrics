@@ -69,3 +69,15 @@ func (m *Metric) GetValue() string {
 		return NanVal
 	}
 }
+
+func (m *Metric) GetGenericValue() (value interface{}) {
+	switch m.MType {
+	case GaugeType:
+		value = m.Gauge
+	case CounterType:
+		value = m.Counter
+	default:
+		value = ""
+	}
+	return
+}

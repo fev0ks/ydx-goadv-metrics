@@ -65,20 +65,21 @@ func (mh *MetricsHandler) GetMetricHandler() func(writer http.ResponseWriter, re
 		mType := chi.URLParam(request, "mType")
 		log.Printf("Get metric: request vars - name: '%s', type: '%s'", name, mType)
 
-		if metric := mh.Repository.GetMetric(name); metric == nil {
+		metric := mh.Repository.GetMetric(name)
+		if metric == nil {
 			http.Error(writer, fmt.Sprintf("metric was not found: %s", name), http.StatusNotFound)
-		} else {
-			res, err := json.Marshal(metric.GetValue())
-			if err != nil {
-				http.Error(writer, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			_, err = writer.Write(res)
-			if err != nil {
-				http.Error(writer, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			writer.WriteHeader(http.StatusOK)
+			return
 		}
+		res, err := json.Marshal(metric.GetGenericValue())
+		if err != nil {
+			http.Error(writer, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		_, err = writer.Write(res)
+		if err != nil {
+			http.Error(writer, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		writer.WriteHeader(http.StatusOK)
 	}
 }
