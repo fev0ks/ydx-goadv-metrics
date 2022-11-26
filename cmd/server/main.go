@@ -19,7 +19,7 @@ func main() {
 	router := rest.NewRouter(ctx)
 	rest.HandleMetricRequests(router, mh)
 
+	internal.ProperExitDefer(&internal.ExitHandler{})
 	log.Println("Server started")
-	go internal.ProperExitDefer(&internal.ExitHandler{})
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

@@ -34,6 +34,7 @@ func main() {
 		Cancel: []context.CancelFunc{mcCancel, mpCancel},
 		Stop:   []chan bool{stopCollectMetricsCh, stopPollMetricsCh},
 	})
+	<-ctx.Done()
 }
 
 func getClient() *resty.Client {
