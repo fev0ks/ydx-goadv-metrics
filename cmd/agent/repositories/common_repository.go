@@ -8,18 +8,22 @@ import (
 
 var (
 	cmrInitOnce sync.Once
-	instance    CommonMetricRepository
+	instance    *CommonMetricRepository
 )
 
 type CommonMetricRepository struct {
 	Cache []*model.Metric
 }
 
+func NewCommonMetricsRepository() *CommonMetricRepository {
+	return &CommonMetricRepository{}
+}
+
 func GetCommonMetricsRepository() *CommonMetricRepository {
 	cmrInitOnce.Do(func() {
-		instance = CommonMetricRepository{}
+		instance = &CommonMetricRepository{}
 	})
-	return &instance
+	return instance
 }
 
 func (cmr *CommonMetricRepository) SaveMetric(metrics []*model.Metric) {

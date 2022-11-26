@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
 	"github.com/go-resty/resty/v2"
@@ -40,9 +41,9 @@ func NewCommonMetricPoller(
 	return &cmpInstance
 }
 
-func (cmp *CommonMetricPoller) PollMetrics() chan bool {
+func (cmp *CommonMetricPoller) PollMetrics() chan struct{} {
 	ticker := time.NewTicker(cmp.interval)
-	done := make(chan bool)
+	done := make(chan struct{})
 	go func() {
 		for {
 			select {
@@ -54,7 +55,7 @@ func (cmp *CommonMetricPoller) PollMetrics() chan bool {
 				start := time.Now()
 				log.Println("Poll metrics start")
 				metrics := cmp.mr.GetMetricsList()
-				cmp.sendMetricsAsURL(metrics)
+				cmp.sendMetrics(metrics)
 				log.Printf("[%v] Poll metrics finished\n", time.Since(start).String())
 			}
 		}
@@ -62,7 +63,7 @@ func (cmp *CommonMetricPoller) PollMetrics() chan bool {
 	return done
 }
 
-func (cmp *CommonMetricPoller) sendMetricsAsURL(metrics []*model.Metric) {
+func (cmp *CommonMetricPoller) sendMetrics(metrics []*model.Metric) {
 	log.Printf("Polling %d metrics", len(metrics))
 	for _, metric := range metrics {
 		select {
@@ -70,33 +71,43 @@ func (cmp *CommonMetricPoller) sendMetricsAsURL(metrics []*model.Metric) {
 			log.Println("Context was cancelled!")
 			return
 		default:
-			value := metric.GetValue()
-			if value == model.NanVal {
-				log.Printf("failed to send metric %v - metric type is not supported", metric)
-				continue
-			}
-			resp, err := cmp.client.R().
-				SetHeader("Content-type", "text/plain").
-				SetPathParams(map[string]string{
-					"mType": string(metric.MType),
-					"name":  metric.Name,
-					"value": value,
-				}).
-				Post("/update/{mType}/{name}/{value}")
+			err := cmp.SendMetric(metric)
 			if err != nil {
 				log.Printf("failed to poll metric %v: %v\n", metric, err)
-				continue
 			}
-			parseSendMetricsResponse(resp, metric)
 		}
 	}
 }
 
-func parseSendMetricsResponse(resp *resty.Response, metric *model.Metric) {
+func (cmp *CommonMetricPoller) SendMetric(metric *model.Metric) error {
+	value := metric.GetValue()
+	if value == model.NanVal {
+		return fmt.Errorf("metric type '%s' is not supported", metric.MType)
+	}
+	resp, err := cmp.client.R().
+		SetHeader("Content-type", "text/plain").
+		SetPathParams(map[string]string{
+			"mType": string(metric.MType),
+			"name":  metric.Name,
+			"value": value,
+		}).
+		Post("/update/{mType}/{name}/{value}")
+	if err != nil {
+		return err
+	}
+	err = parseSendMetricResponse(resp, metric)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func parseSendMetricResponse(resp *resty.Response, metric *model.Metric) error {
 	if resp.StatusCode() != http.StatusOK {
 		respBody := resp.Body()
-		log.Printf("response status is not OK %v: %s, %s\n", metric, resp.Status(), string(respBody))
+		return fmt.Errorf("response status is not OK '%v': %s, body: '%s'", metric, resp.Status(), string(respBody))
 	} else {
 		log.Printf("metric was succesfully pooled: %v\n", metric)
+		return nil
 	}
 }

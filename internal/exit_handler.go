@@ -13,7 +13,7 @@ import (
 
 type ExitHandler struct {
 	Cancel []context.CancelFunc
-	Stop   []chan bool
+	Stop   []chan struct{}
 	Close  []io.Closer
 }
 
@@ -55,7 +55,7 @@ func (eh *ExitHandler) endHeldObjects() {
 	}
 	log.Println("Stop active goroutines")
 	for _, toStop := range eh.Stop {
-		toStop <- true
+		toStop <- struct{}{}
 	}
 	log.Println("Close active resources")
 	for _, toClose := range eh.Close {

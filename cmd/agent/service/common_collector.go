@@ -29,9 +29,9 @@ func NewCommonMetricCollector(ctx context.Context, metricRepository agent.Metric
 	return &cmcInstance
 }
 
-func (cmr *CommonMetricCollector) CollectMetrics() chan bool {
+func (cmr *CommonMetricCollector) CollectMetrics() chan struct{} {
 	ticker := time.NewTicker(cmr.interval)
-	done := make(chan bool)
+	done := make(chan struct{})
 
 	var pollCount model.CounterVT
 	pollCount = 0

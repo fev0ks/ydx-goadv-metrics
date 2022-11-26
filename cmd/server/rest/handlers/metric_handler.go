@@ -23,6 +23,18 @@ func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWri
 		mType := chi.URLParam(request, "mType")
 		value := chi.URLParam(request, "value")
 		log.Printf("request vars - name: '%s', type: '%s', value: '%s'", name, mType, value)
+		if name == "" {
+			http.Error(writer, "metric name must be specified", http.StatusBadRequest)
+			return
+		}
+		if mType == "" {
+			http.Error(writer, "metric mType must be specified", http.StatusBadRequest)
+			return
+		}
+		if value == "" {
+			http.Error(writer, "metric value must be specified", http.StatusBadRequest)
+			return
+		}
 		metric, err := model.NewMetric(name, model.MTypeValueOf(mType), value)
 		if err != nil {
 			log.Printf("failed to parse metric request: %v\n", err)
@@ -64,7 +76,14 @@ func (mh *MetricsHandler) GetMetricHandler() func(writer http.ResponseWriter, re
 		name := chi.URLParam(request, "name")
 		mType := chi.URLParam(request, "mType")
 		log.Printf("Get metric: request vars - name: '%s', type: '%s'", name, mType)
-
+		if name == "" {
+			http.Error(writer, "metric name must be specified", http.StatusBadRequest)
+			return
+		}
+		if mType == "" {
+			http.Error(writer, "metric mType must be specified", http.StatusBadRequest)
+			return
+		}
 		metric := mh.Repository.GetMetric(name)
 		if metric == nil {
 			http.Error(writer, fmt.Sprintf("metric was not found: %s", name), http.StatusNotFound)

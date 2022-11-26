@@ -59,6 +59,13 @@ func NewCounterMetric(name string, value CounterVT) *Metric {
 	}
 }
 
+func NewNanMetric(name string) *Metric {
+	return &Metric{
+		Name:  name,
+		MType: NanType,
+	}
+}
+
 func (m *Metric) GetValue() string {
 	switch m.MType {
 	case GaugeType:
