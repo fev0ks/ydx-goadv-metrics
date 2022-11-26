@@ -14,7 +14,7 @@ var (
 )
 
 func GetMetricsPage(metrics map[string]*model.Metric) string {
-	hb := GetHtmlBuilder()
+	hb := GetHTMLBuilder()
 	hb.
 		Add(TableStile).
 		Add(OBody).
@@ -29,7 +29,7 @@ func GetMetricsPage(metrics map[string]*model.Metric) string {
 	page := hb.
 		Add(CTable).
 		Add(CBody).
-		GetHtmlPage()
+		GetHTMLPage()
 	return page
 }
 

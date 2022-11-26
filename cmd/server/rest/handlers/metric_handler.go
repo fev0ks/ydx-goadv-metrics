@@ -19,7 +19,6 @@ type MetricsHandler struct {
 
 func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		_ = context.WithValue(request.Context(), "execCtxId", "recept-metric")
 		name := chi.URLParam(request, "name")
 		mType := chi.URLParam(request, "mType")
 		value := chi.URLParam(request, "value")
@@ -43,13 +42,11 @@ func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWri
 			return
 		}
 		writer.WriteHeader(http.StatusOK)
-		return
 	}
 }
 
 func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		_ = context.WithValue(request.Context(), "execCtxId", "get-metrics")
 		log.Println("Get metrics")
 		metrics := mh.Repository.GetMetrics()
 		page := pages.GetMetricsPage(metrics)
@@ -59,13 +56,11 @@ func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, r
 			return
 		}
 		writer.WriteHeader(http.StatusOK)
-		return
 	}
 }
 
 func (mh *MetricsHandler) GetMetricHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		_ = context.WithValue(request.Context(), "execCtxId", "get-metric")
 		name := chi.URLParam(request, "name")
 		mType := chi.URLParam(request, "mType")
 		log.Printf("Get metric: request vars - name: '%s', type: '%s'", name, mType)
@@ -85,6 +80,5 @@ func (mh *MetricsHandler) GetMetricHandler() func(writer http.ResponseWriter, re
 			}
 			writer.WriteHeader(http.StatusOK)
 		}
-		return
 	}
 }

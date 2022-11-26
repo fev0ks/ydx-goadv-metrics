@@ -6,7 +6,6 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/handlers"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
 	"log"
 	"net/http"
 )
@@ -14,8 +13,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	var sr server.MetricRepository
-	sr = repositories.GetCommonRepository(&ctx)
+	sr := repositories.GetCommonRepository(&ctx)
 	mh := handlers.MetricsHandler{Ctx: ctx, Repository: sr}
 
 	router := rest.NewRouter(ctx)

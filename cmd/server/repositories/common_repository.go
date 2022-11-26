@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"log"
@@ -43,7 +42,7 @@ func (cr CommonRepository) SaveMetric(metric *model.Metric) error {
 			cr.storage[metric.Name] = metric
 		}
 	default:
-		return errors.New(fmt.Sprintf("failed to save '%s' metric: '%v' type is not supported", metric.Name, metric.MType))
+		return fmt.Errorf("failed to save '%s' metric: '%v' type is not supported", metric.Name, metric.MType)
 	}
 	return nil
 }
@@ -54,8 +53,4 @@ func (cr CommonRepository) GetMetrics() map[string]*model.Metric {
 
 func (cr CommonRepository) GetMetric(name string) *model.Metric {
 	return cr.storage[name]
-}
-
-func (cr CommonRepository) Clear() {
-	cr.storage = make(map[string]*model.Metric, 0)
 }

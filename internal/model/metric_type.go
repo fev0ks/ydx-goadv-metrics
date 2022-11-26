@@ -7,9 +7,9 @@ const (
 )
 
 var (
-	GaugeType   = initGaugeType()
-	CounterType = initCounterType()
-	NanType     = initNanType()
+	GaugeType   = MetricType(gaugeTypeVal)
+	CounterType = MetricType(counterTypeVal)
+	NanType     = MetricType(NanVal)
 )
 
 type MetricType string
@@ -25,22 +25,4 @@ func MTypeValueOf(value string) MetricType {
 		mType = NanType
 	}
 	return mType
-}
-
-func initGaugeType() MetricType {
-	var metricType MetricType
-	metricType = gaugeTypeVal
-	return metricType
-}
-
-func initCounterType() MetricType {
-	var metricType MetricType
-	metricType = counterTypeVal
-	return metricType
-}
-
-func initNanType() MetricType {
-	var metricType MetricType
-	metricType = NanVal
-	return metricType
 }

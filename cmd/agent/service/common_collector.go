@@ -50,7 +50,7 @@ func (cmr *CommonMetricCollector) CollectMetrics() chan bool {
 				metrics = append(metrics, cmr.getPollCounterMetric(pollCount))
 				metrics = append(metrics, cmr.getRandomValueMetric(100))
 				cmr.mr.SaveMetric(metrics)
-				log.Printf("[%v] Collect metrics finished\n", time.Now().Sub(start).String())
+				log.Printf("[%v] Collect metrics finished\n", time.Since(start).String())
 			}
 		}
 	}()

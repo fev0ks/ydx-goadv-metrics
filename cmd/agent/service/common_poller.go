@@ -54,15 +54,15 @@ func (cmp *CommonMetricPoller) PollMetrics() chan bool {
 				start := time.Now()
 				log.Println("Poll metrics start")
 				metrics := cmp.mr.GetMetricsList()
-				cmp.sendMetricsAsUrl(metrics)
-				log.Printf("[%v] Poll metrics finished\n", time.Now().Sub(start).String())
+				cmp.sendMetricsAsURL(metrics)
+				log.Printf("[%v] Poll metrics finished\n", time.Since(start).String())
 			}
 		}
 	}()
 	return done
 }
 
-func (cmp *CommonMetricPoller) sendMetricsAsUrl(metrics []*model.Metric) {
+func (cmp *CommonMetricPoller) sendMetricsAsURL(metrics []*model.Metric) {
 	log.Printf("Polling %d metrics", len(metrics))
 	for _, metric := range metrics {
 		select {

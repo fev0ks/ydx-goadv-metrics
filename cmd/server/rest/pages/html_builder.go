@@ -6,13 +6,13 @@ type htmlBuilder struct {
 	bytes.Buffer
 }
 
-func GetHtmlBuilder() *htmlBuilder {
+func GetHTMLBuilder() *htmlBuilder {
 	builder := htmlBuilder{}
 	builder.WriteString(OHtml)
 	return &builder
 }
 
-func (hb *htmlBuilder) GetHtmlPage() string {
+func (hb *htmlBuilder) GetHTMLPage() string {
 	hb.WriteString(CHtml)
 	return hb.String()
 }

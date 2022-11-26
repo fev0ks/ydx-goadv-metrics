@@ -15,8 +15,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	var repository agent.MetricRepository
-	repository = repositories.GetCommonMetricsRepository()
+	repository := repositories.GetCommonMetricsRepository()
 
 	var metricCollector agent.MetricCollector
 	mcCtx, mcCancel := context.WithCancel(ctx)

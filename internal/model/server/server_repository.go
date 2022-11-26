@@ -6,5 +6,4 @@ type MetricRepository interface {
 	SaveMetric(metric *model.Metric) error
 	GetMetrics() map[string]*model.Metric
 	GetMetric(name string) *model.Metric
-	Clear()
 }
