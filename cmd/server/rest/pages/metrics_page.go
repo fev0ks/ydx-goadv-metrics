@@ -1,12 +1,10 @@
 package pages
 
 import (
-	"fmt"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"sort"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var (
@@ -18,7 +16,8 @@ func GetMetricsPage(metrics map[string]*model.Metric) string {
 	hb.
 		Add(TableStile).
 		Add(OBody).
-		AddHeader(fmt.Sprintf("Metrics result at %v", time.Now().Format(time.RFC1123))).
+		//AddHeader(fmt.Sprintf("Metrics result at %v", time.Now().Format(time.RFC1123))).
+		AddHeader("Metrics result").
 		Add(OTable)
 	addTableTitles(hb, metricsTableTitles)
 	metricsList := convertToList(metrics)

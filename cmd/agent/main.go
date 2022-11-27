@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/config"
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/configs"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/repositories"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
@@ -19,14 +19,14 @@ func main() {
 
 	var metricCollector agent.MetricCollector
 	mcCtx, mcCancel := context.WithCancel(ctx)
-	metricCollector = service.NewCommonMetricCollector(mcCtx, repository, config.GetReportInterval())
+	metricCollector = service.NewCommonMetricCollector(mcCtx, repository, configs.GetReportInterval())
 	stopCollectMetricsCh := metricCollector.CollectMetrics()
 
 	client := getClient()
 
 	var metricPoller agent.MetricPoller
 	mpCtx, mpCancel := context.WithCancel(ctx)
-	metricPoller = service.NewCommonMetricPoller(mpCtx, client, repository, config.GetPollInterval())
+	metricPoller = service.NewCommonMetricPoller(mpCtx, client, repository, configs.GetPollInterval())
 	stopPollMetricsCh := metricPoller.PollMetrics()
 
 	log.Println("Agent started")
@@ -39,7 +39,7 @@ func main() {
 
 func getClient() *resty.Client {
 	client := resty.New().
-		SetBaseURL(fmt.Sprintf("http://%s:%s", config.GetHost(), config.GetPort())).
+		SetBaseURL(fmt.Sprintf("http://%s:%s", configs.GetHost(), configs.GetPort())).
 		SetRetryCount(3).
 		SetRetryWaitTime(2 * time.Second).
 		SetRetryMaxWaitTime(3 * time.Second)

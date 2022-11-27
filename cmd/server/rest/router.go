@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"context"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"log"
@@ -9,7 +8,7 @@ import (
 	"time"
 )
 
-func NewRouter(_ context.Context) *chi.Mux {
+func NewRouter() chi.Router {
 	router := chi.NewRouter()
 	router.Use(timerTrace)
 	router.Use(middleware.RealIP)
@@ -23,4 +22,10 @@ func timerTrace(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 		log.Printf("[%v] Request time execution for: %s '%s' \r\n", time.Since(start), r.Method, r.RequestURI)
 	})
+}
+
+func HandleMetricRequests(router chi.Router, mh MetricsHandler) {
+	router.Get("/", mh.GetMetricsHandler())
+	router.Post("/update/{mType}/{name}/{value}", mh.ReceptionMetricsHandler())
+	router.Get("/value/{mType}/{name}", mh.GetMetricHandler())
 }

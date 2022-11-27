@@ -1,4 +1,4 @@
-package handlers
+package rest
 
 import (
 	"context"
@@ -24,15 +24,15 @@ func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWri
 		value := chi.URLParam(request, "value")
 		log.Printf("request vars - name: '%s', type: '%s', value: '%s'", name, mType, value)
 		if name == "" {
-			http.Error(writer, "metric name must be specified", http.StatusBadRequest)
+			http.Error(writer, "metric 'name' must be specified", http.StatusBadRequest)
 			return
 		}
 		if mType == "" {
-			http.Error(writer, "metric mType must be specified", http.StatusBadRequest)
+			http.Error(writer, "metric 'mType' must be specified", http.StatusBadRequest)
 			return
 		}
 		if value == "" {
-			http.Error(writer, "metric value must be specified", http.StatusBadRequest)
+			http.Error(writer, "metric 'value' must be specified", http.StatusBadRequest)
 			return
 		}
 		metric, err := model.NewMetric(name, model.MTypeValueOf(mType), value)
@@ -42,7 +42,7 @@ func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWri
 			return
 		}
 		if metric.MType == model.NanType {
-			err = fmt.Errorf("type is not supported: %v", metric)
+			err = fmt.Errorf("type '%s' is not supported", mType)
 			log.Printf("failed to save metric: %v\n", err)
 			http.Error(writer, err.Error(), http.StatusNotImplemented)
 			return
@@ -77,11 +77,11 @@ func (mh *MetricsHandler) GetMetricHandler() func(writer http.ResponseWriter, re
 		mType := chi.URLParam(request, "mType")
 		log.Printf("Get metric: request vars - name: '%s', type: '%s'", name, mType)
 		if name == "" {
-			http.Error(writer, "metric name must be specified", http.StatusBadRequest)
+			http.Error(writer, "metric 'name' must be specified", http.StatusBadRequest)
 			return
 		}
 		if mType == "" {
-			http.Error(writer, "metric mType must be specified", http.StatusBadRequest)
+			http.Error(writer, "metric 'mType' must be specified", http.StatusBadRequest)
 			return
 		}
 		metric := mh.Repository.GetMetric(name)
