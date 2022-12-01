@@ -2,34 +2,30 @@ package service
 
 import (
 	"context"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
 	"log"
 	"math/rand"
 	"runtime"
-	"sync"
 	"time"
+
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
 )
 
-var (
-	cmcInitOnce sync.Once
-	cmcInstance CommonMetricCollector
-)
-
-type CommonMetricCollector struct {
+type commonMetricCollector struct {
 	mcCtx    context.Context
 	mr       agent.MetricRepository
 	interval time.Duration
 }
 
-func NewCommonMetricCollector(ctx context.Context, metricRepository agent.MetricRepository, interval time.Duration) *CommonMetricCollector {
-	cmcInitOnce.Do(func() {
-		cmcInstance = CommonMetricCollector{mcCtx: ctx, mr: metricRepository, interval: interval}
-	})
-	return &cmcInstance
+func NewCommonMetricCollector(
+	mcCtx context.Context,
+	mr agent.MetricRepository,
+	interval time.Duration,
+) *commonMetricCollector {
+	return &commonMetricCollector{mcCtx: mcCtx, mr: mr, interval: interval}
 }
 
-func (cmr *CommonMetricCollector) CollectMetrics() chan struct{} {
+func (cmr *commonMetricCollector) CollectMetrics() chan struct{} {
 	ticker := time.NewTicker(cmr.interval)
 	done := make(chan struct{})
 
@@ -57,17 +53,17 @@ func (cmr *CommonMetricCollector) CollectMetrics() chan struct{} {
 	return done
 }
 
-func (cmr *CommonMetricCollector) getPollCounterMetric(pollCount model.CounterVT) *model.Metric {
+func (cmr *commonMetricCollector) getPollCounterMetric(pollCount model.CounterVT) *model.Metric {
 	return model.NewCounterMetric("PollCount", pollCount)
 }
 
-func (cmr *CommonMetricCollector) getRandomValueMetric(dim float64) *model.Metric {
+func (cmr *commonMetricCollector) getRandomValueMetric(dim float64) *model.Metric {
 	rand.Seed(time.Now().Unix())
 	randomValue := rand.Float64() * dim
 	return model.NewGaugeMetric("RandomValue", model.GaugeVT(randomValue))
 }
 
-func (cmr *CommonMetricCollector) getMemStatsMetrics() []*model.Metric {
+func (cmr *commonMetricCollector) getMemStatsMetrics() []*model.Metric {
 	metrics := make([]*model.Metric, 0)
 	memStats := runtime.MemStats{}
 	runtime.ReadMemStats(&memStats)

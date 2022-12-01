@@ -1,11 +1,12 @@
 package rest
 
 import (
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func NewRouter() chi.Router {
@@ -24,7 +25,7 @@ func timerTrace(next http.Handler) http.Handler {
 	})
 }
 
-func HandleMetricRequests(router chi.Router, mh MetricsHandler) {
+func HandleMetricRequests(router chi.Router, mh *MetricsHandler) {
 	router.Get("/", mh.GetMetricsHandler())
 	router.Post("/update/{mType}/{name}/{value}", mh.ReceptionMetricsHandler())
 	router.Get("/value/{mType}/{name}", mh.GetMetricHandler())

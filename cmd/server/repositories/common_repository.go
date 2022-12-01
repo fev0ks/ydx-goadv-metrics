@@ -2,36 +2,27 @@ package repositories
 
 import (
 	"fmt"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"log"
 	"sync"
+
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 )
 
-var (
-	crInitOnce sync.Once
-	crInstance *CommonRepository
-)
-
-type CommonRepository struct {
+type commonRepository struct {
+	*sync.RWMutex
 	storage map[string]*model.Metric
 }
 
-func NewCommonRepository() *CommonRepository {
-	return &CommonRepository{
-		storage: make(map[string]*model.Metric),
+func NewCommonRepository() *commonRepository {
+	return &commonRepository{
+		&sync.RWMutex{},
+		make(map[string]*model.Metric),
 	}
 }
 
-func GetCommonRepository() *CommonRepository {
-	crInitOnce.Do(func() {
-		crInstance = &CommonRepository{
-			storage: make(map[string]*model.Metric),
-		}
-	})
-	return crInstance
-}
-
-func (cr *CommonRepository) SaveMetric(metric *model.Metric) error {
+func (cr *commonRepository) SaveMetric(metric *model.Metric) error {
+	cr.Lock()
+	defer cr.Unlock()
 	switch metric.MType {
 	case model.GaugeType:
 		cr.storage[metric.Name] = metric
@@ -48,14 +39,20 @@ func (cr *CommonRepository) SaveMetric(metric *model.Metric) error {
 	return nil
 }
 
-func (cr *CommonRepository) GetMetrics() map[string]*model.Metric {
+func (cr *commonRepository) GetMetrics() map[string]*model.Metric {
+	cr.RLock()
+	defer cr.RUnlock()
 	return cr.storage
 }
 
-func (cr *CommonRepository) GetMetric(name string) *model.Metric {
+func (cr *commonRepository) GetMetric(name string) *model.Metric {
+	cr.RLock()
+	defer cr.RUnlock()
 	return cr.storage[name]
 }
 
-func (cr *CommonRepository) Clear() {
+func (cr *commonRepository) Clear() {
+	cr.Lock()
+	defer cr.Unlock()
 	cr.storage = make(map[string]*model.Metric)
 }

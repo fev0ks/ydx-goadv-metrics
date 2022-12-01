@@ -12,9 +12,9 @@ import (
 )
 
 type ExitHandler struct {
-	Cancel []context.CancelFunc
-	Stop   []chan struct{}
-	Close  []io.Closer
+	ToCancel []context.CancelFunc
+	ToStop   []chan struct{}
+	ToClose  []io.Closer
 }
 
 func ProperExitDefer(exitHandler *ExitHandler) {
@@ -49,16 +49,16 @@ func (eh *ExitHandler) shutdown() {
 }
 
 func (eh *ExitHandler) endHeldObjects() {
-	log.Println("Cancel active contexts")
-	for _, cancel := range eh.Cancel {
+	log.Println("ToCancel active contexts")
+	for _, cancel := range eh.ToCancel {
 		cancel()
 	}
-	log.Println("Stop active goroutines")
-	for _, toStop := range eh.Stop {
+	log.Println("ToStop active goroutines")
+	for _, toStop := range eh.ToStop {
 		toStop <- struct{}{}
 	}
-	log.Println("Close active resources")
-	for _, toClose := range eh.Close {
+	log.Println("ToClose active resources")
+	for _, toClose := range eh.ToClose {
 		fmt.Println("kek1")
 		err := toClose.Close()
 		if err != nil {

@@ -2,15 +2,17 @@ package rest
 
 import (
 	"context"
-	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/repositories"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/repositories"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestReceptionMetricsHandler(t *testing.T) {
@@ -101,7 +103,7 @@ func TestReceptionMetricsHandler(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx := context.Background()
 			cr := repositories.NewCommonRepository()
-			mh := MetricsHandler{ctx, cr}
+			mh := NewMetricsHandler(ctx, cr)
 			r := NewRouter()
 			HandleMetricRequests(r, mh)
 
@@ -154,7 +156,7 @@ func TestGetMetricsHandler(t *testing.T) {
 			for _, metric := range tc.metrics {
 				_ = cr.SaveMetric(metric)
 			}
-			mh := MetricsHandler{ctx, cr}
+			mh := NewMetricsHandler(ctx, cr)
 			r := NewRouter()
 			HandleMetricRequests(r, mh)
 
@@ -249,7 +251,7 @@ func TestGetMetricHandler(t *testing.T) {
 			for _, metric := range tc.metrics {
 				_ = cr.SaveMetric(metric)
 			}
-			mh := MetricsHandler{ctx, cr}
+			mh := NewMetricsHandler(ctx, cr)
 			r := NewRouter()
 			HandleMetricRequests(r, mh)
 

@@ -15,7 +15,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	repository := repositories.GetCommonMetricsRepository()
+	repository := repositories.NewCommonMetricsRepository()
 
 	var metricCollector agent.MetricCollector
 	mcCtx, mcCancel := context.WithCancel(ctx)
@@ -31,8 +31,8 @@ func main() {
 
 	log.Println("Agent started")
 	internal.ProperExitDefer(&internal.ExitHandler{
-		Cancel: []context.CancelFunc{mcCancel, mpCancel},
-		Stop:   []chan struct{}{stopCollectMetricsCh, stopPollMetricsCh},
+		ToCancel: []context.CancelFunc{mcCancel, mpCancel},
+		ToStop:   []chan struct{}{stopCollectMetricsCh, stopPollMetricsCh},
 	})
 	<-ctx.Done()
 }

@@ -1,36 +1,33 @@
 package repositories
 
 import (
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"log"
 	"sync"
+
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 )
 
-var (
-	cmrInitOnce sync.Once
-	instance    *CommonMetricRepository
-)
-
-type CommonMetricRepository struct {
+type commonMetricRepository struct {
+	*sync.RWMutex
 	Cache []*model.Metric
 }
 
-func NewCommonMetricsRepository() *CommonMetricRepository {
-	return &CommonMetricRepository{}
+func NewCommonMetricsRepository() *commonMetricRepository {
+	return &commonMetricRepository{
+		&sync.RWMutex{},
+		make([]*model.Metric, 0),
+	}
 }
 
-func GetCommonMetricsRepository() *CommonMetricRepository {
-	cmrInitOnce.Do(func() {
-		instance = &CommonMetricRepository{}
-	})
-	return instance
-}
-
-func (cmr *CommonMetricRepository) SaveMetric(metrics []*model.Metric) {
+func (cmr *commonMetricRepository) SaveMetric(metrics []*model.Metric) {
+	cmr.Lock()
+	defer cmr.Unlock()
 	cmr.Cache = metrics
 	log.Printf("Saved %d metrics\n", len(cmr.Cache))
 }
 
-func (cmr *CommonMetricRepository) GetMetricsList() []*model.Metric {
+func (cmr *commonMetricRepository) GetMetricsList() []*model.Metric {
+	cmr.RLock()
+	defer cmr.RUnlock()
 	return cmr.Cache
 }

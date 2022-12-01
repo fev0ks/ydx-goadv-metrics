@@ -2,18 +2,19 @@ package main
 
 import (
 	"context"
+	"log"
+	"net/http"
+
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/repositories"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
-	"log"
-	"net/http"
 )
 
 func main() {
 	ctx := context.Background()
 
-	sr := repositories.GetCommonRepository()
-	mh := rest.MetricsHandler{Ctx: ctx, Repository: sr}
+	sr := repositories.NewCommonRepository()
+	mh := rest.NewMetricsHandler(ctx, sr)
 
 	router := rest.NewRouter()
 	rest.HandleMetricRequests(router, mh)

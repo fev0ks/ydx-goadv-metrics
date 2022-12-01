@@ -4,17 +4,23 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/pages"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
+
 	"github.com/go-chi/chi/v5"
-	"log"
-	"net/http"
 )
 
 type MetricsHandler struct {
 	Ctx        context.Context
 	Repository server.MetricRepository
+}
+
+func NewMetricsHandler(ctx context.Context, repository server.MetricRepository) *MetricsHandler {
+	return &MetricsHandler{Ctx: ctx, Repository: repository}
 }
 
 func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {

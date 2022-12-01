@@ -1,10 +1,12 @@
 package repositories
 
 import (
+	"testing"
+
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestGaugesMetrics(t *testing.T) {
@@ -23,7 +25,7 @@ func TestGaugesMetrics(t *testing.T) {
 	}
 
 	t.Run(tc.name, func(t *testing.T) {
-		repository := GetCommonRepository()
+		repository := NewCommonRepository()
 		for _, metric := range tc.metrics {
 			err := repository.SaveMetric(metric)
 			require.NoError(t, err)
@@ -56,7 +58,7 @@ func TestCounterMetrics(t *testing.T) {
 	}
 
 	t.Run(tc.name, func(t *testing.T) {
-		repository := GetCommonRepository()
+		repository := NewCommonRepository()
 		for _, metric := range tc.metrics {
 			err := repository.SaveMetric(metric)
 			require.NoError(t, err)
@@ -85,7 +87,7 @@ func TestNanMetrics(t *testing.T) {
 	}
 
 	t.Run(tc.name, func(t *testing.T) {
-		repository := GetCommonRepository()
+		repository := NewCommonRepository()
 		for _, metric := range tc.metrics {
 			err := repository.SaveMetric(metric)
 			require.Error(t, err)

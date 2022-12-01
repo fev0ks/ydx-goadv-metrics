@@ -1,9 +1,11 @@
 package repositories
 
 import (
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCommonMetricRepository(t *testing.T) {

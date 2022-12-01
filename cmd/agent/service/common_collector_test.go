@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
-	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/repositories"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/repositories"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCollectMetrics(t *testing.T) {

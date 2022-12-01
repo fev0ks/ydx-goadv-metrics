@@ -1,10 +1,11 @@
 package pages
 
 import (
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 )
 
 var (

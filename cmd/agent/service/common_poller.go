@@ -3,21 +3,17 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
-	"github.com/go-resty/resty/v2"
 	"log"
 	"net/http"
-	"sync"
 	"time"
+
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
+
+	"github.com/go-resty/resty/v2"
 )
 
-var (
-	cmpInitOnce sync.Once
-	cmpInstance CommonMetricPoller
-)
-
-type CommonMetricPoller struct {
+type commonMetricPoller struct {
 	mpCtx    context.Context
 	client   *resty.Client
 	mr       agent.MetricRepository
@@ -30,18 +26,15 @@ func NewCommonMetricPoller(
 	repository agent.MetricRepository,
 	pollInterval time.Duration,
 ) agent.MetricPoller {
-	cmpInitOnce.Do(func() {
-		cmpInstance = CommonMetricPoller{
-			mpCtx:    ctx,
-			client:   client,
-			mr:       repository,
-			interval: pollInterval,
-		}
-	})
-	return &cmpInstance
+	return &commonMetricPoller{
+		mpCtx:    ctx,
+		client:   client,
+		mr:       repository,
+		interval: pollInterval,
+	}
 }
 
-func (cmp *CommonMetricPoller) PollMetrics() chan struct{} {
+func (cmp *commonMetricPoller) PollMetrics() chan struct{} {
 	ticker := time.NewTicker(cmp.interval)
 	done := make(chan struct{})
 	go func() {
@@ -63,7 +56,7 @@ func (cmp *CommonMetricPoller) PollMetrics() chan struct{} {
 	return done
 }
 
-func (cmp *CommonMetricPoller) sendMetrics(metrics []*model.Metric) {
+func (cmp *commonMetricPoller) sendMetrics(metrics []*model.Metric) {
 	log.Printf("Polling %d metrics", len(metrics))
 	for _, metric := range metrics {
 		select {
@@ -79,7 +72,7 @@ func (cmp *CommonMetricPoller) sendMetrics(metrics []*model.Metric) {
 	}
 }
 
-func (cmp *CommonMetricPoller) SendMetric(metric *model.Metric) error {
+func (cmp *commonMetricPoller) SendMetric(metric *model.Metric) error {
 	value := metric.GetValue()
 	if value == model.NanVal {
 		return fmt.Errorf("metric type '%s' is not supported", metric.MType)

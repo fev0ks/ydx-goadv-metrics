@@ -3,16 +3,18 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/repositories"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/go-resty/resty/v2"
-	"github.com/jarcoal/httpmock"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"net/http"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/repositories"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+
+	"github.com/go-resty/resty/v2"
+	"github.com/jarcoal/httpmock"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -48,7 +50,7 @@ func TestPollMetrics(t *testing.T) {
 			ctx := context.Background()
 			client := resty.New().SetBaseURL(baseURL)
 			httpmock.ActivateNonDefault(client.GetClient())
-			repo := repositories.CommonMetricRepository{}
+			repo := repositories.NewCommonMetricsRepository()
 			urls := getUrlsOfMetrics(baseURL, tc.metrics)
 			if tc.pollCount != 0 {
 				for _, url := range urls {
@@ -60,7 +62,7 @@ func TestPollMetrics(t *testing.T) {
 			}
 
 			repo.SaveMetric(tc.metrics)
-			metricPoller := NewCommonMetricPoller(ctx, client, &repo, 2*time.Second)
+			metricPoller := NewCommonMetricPoller(ctx, client, repo, 2*time.Second)
 			stopChannel := metricPoller.PollMetrics()
 			time.Sleep(3 * time.Second)
 			stopChannel <- struct{}{}
@@ -92,11 +94,11 @@ func TestPollMetricsWithCancelContext(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			client := resty.New().SetBaseURL(baseURL)
 			httpmock.ActivateNonDefault(client.GetClient())
-			repo := repositories.CommonMetricRepository{}
+			repo := repositories.NewCommonMetricsRepository()
 			repo.SaveMetric(tc.metrics)
 
 			urls := getUrlsOfMetrics(baseURL, tc.metrics)
-			metricPoller := NewCommonMetricPoller(ctx, client, &repo, 2*time.Second)
+			metricPoller := NewCommonMetricPoller(ctx, client, repo, 2*time.Second)
 			cancel()
 			_ = metricPoller.PollMetrics()
 			time.Sleep(3 * time.Second)
