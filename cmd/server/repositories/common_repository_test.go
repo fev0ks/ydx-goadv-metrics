@@ -32,10 +32,10 @@ func TestGaugesMetrics(t *testing.T) {
 		}
 		actualMetrics := repository.GetMetrics()
 		for key, value := range tc.expectedValue {
-			assert.Equal(t, model.GaugeVT(value), actualMetrics[key].Gauge)
+			assert.Equal(t, model.GaugeVT(value), *actualMetrics[key].Value)
 
 			metricByName := repository.GetMetric(key)
-			assert.Equal(t, model.GaugeVT(value), metricByName.Gauge)
+			assert.Equal(t, model.GaugeVT(value), *metricByName.Value)
 		}
 		repository.Clear()
 		assert.Equal(t, 0, len(repository.GetMetrics()))
@@ -48,7 +48,7 @@ func TestCounterMetrics(t *testing.T) {
 		metrics       []*model.Metric
 		expectedValue map[string]uint32
 	}{
-		"Should save and return sum of Counter metric",
+		"Should save and return sum of Delta metric",
 		[]*model.Metric{
 			model.NewCounterMetric("test1", 1),
 			model.NewCounterMetric("test1", 2),
@@ -65,10 +65,10 @@ func TestCounterMetrics(t *testing.T) {
 		}
 		actualMetrics := repository.GetMetrics()
 		for key, value := range tc.expectedValue {
-			assert.Equal(t, model.CounterVT(value), actualMetrics[key].Counter)
+			assert.Equal(t, model.CounterVT(value), *actualMetrics[key].Delta)
 
 			metricByName := repository.GetMetric(key)
-			assert.Equal(t, model.CounterVT(value), metricByName.Counter)
+			assert.Equal(t, model.CounterVT(value), *metricByName.Delta)
 		}
 		repository.Clear()
 		assert.Equal(t, 0, len(repository.GetMetrics()))

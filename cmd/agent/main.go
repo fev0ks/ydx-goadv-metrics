@@ -6,6 +6,7 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/configs"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/repositories"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service"
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
 	"github.com/go-resty/resty/v2"
@@ -26,7 +27,8 @@ func main() {
 
 	var metricPoller agent.MetricPoller
 	mpCtx, mpCancel := context.WithCancel(ctx)
-	metricPoller = service.NewCommonMetricPoller(mpCtx, client, repository, configs.GetPollInterval())
+	metricSender := sender.NewJsonMetricSender(mpCtx, client)
+	metricPoller = service.NewCommonMetricPoller(mpCtx, client, metricSender, repository, configs.GetPollInterval())
 	stopPollMetricsCh := metricPoller.PollMetrics()
 
 	log.Println("Agent started")

@@ -2,6 +2,7 @@ package rest
 
 import (
 	"context"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -15,7 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestReceptionMetricsHandler(t *testing.T) {
+func TestReceptionTextMetricsHandler(t *testing.T) {
 	type want struct {
 		statusCode int
 		response   string
@@ -26,7 +27,7 @@ func TestReceptionMetricsHandler(t *testing.T) {
 		want        want
 	}{
 		{
-			name:        "Should catch Counter metric",
+			name:        "Should catch Delta metric",
 			requestPath: "/update/counter/case1/1",
 			want: want{
 				http.StatusOK,
@@ -34,7 +35,7 @@ func TestReceptionMetricsHandler(t *testing.T) {
 			},
 		},
 		{
-			name:        "Should catch Gauge metric",
+			name:        "Should catch Value metric",
 			requestPath: "/update/gauge/case1/1.1",
 			want: want{
 				http.StatusOK,
@@ -46,7 +47,7 @@ func TestReceptionMetricsHandler(t *testing.T) {
 			requestPath: "/update/gauge//1.1",
 			want: want{
 				http.StatusBadRequest,
-				"metric 'name' must be specified",
+				"metric 'id' must be specified",
 			},
 		},
 		{
@@ -110,7 +111,7 @@ func TestReceptionMetricsHandler(t *testing.T) {
 			ts := httptest.NewServer(r)
 			defer ts.Close()
 
-			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodPost, tc.requestPath)
+			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodPost, tc.requestPath, consts.TextPlain)
 			assert.Equal(t, tc.want.statusCode, actualStatusCode)
 			assert.Equal(t, tc.want.response, strings.TrimSpace(actualResponse))
 		})
@@ -163,14 +164,14 @@ func TestGetMetricsHandler(t *testing.T) {
 			ts := httptest.NewServer(r)
 			defer ts.Close()
 
-			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodGet, "")
+			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodGet, "", consts.TextPlain)
 			assert.Equal(t, tc.want.statusCode, actualStatusCode)
 			assert.Equal(t, tc.want.response, strings.TrimSpace(actualResponse))
 		})
 	}
 }
 
-func TestGetMetricHandler(t *testing.T) {
+func TestGetTextMetricHandler(t *testing.T) {
 	type want struct {
 		statusCode int
 		response   string
@@ -258,17 +259,17 @@ func TestGetMetricHandler(t *testing.T) {
 			ts := httptest.NewServer(r)
 			defer ts.Close()
 
-			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodGet, tc.requestPath)
+			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodGet, tc.requestPath, consts.TextPlain)
 			assert.Equal(t, tc.want.statusCode, actualStatusCode)
 			assert.Equal(t, tc.want.response, strings.TrimSpace(actualResponse))
 		})
 	}
 }
 
-func sendRequest(t *testing.T, ts *httptest.Server, method, path string) (int, string) {
+func sendRequest(t *testing.T, ts *httptest.Server, method, path, contentType string) (int, string) {
 	req, err := http.NewRequest(method, ts.URL+path, nil)
 	require.NoError(t, err)
-
+	req.Header.Add(consts.ContentType, contentType)
 	resp, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
 

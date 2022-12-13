@@ -2,11 +2,10 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"log"
-	"net/http"
 	"time"
 
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
 
@@ -16,6 +15,7 @@ import (
 type commonMetricPoller struct {
 	mpCtx    context.Context
 	client   *resty.Client
+	sender   sender.MetricSender
 	mr       agent.MetricRepository
 	interval time.Duration
 }
@@ -23,12 +23,14 @@ type commonMetricPoller struct {
 func NewCommonMetricPoller(
 	ctx context.Context,
 	client *resty.Client,
+	metricSender sender.MetricSender,
 	repository agent.MetricRepository,
 	pollInterval time.Duration,
 ) agent.MetricPoller {
 	return &commonMetricPoller{
 		mpCtx:    ctx,
 		client:   client,
+		sender:   metricSender,
 		mr:       repository,
 		interval: pollInterval,
 	}
@@ -64,43 +66,10 @@ func (cmp *commonMetricPoller) sendMetrics(metrics []*model.Metric) {
 			log.Println("Context was cancelled!")
 			return
 		default:
-			err := cmp.SendMetric(metric)
+			err := cmp.sender.SendMetric(metric)
 			if err != nil {
 				log.Printf("failed to poll metric %v: %v\n", metric, err)
 			}
 		}
-	}
-}
-
-func (cmp *commonMetricPoller) SendMetric(metric *model.Metric) error {
-	value := metric.GetValue()
-	if value == model.NanVal {
-		return fmt.Errorf("metric type '%s' is not supported", metric.MType)
-	}
-	resp, err := cmp.client.R().
-		SetHeader("Content-type", "text/plain").
-		SetPathParams(map[string]string{
-			"mType": string(metric.MType),
-			"name":  metric.Name,
-			"value": value,
-		}).
-		Post("/update/{mType}/{name}/{value}")
-	if err != nil {
-		return err
-	}
-	err = parseSendMetricResponse(resp, metric)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func parseSendMetricResponse(resp *resty.Response, metric *model.Metric) error {
-	if resp.StatusCode() != http.StatusOK {
-		respBody := resp.Body()
-		return fmt.Errorf("response status is not OK '%v': %s, body: '%s'", metric, resp.Status(), string(respBody))
-	} else {
-		log.Printf("metric was succesfully pooled: %v\n", metric)
-		return nil
 	}
 }
