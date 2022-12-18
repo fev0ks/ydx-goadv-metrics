@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/configs"
 	"log"
 	"net/http"
 
@@ -21,5 +22,5 @@ func main() {
 
 	internal.ProperExitDefer(&internal.ExitHandler{})
 	log.Println("Server started")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(configs.GetAddress(), router))
 }

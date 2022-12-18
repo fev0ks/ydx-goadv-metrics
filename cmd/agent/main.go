@@ -36,12 +36,13 @@ func main() {
 		ToCancel: []context.CancelFunc{mcCancel, mpCancel},
 		ToStop:   []chan struct{}{stopCollectMetricsCh, stopPollMetricsCh},
 	})
+
 	<-ctx.Done()
 }
 
 func getClient() *resty.Client {
 	client := resty.New().
-		SetBaseURL(fmt.Sprintf("http://%s:%s", configs.GetHost(), configs.GetPort())).
+		SetBaseURL(fmt.Sprintf("http://%s", configs.GetServerAddress())).
 		SetRetryCount(3).
 		SetRetryWaitTime(2 * time.Second).
 		SetRetryMaxWaitTime(3 * time.Second)
