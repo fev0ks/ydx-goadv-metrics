@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
+	"io"
 	"log"
 	"net/http"
 
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/pages"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
 
 	"github.com/go-chi/chi/v5"
@@ -27,11 +27,11 @@ func NewMetricsHandler(ctx context.Context, repository server.MetricRepository) 
 
 func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		contentType := request.Header.Get(consts.ContentType)
+		contentType := request.Header.Get(rest.ContentType)
 		switch contentType {
-		case consts.TextPlain:
+		case rest.Empty, rest.TextPlain:
 			mh.receptionTextMetricsHandler(writer, request)
-		case consts.ApplJson:
+		case rest.ApplJson:
 			mh.receptionJsonMetricsHandler(writer, request)
 		default:
 			err := fmt.Errorf("Content-Type: '%s' - is not supported", contentType)
@@ -81,7 +81,7 @@ func (mh *MetricsHandler) receptionTextMetricsHandler(writer http.ResponseWriter
 
 func (mh *MetricsHandler) receptionJsonMetricsHandler(writer http.ResponseWriter, request *http.Request) {
 	var metric *model.Metric
-	body, _ := ioutil.ReadAll(request.Body)
+	body, _ := io.ReadAll(request.Body)
 	defer request.Body.Close()
 
 	err := json.Unmarshal(body, &metric)
@@ -121,11 +121,11 @@ func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, r
 
 func (mh *MetricsHandler) GetMetricHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		contentType := request.Header.Get(consts.ContentType)
+		contentType := request.Header.Get(rest.ContentType)
 		switch contentType {
-		case consts.TextPlain:
+		case rest.Empty, rest.TextPlain:
 			mh.GetTextMetricHandler(writer, request)
-		case consts.ApplJson:
+		case rest.ApplJson:
 			mh.receptionJsonMetricsHandler(writer, request)
 		default:
 			err := fmt.Errorf("Content-Type: '%s' - is not supported", contentType)
@@ -167,7 +167,7 @@ func (mh *MetricsHandler) GetTextMetricHandler(writer http.ResponseWriter, reque
 
 func (mh *MetricsHandler) GetJsonMetricHandler(writer http.ResponseWriter, request *http.Request) {
 	var metricToFind *model.Metric
-	body, _ := ioutil.ReadAll(request.Body)
+	body, _ := io.ReadAll(request.Body)
 	defer request.Body.Close()
 
 	err := json.Unmarshal(body, metricToFind)

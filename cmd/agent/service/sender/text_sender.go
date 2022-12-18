@@ -3,10 +3,9 @@ package sender
 import (
 	"context"
 	"fmt"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts"
-
 	"github.com/go-resty/resty/v2"
 )
 
@@ -28,7 +27,7 @@ func (ts textSender) SendMetric(metric *model.Metric) error {
 		return fmt.Errorf("metric type '%s' is not supported", metric.MType)
 	}
 	resp, err := ts.client.R().
-		SetHeader(consts.ContentType, consts.TextPlain).
+		SetHeader(rest.ContentType, rest.TextPlain).
 		SetPathParams(map[string]string{
 			"mType": string(metric.MType),
 			"name":  metric.ID,

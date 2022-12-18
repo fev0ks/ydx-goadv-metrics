@@ -4,10 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts"
-
 	"github.com/go-resty/resty/v2"
 )
 
@@ -33,7 +32,7 @@ func (js jsonSender) SendMetric(metric *model.Metric) error {
 		return err
 	}
 	resp, err := js.client.R().
-		SetHeader(consts.ContentType, consts.ApplJson).
+		SetHeader(rest.ContentType, rest.ApplJson).
 		SetBody(body).
 		Post("/update")
 	if err != nil {

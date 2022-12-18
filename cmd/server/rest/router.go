@@ -30,5 +30,5 @@ func HandleMetricRequests(router chi.Router, mh *MetricsHandler) {
 	router.Post("/update/{mType}/{id}/{value}", mh.ReceptionMetricsHandler())
 	router.Post("/update", mh.ReceptionMetricsHandler())
 	router.Get("/value/{mType}/{id}", mh.GetMetricHandler())
-	router.Get("/value", mh.GetMetricHandler())
+	router.Get("/value", mh.GetMetricsHandler())
 }

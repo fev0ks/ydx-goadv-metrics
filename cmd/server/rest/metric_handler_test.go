@@ -2,7 +2,7 @@ package rest
 
 import (
 	"context"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -111,7 +111,7 @@ func TestReceptionTextMetricsHandler(t *testing.T) {
 			ts := httptest.NewServer(r)
 			defer ts.Close()
 
-			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodPost, tc.requestPath, consts.TextPlain)
+			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodPost, tc.requestPath, rest.TextPlain)
 			assert.Equal(t, tc.want.statusCode, actualStatusCode)
 			assert.Equal(t, tc.want.response, strings.TrimSpace(actualResponse))
 		})
@@ -164,7 +164,7 @@ func TestGetMetricsHandler(t *testing.T) {
 			ts := httptest.NewServer(r)
 			defer ts.Close()
 
-			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodGet, "", consts.TextPlain)
+			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodGet, "", rest.TextPlain)
 			assert.Equal(t, tc.want.statusCode, actualStatusCode)
 			assert.Equal(t, tc.want.response, strings.TrimSpace(actualResponse))
 		})
@@ -259,7 +259,7 @@ func TestGetTextMetricHandler(t *testing.T) {
 			ts := httptest.NewServer(r)
 			defer ts.Close()
 
-			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodGet, tc.requestPath, consts.TextPlain)
+			actualStatusCode, actualResponse := sendRequest(t, ts, http.MethodGet, tc.requestPath, rest.TextPlain)
 			assert.Equal(t, tc.want.statusCode, actualStatusCode)
 			assert.Equal(t, tc.want.response, strings.TrimSpace(actualResponse))
 		})
@@ -269,7 +269,7 @@ func TestGetTextMetricHandler(t *testing.T) {
 func sendRequest(t *testing.T, ts *httptest.Server, method, path, contentType string) (int, string) {
 	req, err := http.NewRequest(method, ts.URL+path, nil)
 	require.NoError(t, err)
-	req.Header.Add(consts.ContentType, contentType)
+	req.Header.Add(rest.ContentType, contentType)
 	resp, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
 
