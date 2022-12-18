@@ -1,8 +1,8 @@
 package rest
 
 const (
-	ContentType = "Content-type"
-	TextPlain   = "text/plain"
-	Empty       = ""
-	ApplJson    = "application/json"
+	ContentType     = "Content-Type"
+	TextPlain       = "text/plain"
+	Empty           = ""
+	ApplicationJson = "application/json"
 )

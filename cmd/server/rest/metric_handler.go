@@ -31,7 +31,7 @@ func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWri
 		switch contentType {
 		case rest.Empty, rest.TextPlain:
 			mh.receptionTextMetricsHandler(writer, request)
-		case rest.ApplJson:
+		case rest.ApplicationJson:
 			mh.receptionJsonMetricsHandler(writer, request)
 		default:
 			err := fmt.Errorf("Content-Type: '%s' - is not supported", contentType)
@@ -125,8 +125,8 @@ func (mh *MetricsHandler) GetMetricHandler() func(writer http.ResponseWriter, re
 		switch contentType {
 		case rest.Empty, rest.TextPlain:
 			mh.GetTextMetricHandler(writer, request)
-		case rest.ApplJson:
-			mh.receptionJsonMetricsHandler(writer, request)
+		case rest.ApplicationJson:
+			mh.GetJsonMetricHandler(writer, request)
 		default:
 			err := fmt.Errorf("Content-Type: '%s' - is not supported", contentType)
 			log.Printf("failed to save metric: %v\n", err)
@@ -170,9 +170,9 @@ func (mh *MetricsHandler) GetJsonMetricHandler(writer http.ResponseWriter, reque
 	body, _ := io.ReadAll(request.Body)
 	defer request.Body.Close()
 
-	err := json.Unmarshal(body, metricToFind)
+	err := json.Unmarshal(body, &metricToFind)
 	if err != nil {
-		log.Printf("failed to parse metric request: %v\n", err)
+		log.Printf("failed to parse metric request '%s': %v\n", body, err)
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -187,15 +187,20 @@ func (mh *MetricsHandler) GetJsonMetricHandler(writer http.ResponseWriter, reque
 		http.Error(writer, fmt.Sprintf("metric was not found: %s", metricToFind.ID), http.StatusNotFound)
 		return
 	}
-	res, err := json.Marshal(metric.GetGenericValue())
+	res, err := json.Marshal(metric)
 	if err != nil {
+		log.Printf("failed to marshal metric: %v\n", err)
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	writer.Header().Add(rest.ContentType, rest.ApplicationJson)
 	_, err = writer.Write(res)
 	if err != nil {
+		log.Printf("failed to write metric response: %v\n", err)
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	writer.WriteHeader(http.StatusOK)
 }

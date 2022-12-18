@@ -32,7 +32,7 @@ func (js jsonSender) SendMetric(metric *model.Metric) error {
 		return err
 	}
 	resp, err := js.client.R().
-		SetHeader(rest.ContentType, rest.ApplJson).
+		SetHeader(rest.ContentType, rest.ApplicationJson).
 		SetBody(body).
 		Post("/update/")
 	if err != nil {
