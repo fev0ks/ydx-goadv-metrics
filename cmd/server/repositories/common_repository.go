@@ -23,6 +23,9 @@ func NewCommonRepository() *commonRepository {
 func (cr *commonRepository) SaveMetric(metric *model.Metric) error {
 	cr.Lock()
 	defer cr.Unlock()
+	if metric == nil {
+		return nil
+	}
 	switch metric.MType {
 	case model.GaugeType:
 		cr.storage[metric.ID] = metric
@@ -44,6 +47,16 @@ func (cr *commonRepository) GetMetrics() map[string]*model.Metric {
 	cr.RLock()
 	defer cr.RUnlock()
 	return cr.storage
+}
+
+func (cr *commonRepository) GetMetricsList() []*model.Metric {
+	cr.RLock()
+	defer cr.RUnlock()
+	metrics := make([]*model.Metric, 0, len(cr.storage))
+	for _, v := range cr.storage {
+		metrics = append(metrics, v)
+	}
+	return metrics
 }
 
 func (cr *commonRepository) GetMetric(name string) *model.Metric {
