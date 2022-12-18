@@ -28,7 +28,7 @@ func timerTrace(next http.Handler) http.Handler {
 func HandleMetricRequests(router chi.Router, mh *MetricsHandler) {
 	router.Get("/", mh.GetMetricsHandler())
 	router.Post("/update/{mType}/{id}/{value}", mh.ReceptionMetricsHandler())
-	router.Post("/update", mh.ReceptionMetricsHandler())
+	router.Post("/update/", mh.ReceptionMetricsHandler())
 	router.Get("/value/{mType}/{id}", mh.GetMetricHandler())
 	router.Get("/value", mh.GetMetricsHandler())
 }
