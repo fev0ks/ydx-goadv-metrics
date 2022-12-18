@@ -7,48 +7,41 @@ import (
 )
 
 const (
-	defaultAddress             = "localhost:8080"
-	defaultMetricStoreInterval = 300 * time.Second
-	defaultStoreFile           = "/tmp/devops-metrics-db.json"
-	defaultDoRestore           = true
+	DefaultAddress             = "localhost:8080"
+	DefaultMetricStoreInterval = 300 * time.Second
+	DefaultStoreFile           = "/tmp/devops-metrics-db.json"
+	DefaultDoRestore           = true
 )
 
 func GetAddress() string {
-	host := os.Getenv("ADDRESS")
-	if host == "" {
-		return defaultAddress
-	}
-	return host
+	return os.Getenv("ADDRESS")
 }
 
 func GetStoreInterval() time.Duration {
 	storeInterval := os.Getenv("STORE_INTERVAL")
 	if storeInterval == "" {
-		return defaultMetricStoreInterval
+		return 0
 	}
 	storeIntervalVal, err := strconv.Atoi(storeInterval)
 	if err != nil {
-		return defaultMetricStoreInterval
+		return 0
 	}
-	return time.Duration(storeIntervalVal) * time.Second
+	duration := time.Duration(storeIntervalVal) * time.Second
+	return duration
 }
 
 func GetStoreFile() string {
-	host := os.Getenv("STORE_FILE ")
-	if host == "" {
-		return defaultStoreFile
-	}
-	return host
+	return os.Getenv("STORE_FILE ")
 }
 
-func GetDoReStore() bool {
+func GetDoReStore() *bool {
 	doReStore := os.Getenv("RESTORE")
 	if doReStore == "" {
-		return defaultDoRestore
+		return nil
 	}
 	doReStoreVal, err := strconv.ParseBool(doReStore)
 	if err != nil {
-		return defaultDoRestore
+		return nil
 	}
-	return doReStoreVal
+	return &doReStoreVal
 }

@@ -45,7 +45,7 @@ func initDir(storeFile string) error {
 }
 
 func (b *autoBackup) Start() chan struct{} {
-	log.Println("Auto AutoBackup activated")
+	log.Println("AutoBackup activated")
 	ticker := time.NewTicker(b.interval)
 	done := make(chan struct{})
 	go func() {
