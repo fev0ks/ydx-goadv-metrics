@@ -110,6 +110,7 @@ func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, r
 		log.Println("Get metrics")
 		metrics := mh.Repository.GetMetrics()
 		page := pages.GetMetricsPage(metrics)
+		writer.Header().Add(rest.ContentType, rest.TextHtml)
 		_, err := writer.Write([]byte(page))
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
