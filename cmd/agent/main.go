@@ -3,17 +3,19 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
+	"time"
+
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/configs"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/repositories"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
+
 	"github.com/go-resty/resty/v2"
 	"github.com/spf13/pflag"
-	"log"
-	"os"
-	"time"
 )
 
 func main() {
@@ -54,7 +56,7 @@ func main() {
 
 	var metricPoller agent.MetricPoller
 	mpCtx, mpCancel := context.WithCancel(ctx)
-	metricSender := sender.NewJsonMetricSender(mpCtx, client)
+	metricSender := sender.NewJSONMetricSender(mpCtx, client)
 	metricPoller = service.NewCommonMetricPoller(mpCtx, client, metricSender, repository, pollInterval)
 	stopPollMetricsCh := metricPoller.PollMetrics()
 

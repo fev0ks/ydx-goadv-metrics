@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 	"io"
 	"log"
 	"net/http"
 
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/pages"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
 
 	"github.com/go-chi/chi/v5"
@@ -31,8 +31,8 @@ func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWri
 		switch contentType {
 		case rest.Empty, rest.TextPlain:
 			mh.receptionTextMetricsHandler(writer, request)
-		case rest.ApplicationJson:
-			mh.receptionJsonMetricsHandler(writer, request)
+		case rest.ApplicationJSON:
+			mh.receptionJSONMetricsHandler(writer, request)
 		default:
 			err := fmt.Errorf("Content-Type: '%s' - is not supported", contentType)
 			log.Printf("failed to save metric: %v\n", err)
@@ -79,7 +79,7 @@ func (mh *MetricsHandler) receptionTextMetricsHandler(writer http.ResponseWriter
 	writer.WriteHeader(http.StatusOK)
 }
 
-func (mh *MetricsHandler) receptionJsonMetricsHandler(writer http.ResponseWriter, request *http.Request) {
+func (mh *MetricsHandler) receptionJSONMetricsHandler(writer http.ResponseWriter, request *http.Request) {
 	var metric *model.Metric
 	body, _ := io.ReadAll(request.Body)
 	defer request.Body.Close()
@@ -110,7 +110,7 @@ func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, r
 		log.Println("Get metrics")
 		metrics := mh.Repository.GetMetrics()
 		page := pages.GetMetricsPage(metrics)
-		writer.Header().Add(rest.ContentType, rest.TextHtml)
+		writer.Header().Add(rest.ContentType, rest.TextHTML)
 		_, err := writer.Write([]byte(page))
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
@@ -126,8 +126,8 @@ func (mh *MetricsHandler) GetMetricHandler() func(writer http.ResponseWriter, re
 		switch contentType {
 		case rest.Empty, rest.TextPlain:
 			mh.GetTextMetricHandler(writer, request)
-		case rest.ApplicationJson:
-			mh.GetJsonMetricHandler(writer, request)
+		case rest.ApplicationJSON:
+			mh.GetJSONMetricHandler(writer, request)
 		default:
 			err := fmt.Errorf("Content-Type: '%s' - is not supported", contentType)
 			log.Printf("failed to save metric: %v\n", err)
@@ -166,7 +166,7 @@ func (mh *MetricsHandler) GetTextMetricHandler(writer http.ResponseWriter, reque
 	writer.WriteHeader(http.StatusOK)
 }
 
-func (mh *MetricsHandler) GetJsonMetricHandler(writer http.ResponseWriter, request *http.Request) {
+func (mh *MetricsHandler) GetJSONMetricHandler(writer http.ResponseWriter, request *http.Request) {
 	var metricToFind *model.Metric
 	body, _ := io.ReadAll(request.Body)
 	defer request.Body.Close()
@@ -195,7 +195,7 @@ func (mh *MetricsHandler) GetJsonMetricHandler(writer http.ResponseWriter, reque
 		return
 	}
 
-	writer.Header().Add(rest.ContentType, rest.ApplicationJson)
+	writer.Header().Add(rest.ContentType, rest.ApplicationJSON)
 	_, err = writer.Write(res)
 	if err != nil {
 		log.Printf("failed to write metric response: %v\n", err)

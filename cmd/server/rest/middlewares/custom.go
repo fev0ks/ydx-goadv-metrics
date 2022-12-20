@@ -3,12 +3,13 @@ package middlewares
 import (
 	"compress/zlib"
 	"fmt"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 	"io"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 )
 
 func Decompress(next http.Handler) http.Handler {
@@ -34,7 +35,7 @@ func Decompress(next http.Handler) http.Handler {
 				r.Body = io.NopCloser(strings.NewReader(string(body)))
 			}
 		} else if rContentEncoding != "" {
-			err := fmt.Errorf("unsupported Content-Encoding: %s\n", rContentEncoding)
+			err := fmt.Errorf("unsupported Content-Encoding: %s", rContentEncoding)
 			log.Println(err)
 			http.Error(w, err.Error(), http.StatusNotImplemented)
 		}

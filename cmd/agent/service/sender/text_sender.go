@@ -3,9 +3,10 @@ package sender
 import (
 	"context"
 	"fmt"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
+
 	"github.com/go-resty/resty/v2"
 )
 

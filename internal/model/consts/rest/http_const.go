@@ -3,9 +3,9 @@ package rest
 const (
 	ContentType     = "Content-Type"
 	TextPlain       = "text/plain"
-	TextHtml        = "text/html"
+	TextHTML        = "text/html"
 	Empty           = ""
-	ApplicationJson = "application/json"
+	ApplicationJSON = "application/json"
 
 	ContentEncoding = "Content-Encoding"
 )

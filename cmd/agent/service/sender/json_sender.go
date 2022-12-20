@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
+
 	"github.com/go-resty/resty/v2"
 )
 
@@ -15,7 +16,7 @@ type jsonSender struct {
 	client *resty.Client
 }
 
-func NewJsonMetricSender(mpCtx context.Context, client *resty.Client) MetricSender {
+func NewJSONMetricSender(mpCtx context.Context, client *resty.Client) MetricSender {
 	return &jsonSender{
 		mpCtx:  mpCtx,
 		client: client,
@@ -32,7 +33,7 @@ func (js jsonSender) SendMetric(metric *model.Metric) error {
 		return err
 	}
 	resp, err := js.client.R().
-		SetHeader(rest.ContentType, rest.ApplicationJson).
+		SetHeader(rest.ContentType, rest.ApplicationJSON).
 		SetBody(body).
 		Post("/update/")
 	if err != nil {

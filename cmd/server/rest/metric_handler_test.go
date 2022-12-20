@@ -2,7 +2,6 @@ package rest
 
 import (
 	"context"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/repositories"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
