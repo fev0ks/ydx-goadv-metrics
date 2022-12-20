@@ -16,7 +16,7 @@ type textSender struct {
 }
 
 func NewTextMetricSender(mpCtx context.Context, client *resty.Client) MetricSender {
-	return &jsonSender{
+	return &textSender{
 		mpCtx:  mpCtx,
 		client: client,
 	}
