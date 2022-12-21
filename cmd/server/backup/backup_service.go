@@ -13,7 +13,7 @@ import (
 )
 
 type AutoBackup interface {
-	Start(storeInterval time.Duration) chan struct{}
+	Start() chan struct{}
 	Restore() error
 }
 

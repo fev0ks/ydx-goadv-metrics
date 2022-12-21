@@ -16,30 +16,6 @@ type Metric struct {
 	Value *GaugeVT   `json:"value,omitempty"`
 }
 
-//func (m *Metric) UnmarshalJSON(data []byte) error {
-//
-//	// чтобы избежать рекурсии при json.Unmarshal, объявляем новый тип
-//	type MetricAlias Metric
-//
-//	metricValue := &struct {
-//		*MetricAlias
-//		// переопределяем поле внутри анонимной структуры
-//		MType string `json:"type"`
-//	}{
-//		// задаём указатель на целевой объект
-//		MetricAlias: (*MetricAlias)(m),
-//	}
-//
-//	// вызываем стандартный Unmarshal
-//	if err := json.Unmarshal(data, metricValue); err != nil {
-//		return err
-//	}
-//	mType := MTypeValueOf(metricValue.MType)
-//	m.MType = mType
-//
-//	return nil
-//}
-
 func (m *Metric) String() string {
 	return fmt.Sprintf("ID: %s, Type: %s, Value: %v", m.ID, m.MType, m.GetValue())
 }
