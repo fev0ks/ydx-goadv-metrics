@@ -7,49 +7,37 @@ import (
 )
 
 const (
-	defaultMetricReportInterval = time.Second * 2
-	defaultMetricPollInterval   = time.Second * 10
-
-	defaultHost = "localhost"
-	defaultPort = "8080"
+	DefaultMetricReportInterval = time.Second * 2
+	DefaultMetricPollInterval   = time.Second * 10
+	DefaultServerAddress        = "localhost:8080"
 )
 
 func GetReportInterval() time.Duration {
 	reportInterval := os.Getenv("REPORT_INTERVAL")
 	if reportInterval == "" {
-		return defaultMetricReportInterval
+		return 0
 	}
 	reportIntervalVal, err := strconv.Atoi(reportInterval)
 	if err != nil {
-		return defaultMetricReportInterval
+		return 0
 	}
-	return time.Second * time.Duration(reportIntervalVal)
+	duration := time.Second * time.Duration(reportIntervalVal)
+	return duration
 }
 
 func GetPollInterval() time.Duration {
 	reportInterval := os.Getenv("POLL_INTERVAL")
 	if reportInterval == "" {
-		return defaultMetricPollInterval
+		return 0
 	}
 	reportIntervalVal, err := strconv.Atoi(reportInterval)
 	if err != nil {
-		return defaultMetricPollInterval
+		return 0
 	}
-	return time.Second * time.Duration(reportIntervalVal)
+	duration := time.Second * time.Duration(reportIntervalVal)
+	return duration
 }
 
-func GetHost() string {
-	host := os.Getenv("HOST")
-	if host == "" {
-		return defaultHost
-	}
-	return host
-}
-
-func GetPort() string {
-	port := os.Getenv("PORT")
-	if port == "" {
-		return defaultPort
-	}
-	return port
+func GetServerAddress() string {
+	return os.Getenv("ADDRESS")
 }

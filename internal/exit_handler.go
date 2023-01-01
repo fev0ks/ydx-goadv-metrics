@@ -12,9 +12,10 @@ import (
 )
 
 type ExitHandler struct {
-	ToCancel []context.CancelFunc
-	ToStop   []chan struct{}
-	ToClose  []io.Closer
+	ToCancel  []context.CancelFunc
+	ToStop    []chan struct{}
+	ToClose   []io.Closer
+	ToExecute []func() error
 }
 
 func ProperExitDefer(exitHandler *ExitHandler) {
@@ -49,6 +50,13 @@ func (eh *ExitHandler) shutdown() {
 }
 
 func (eh *ExitHandler) endHeldObjects() {
+	log.Println("ToExecute final funcs")
+	for _, execute := range eh.ToExecute {
+		err := execute()
+		if err != nil {
+			log.Printf("func error: %v\n", err)
+		}
+	}
 	log.Println("ToCancel active contexts")
 	for _, cancel := range eh.ToCancel {
 		cancel()

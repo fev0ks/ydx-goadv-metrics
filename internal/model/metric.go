@@ -10,14 +10,14 @@ type GaugeVT float64
 type CounterVT uint64
 
 type Metric struct {
-	Name    string
-	MType   MetricType
-	Counter CounterVT
-	Gauge   GaugeVT
+	ID    string     `json:"id"`
+	MType MetricType `json:"type"`
+	Delta *CounterVT `json:"delta,omitempty"`
+	Value *GaugeVT   `json:"value,omitempty"`
 }
 
 func (m *Metric) String() string {
-	return fmt.Sprintf("Name: %s, Type: %s, Value: %v", m.Name, m.MType, m.GetValue())
+	return fmt.Sprintf("ID: %s, Type: %s, Value: %v", m.ID, m.MType, m.GetValue())
 }
 
 func NewMetric(name string, mType MetricType, value string) (metric *Metric, err error) {
@@ -36,7 +36,7 @@ func NewMetric(name string, mType MetricType, value string) (metric *Metric, err
 		metric = NewCounterMetric(name, CounterVT(vt))
 	default:
 		metric = &Metric{
-			Name:  name,
+			ID:    name,
 			MType: NanType,
 		}
 	}
@@ -45,23 +45,23 @@ func NewMetric(name string, mType MetricType, value string) (metric *Metric, err
 
 func NewGaugeMetric(name string, value GaugeVT) *Metric {
 	return &Metric{
-		Name:  name,
+		ID:    name,
 		MType: GaugeType,
-		Gauge: value,
+		Value: &value,
 	}
 }
 
 func NewCounterMetric(name string, value CounterVT) *Metric {
 	return &Metric{
-		Name:    name,
-		MType:   CounterType,
-		Counter: value,
+		ID:    name,
+		MType: CounterType,
+		Delta: &value,
 	}
 }
 
 func NewNanMetric(name string) *Metric {
 	return &Metric{
-		Name:  name,
+		ID:    name,
 		MType: NanType,
 	}
 }
@@ -69,9 +69,9 @@ func NewNanMetric(name string) *Metric {
 func (m *Metric) GetValue() string {
 	switch m.MType {
 	case GaugeType:
-		return fmt.Sprintf("%v", fmt.Sprintf("%f", m.Gauge))
+		return fmt.Sprintf("%f", *m.Value)
 	case CounterType:
-		return fmt.Sprintf("%v", m.Counter)
+		return fmt.Sprintf("%d", *m.Delta)
 	default:
 		return NanVal
 	}
@@ -80,9 +80,9 @@ func (m *Metric) GetValue() string {
 func (m *Metric) GetGenericValue() (value interface{}) {
 	switch m.MType {
 	case GaugeType:
-		value = m.Gauge
+		value = m.Value
 	case CounterType:
-		value = m.Counter
+		value = m.Delta
 	default:
 		value = ""
 	}

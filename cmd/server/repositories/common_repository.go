@@ -23,18 +23,22 @@ func NewCommonRepository() *commonRepository {
 func (cr *commonRepository) SaveMetric(metric *model.Metric) error {
 	cr.Lock()
 	defer cr.Unlock()
+	if metric == nil {
+		return nil
+	}
 	switch metric.MType {
 	case model.GaugeType:
-		cr.storage[metric.Name] = metric
+		cr.storage[metric.ID] = metric
 	case model.CounterType:
-		if current, ok := cr.storage[metric.Name]; ok {
-			current.Counter += metric.Counter
-			log.Printf("%s = %+v", current.Name, current.Counter)
+		if current, ok := cr.storage[metric.ID]; ok {
+			newValue := *current.Delta + *metric.Delta
+			current.Delta = &newValue
+			log.Printf("%s = %+v", current.ID, newValue)
 		} else {
-			cr.storage[metric.Name] = metric
+			cr.storage[metric.ID] = metric
 		}
 	default:
-		return fmt.Errorf("failed to save '%s' metric: '%v' type is not supported", metric.Name, metric.MType)
+		return fmt.Errorf("failed to save '%s' metric: '%v' type is not supported", metric.ID, metric.MType)
 	}
 	return nil
 }
@@ -43,6 +47,16 @@ func (cr *commonRepository) GetMetrics() map[string]*model.Metric {
 	cr.RLock()
 	defer cr.RUnlock()
 	return cr.storage
+}
+
+func (cr *commonRepository) GetMetricsList() []*model.Metric {
+	cr.RLock()
+	defer cr.RUnlock()
+	metrics := make([]*model.Metric, 0, len(cr.storage))
+	for _, v := range cr.storage {
+		metrics = append(metrics, v)
+	}
+	return metrics
 }
 
 func (cr *commonRepository) GetMetric(name string) *model.Metric {

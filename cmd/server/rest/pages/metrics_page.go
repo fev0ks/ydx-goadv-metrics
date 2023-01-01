@@ -53,7 +53,7 @@ func addMetricDataLine(hb *htmlBuilder, number int, metric *model.Metric) {
 		Add(string(metric.MType)).
 		Add(CColumn).
 		Add(OColumn).
-		Add(metric.Name).
+		Add(metric.ID).
 		Add(CColumn).Add(OColumn).
 		Add(metric.GetValue()).
 		Add(CColumn).
@@ -64,7 +64,7 @@ func sortMetrics(metrics []*model.Metric) {
 	sort.SliceStable(metrics, func(i, j int) bool {
 		return strings.Compare(string(metrics[i].MType), string(metrics[j].MType)) < 0 ||
 			strings.Compare(string(metrics[i].MType), string(metrics[j].MType)) == 0 &&
-				strings.Compare(metrics[i].Name, metrics[j].Name) < 0
+				strings.Compare(metrics[i].ID, metrics[j].ID) < 0
 	})
 }
 
