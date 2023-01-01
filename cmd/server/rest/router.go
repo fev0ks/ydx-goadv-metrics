@@ -10,7 +10,7 @@ import (
 
 func NewRouter() chi.Router {
 	router := chi.NewRouter()
-	router.Use(middlewares.TimerTrace)
+	//router.Use(middlewares.TimerTrace)
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.Compress(3, rest.ApplicationJSON, rest.TextPlain, rest.TextHTML))

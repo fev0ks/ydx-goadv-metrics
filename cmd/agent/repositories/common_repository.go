@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
 	"log"
 	"sync"
 
@@ -12,7 +13,7 @@ type commonMetricRepository struct {
 	Cache []*model.Metric
 }
 
-func NewCommonMetricsRepository() *commonMetricRepository {
+func NewCommonMetricsRepository() agent.MetricRepository {
 	return &commonMetricRepository{
 		&sync.RWMutex{},
 		make([]*model.Metric, 0),

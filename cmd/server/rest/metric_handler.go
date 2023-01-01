@@ -19,10 +19,11 @@ import (
 type MetricsHandler struct {
 	Ctx        context.Context
 	Repository server.MetricRepository
+	HashKey    string
 }
 
-func NewMetricsHandler(ctx context.Context, repository server.MetricRepository) *MetricsHandler {
-	return &MetricsHandler{Ctx: ctx, Repository: repository}
+func NewMetricsHandler(ctx context.Context, repository server.MetricRepository, hashKey string) *MetricsHandler {
+	return &MetricsHandler{Ctx: ctx, Repository: repository, HashKey: hashKey}
 }
 
 func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
@@ -58,7 +59,7 @@ func (mh *MetricsHandler) receptionTextMetricsHandler(writer http.ResponseWriter
 		http.Error(writer, "metric 'value' must be specified", http.StatusBadRequest)
 		return
 	}
-	metric, err := model.NewMetric(id, model.MTypeValueOf(mType), value)
+	metric, err := model.ParseMetric(id, model.MTypeValueOf(mType), value)
 	if err != nil {
 		log.Printf("failed to parse metric request: %v\n", err)
 		http.Error(writer, err.Error(), http.StatusBadRequest)
@@ -96,6 +97,12 @@ func (mh *MetricsHandler) receptionJSONMetricsHandler(writer http.ResponseWriter
 		http.Error(writer, err.Error(), http.StatusNotImplemented)
 		return
 	}
+	err = metric.CheckHash(mh.HashKey)
+	if err != nil {
+		log.Printf("failed to check metric hash: %v\n", err)
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
 	err = mh.Repository.SaveMetric(metric)
 	if err != nil {
 		log.Printf("failed to save metric: %v\n", err)
@@ -109,6 +116,9 @@ func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, r
 	return func(writer http.ResponseWriter, request *http.Request) {
 		log.Println("Get metrics")
 		metrics := mh.Repository.GetMetrics()
+		for _, metric := range metrics {
+			metric.UpdateHash(mh.HashKey)
+		}
 		page := pages.GetMetricsPage(metrics)
 		writer.Header().Add(rest.ContentType, rest.TextHTML)
 		_, err := writer.Write([]byte(page))
@@ -188,6 +198,7 @@ func (mh *MetricsHandler) GetJSONMetricHandler(writer http.ResponseWriter, reque
 		http.Error(writer, fmt.Sprintf("metric was not found: %s", metricToFind.ID), http.StatusNotFound)
 		return
 	}
+	metric.UpdateHash(mh.HashKey)
 	res, err := json.Marshal(metric)
 	if err != nil {
 		log.Printf("failed to marshal metric: %v\n", err)

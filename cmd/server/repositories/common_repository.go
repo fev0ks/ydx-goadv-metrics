@@ -29,6 +29,7 @@ func (cr *commonRepository) SaveMetric(metric *model.Metric) error {
 	switch metric.MType {
 	case model.GaugeType:
 		cr.storage[metric.ID] = metric
+		log.Printf("Saved %v '%s' metric: '%s'", metric.MType, metric.ID, metric.GetValue())
 	case model.CounterType:
 		if current, ok := cr.storage[metric.ID]; ok {
 			newValue := *current.Delta + *metric.Delta
@@ -37,6 +38,7 @@ func (cr *commonRepository) SaveMetric(metric *model.Metric) error {
 		} else {
 			cr.storage[metric.ID] = metric
 		}
+		log.Printf("Updated %v '%s' metric: '%s'", metric.MType, metric.ID, metric.GetValue())
 	default:
 		return fmt.Errorf("failed to save '%s' metric: '%v' type is not supported", metric.ID, metric.MType)
 	}

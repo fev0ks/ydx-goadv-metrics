@@ -12,8 +12,6 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
-
 	"github.com/go-resty/resty/v2"
 	"github.com/spf13/pflag"
 )
@@ -33,6 +31,11 @@ func main() {
 	pollInterval := configs.GetPollInterval()
 	var pollIntervalF time.Duration
 	pflag.DurationVarP(&pollIntervalF, "p", "p", configs.DefaultMetricPollInterval, "Pool metrics interval in sec")
+
+	hashKey := configs.GetHashKey()
+	var hashKeyF string
+	pflag.StringVarP(&hashKeyF, "k", "k", configs.DefaultHashKey, "Hash key")
+
 	pflag.Parse()
 
 	if address == "" {
@@ -44,20 +47,21 @@ func main() {
 	if pollInterval == 0 {
 		pollInterval = pollIntervalF
 	}
+	if hashKey == "" {
+		hashKey = hashKeyF
+	}
 
 	repository := repositories.NewCommonMetricsRepository()
-
-	var metricCollector agent.MetricCollector
+	metricFactory := service.NewMetricFactory(hashKey)
 	mcCtx, mcCancel := context.WithCancel(ctx)
-	metricCollector = service.NewCommonMetricCollector(mcCtx, repository, reportInterval)
+	metricCollector := service.NewCommonMetricCollector(mcCtx, repository, metricFactory, reportInterval)
 	stopCollectMetricsCh := metricCollector.CollectMetrics()
 
 	client := getClient(address)
 
-	var metricPoller agent.MetricPoller
 	mpCtx, mpCancel := context.WithCancel(ctx)
 	metricSender := sender.NewJSONMetricSender(mpCtx, client)
-	metricPoller = service.NewCommonMetricPoller(mpCtx, client, metricSender, repository, pollInterval)
+	metricPoller := service.NewCommonMetricPoller(mpCtx, client, metricSender, repository, pollInterval)
 	stopPollMetricsCh := metricPoller.PollMetrics()
 
 	log.Println("Agent started")

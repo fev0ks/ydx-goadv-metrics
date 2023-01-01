@@ -33,10 +33,12 @@ func main() {
 
 	storeFile := configs.GetStoreFile()
 	var storeFileF string
-	pflag.StringVarP(&storeFileF, "f", "f", configs.DefaultStoreFile, "Path of Backup store file ")
-	if storeFile == "" {
-		storeFile = storeFileF
-	}
+	pflag.StringVarP(&storeFileF, "f", "f", configs.DefaultStoreFile, "Path of Backup store file")
+
+	hashKey := configs.GetHashKey()
+	var hashKeyF string
+	pflag.StringVarP(&hashKeyF, "k", "k", configs.DefaultHashKey, "Hash key")
+
 	pflag.Parse()
 
 	if address == "" {
@@ -54,11 +56,18 @@ func main() {
 	if restore == nil {
 		restore = &restoreF
 	}
+	if storeFile == "" {
+		storeFile = storeFileF
+	}
+	if hashKey == "" {
+		hashKey = hashKeyF
+	}
 
 	repository := repositories.NewCommonRepository()
-	mh := rest.NewMetricsHandler(ctx, repository)
+	mh := rest.NewMetricsHandler(ctx, repository, hashKey)
 
 	router := rest.NewRouter()
+	//router.Use(middlewares.HashChecker{HashKey: hashKey}.Handler)
 	rest.HandleMetricRequests(router, mh)
 
 	autoBackup := backup.NewAutoBackup(storeFile, storeInterval, repository)
