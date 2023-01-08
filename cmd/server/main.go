@@ -39,6 +39,10 @@ func main() {
 	var hashKeyF string
 	pflag.StringVarP(&hashKeyF, "k", "k", configs.DefaultHashKey, "Hash key")
 
+	dbConfig := configs.GetDBConfig()
+	var dbDsnF string
+	pflag.StringVarP(&dbDsnF, "d", "d", configs.DefaultDBConfig, "Postgres DB DSN")
+
 	pflag.Parse()
 
 	if address == "" {
@@ -62,13 +66,18 @@ func main() {
 	if hashKey == "" {
 		hashKey = hashKeyF
 	}
+	if dbConfig == "" {
+		dbConfig = dbDsnF
+	}
 
+	repositoryPg := repositories.InitPgRepository(dbConfig)
 	repository := repositories.NewCommonRepository()
 	mh := rest.NewMetricsHandler(ctx, repository, hashKey)
+	hc := rest.NewHealthChecker(ctx, repositoryPg)
 
 	router := rest.NewRouter()
-	//router.Use(middlewares.HashChecker{HashKey: hashKey}.Handler)
 	rest.HandleMetricRequests(router, mh)
+	rest.HandleHeathCheck(router, hc)
 
 	autoBackup := backup.NewAutoBackup(storeFile, storeInterval, repository)
 	if *restore {

@@ -1,7 +1,9 @@
 package repositories
 
 import (
+	"context"
 	"fmt"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
 	"log"
 	"sync"
 
@@ -13,11 +15,15 @@ type commonRepository struct {
 	storage map[string]*model.Metric
 }
 
-func NewCommonRepository() *commonRepository {
+func NewCommonRepository() server.MetricRepository {
 	return &commonRepository{
 		&sync.RWMutex{},
 		make(map[string]*model.Metric),
 	}
+}
+
+func (cr *commonRepository) HealthCheck(_ context.Context) error {
+	return nil
 }
 
 func (cr *commonRepository) SaveMetric(metric *model.Metric) error {

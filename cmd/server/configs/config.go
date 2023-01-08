@@ -12,6 +12,7 @@ const (
 	DefaultStoreFile           = "/tmp/devops-metrics-db.json"
 	DefaultDoRestore           = true
 	DefaultHashKey             = ""
+	DefaultDBConfig            = ""
 )
 
 func GetAddress() string {
@@ -49,4 +50,8 @@ func GetDoReStore() *bool {
 		return nil
 	}
 	return &doReStoreVal
+}
+
+func GetDBConfig() string {
+	return os.Getenv("DATABASE_DSN")
 }
