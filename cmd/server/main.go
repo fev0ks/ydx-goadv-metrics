@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -70,10 +72,15 @@ func main() {
 		dbConfig = dbDsnF
 	}
 
-	repositoryPg := repositories.InitPgRepository(dbConfig)
-	repository := repositories.NewCommonRepository()
+	var repository server.MetricRepository
+	if dbConfig != "" {
+		repository = repositories.NewPgRepository(dbConfig, ctx)
+	} else {
+		repository = repositories.NewCommonRepository()
+	}
+
 	mh := rest.NewMetricsHandler(ctx, repository, hashKey)
-	hc := rest.NewHealthChecker(ctx, repositoryPg)
+	hc := rest.NewHealthChecker(ctx, repository)
 
 	router := rest.NewRouter()
 	rest.HandleMetricRequests(router, mh)
@@ -89,7 +96,11 @@ func main() {
 	}
 	backupCh := autoBackup.Start()
 
-	internal.ProperExitDefer(&internal.ExitHandler{ToStop: []chan struct{}{backupCh}, ToExecute: []func() error{autoBackup.Backup}})
+	internal.ProperExitDefer(&internal.ExitHandler{
+		ToStop:    []chan struct{}{backupCh},
+		ToExecute: []func() error{autoBackup.Backup},
+		ToClose:   []io.Closer{repository},
+	})
 	log.Printf("Server started on %s\n", address)
 	log.Fatal(http.ListenAndServe(address, router))
 }

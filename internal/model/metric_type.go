@@ -26,3 +26,27 @@ func MTypeValueOf(value string) MetricType {
 	}
 	return mType
 }
+
+//func (mType *MetricType) Value() (driver.Value, error) {
+//	// преобразуем []string в string
+//	switch mType {
+//	case &GaugeType:
+//		return GaugeTypeVal, nil
+//	case &CounterType:
+//		return CounterTypeVal, nil
+//	default:
+//		return NanType, nil
+//	}
+//}
+//
+//func (mType *MetricType) Scan(value interface{}) error {
+//	switch value {
+//	case GaugeTypeVal:
+//		*mType = GaugeType
+//	case CounterTypeVal:
+//		*mType = CounterType
+//	default:
+//		*mType = NanType
+//	}
+//	return nil
+//}

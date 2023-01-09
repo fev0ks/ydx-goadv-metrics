@@ -85,7 +85,10 @@ func (b *autoBackup) Restore() error {
 
 func (b *autoBackup) Backup() error {
 	start := time.Now()
-	metrics := b.repository.GetMetricsList()
+	metrics, err := b.repository.GetMetricsList()
+	if err != nil {
+		return err
+	}
 	if len(metrics) == 0 {
 		return nil
 	}

@@ -115,13 +115,17 @@ func (mh *MetricsHandler) receptionJSONMetricsHandler(writer http.ResponseWriter
 func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		log.Println("Get metrics")
-		metrics := mh.Repository.GetMetrics()
+		metrics, err := mh.Repository.GetMetrics()
+		if err != nil {
+			http.Error(writer, fmt.Sprintf("failed to get metrics: %v", err), http.StatusNotFound)
+			return
+		}
 		for _, metric := range metrics {
 			metric.UpdateHash(mh.HashKey)
 		}
 		page := pages.GetMetricsPage(metrics)
 		writer.Header().Add(rest.ContentType, rest.TextHTML)
-		_, err := writer.Write([]byte(page))
+		_, err = writer.Write([]byte(page))
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
 			return
@@ -158,7 +162,11 @@ func (mh *MetricsHandler) GetTextMetricHandler(writer http.ResponseWriter, reque
 		http.Error(writer, "metric 'mType' must be specified", http.StatusBadRequest)
 		return
 	}
-	metric := mh.Repository.GetMetric(id)
+	metric, err := mh.Repository.GetMetric(id)
+	if err != nil {
+		http.Error(writer, fmt.Sprintf("failed to get metric %s: %v", id, err), http.StatusNotFound)
+		return
+	}
 	if metric == nil {
 		http.Error(writer, fmt.Sprintf("metric was not found: %s", id), http.StatusNotFound)
 		return
@@ -193,7 +201,11 @@ func (mh *MetricsHandler) GetJSONMetricHandler(writer http.ResponseWriter, reque
 		http.Error(writer, err.Error(), http.StatusNotImplemented)
 		return
 	}
-	metric := mh.Repository.GetMetric(metricToFind.ID)
+	metric, err := mh.Repository.GetMetric(metricToFind.ID)
+	if err != nil {
+		http.Error(writer, fmt.Sprintf("failed to get metric %s: %v", metricToFind.ID, err), http.StatusNotFound)
+		return
+	}
 	if metric == nil {
 		http.Error(writer, fmt.Sprintf("metric was not found: %s", metricToFind.ID), http.StatusNotFound)
 		return

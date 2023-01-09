@@ -51,30 +51,35 @@ func (cr *commonRepository) SaveMetric(metric *model.Metric) error {
 	return nil
 }
 
-func (cr *commonRepository) GetMetrics() map[string]*model.Metric {
+func (cr *commonRepository) GetMetrics() (map[string]*model.Metric, error) {
 	cr.RLock()
 	defer cr.RUnlock()
-	return cr.storage
+	return cr.storage, nil
 }
 
-func (cr *commonRepository) GetMetricsList() []*model.Metric {
+func (cr *commonRepository) GetMetricsList() ([]*model.Metric, error) {
 	cr.RLock()
 	defer cr.RUnlock()
 	metrics := make([]*model.Metric, 0, len(cr.storage))
 	for _, v := range cr.storage {
 		metrics = append(metrics, v)
 	}
-	return metrics
+	return metrics, nil
 }
 
-func (cr *commonRepository) GetMetric(name string) *model.Metric {
+func (cr *commonRepository) GetMetric(name string) (*model.Metric, error) {
 	cr.RLock()
 	defer cr.RUnlock()
-	return cr.storage[name]
+	return cr.storage[name], nil
 }
 
-func (cr *commonRepository) Clear() {
+func (cr *commonRepository) Clear() error {
 	cr.Lock()
 	defer cr.Unlock()
 	cr.storage = make(map[string]*model.Metric)
+	return nil
+}
+
+func (cr *commonRepository) Close() error {
+	return nil
 }

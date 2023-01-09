@@ -18,11 +18,21 @@ const (
 	dbDialect     = "postgres"
 )
 
+var (
+	saveCounterMetric = "saveCounterMetricStmt"
+	saveGaugeMetric   = "saveGaugeMetricStmt"
+	getMetric         = "getMetricStmt"
+	getMetrics        = "getMetricsStmt"
+	truncate          = "truncateStmt"
+)
+
 type pgRepository struct {
-	db *sql.DB
+	db         *sql.DB
+	ctx        context.Context
+	statements map[string]*sql.Stmt
 }
 
-func InitPgRepository(dbConfig string) server.MetricRepository {
+func NewPgRepository(dbConfig string, ctx context.Context) server.MetricRepository {
 	if dbConfig == "" {
 		log.Println("Postgres DB config is empty")
 		return nil
@@ -33,9 +43,51 @@ func InitPgRepository(dbConfig string) server.MetricRepository {
 		log.Fatalf("failed to connect to Postgres DB: %v", err)
 	}
 
-	pgRep := &pgRepository{db}
-	//pgRep.migrationUp()
+	pgRep := &pgRepository{db: db, ctx: ctx}
+	pgRep.migrationUp()
+	err = pgRep.prepareStatements()
+	if err != nil {
+		log.Fatalf("failed to prepareStatements for Postgres DB: %v", err)
+	}
 	return pgRep
+}
+
+func (p *pgRepository) prepareStatements() error {
+	log.Println("Prepare statements")
+	p.statements = make(map[string]*sql.Stmt)
+	if saveCounterMetricStmt, err := p.db.Prepare(
+		"insert into metrics(name, type, delta, hash) values($1, $2, $3, $4) " +
+			"on conflict (name) do update set type = $2, delta = (excluded.delta + $3), hash = $4",
+	); err != nil {
+		return err
+	} else {
+		p.statements[saveCounterMetric] = saveCounterMetricStmt
+	}
+	if saveGaugeMetricStmt, err := p.db.Prepare(
+		"insert into metrics(name, type, value, hash) values($1, $2, $3, $4) " +
+			"on conflict (name) do update set type = $2, value = $3, hash = $4",
+	); err != nil {
+		return err
+	} else {
+		p.statements[saveGaugeMetric] = saveGaugeMetricStmt
+	}
+	if getMetricStmt, err := p.db.Prepare("select * from metrics where name = $1"); err != nil {
+		return err
+	} else {
+		p.statements[getMetric] = getMetricStmt
+	}
+	if getMetricsStmt, err := p.db.Prepare("select * from metrics"); err != nil {
+		return err
+	} else {
+		p.statements[getMetrics] = getMetricsStmt
+	}
+	if truncateStmt, err := p.db.Prepare("truncate metrics"); err != nil {
+		return err
+	} else {
+		p.statements[truncate] = truncateStmt
+	}
+
+	return nil
 }
 
 func (p *pgRepository) HealthCheck(ctx context.Context) error {
@@ -63,26 +115,75 @@ func (p *pgRepository) migrationUp() {
 }
 
 func (p *pgRepository) SaveMetric(metric *model.Metric) error {
-	//TODO implement me
-	panic("implement me")
+	var err error
+	switch metric.MType {
+	case model.GaugeType:
+		_, err = p.statements[saveGaugeMetric].Exec(metric.ID, metric.MType, metric.Value, metric.Hash)
+	case model.CounterType:
+		_, err = p.statements[saveCounterMetric].Exec(metric.ID, metric.MType, metric.Delta, metric.Hash)
+	}
+	return err
 }
 
-func (p *pgRepository) GetMetrics() map[string]*model.Metric {
-	//TODO implement me
-	panic("implement me")
+func (p *pgRepository) GetMetrics() (map[string]*model.Metric, error) {
+	metricsList, err := p.GetMetricsList()
+	if err != nil {
+		return nil, err
+	}
+	metrics := make(map[string]*model.Metric, len(metricsList))
+	for _, metric := range metricsList {
+		metrics[metric.ID] = metric
+	}
+	return metrics, nil
 }
 
-func (p *pgRepository) GetMetricsList() []*model.Metric {
-	//TODO implement me
-	panic("implement me")
+func (p *pgRepository) GetMetricsList() ([]*model.Metric, error) {
+	metrics := make([]*model.Metric, 0)
+	rows, err := p.statements[getMetrics].Query()
+	if err != nil {
+		return nil, err
+	}
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
+	for rows.Next() {
+		metric := &model.Metric{}
+		err := rows.Scan(&metric.ID, &metric.MType, &metric.Delta, &metric.Value, &metric.Hash)
+		if err != nil {
+			return nil, err
+		}
+		metrics = append(metrics, metric)
+	}
+	return metrics, nil
 }
 
-func (p *pgRepository) GetMetric(name string) *model.Metric {
-	//TODO implement me
-	panic("implement me")
+func (p *pgRepository) GetMetric(name string) (*model.Metric, error) {
+	row := p.statements[getMetric].QueryRow(name)
+	metric := &model.Metric{}
+	err := row.Scan(&metric.ID, &metric.MType, &metric.Delta, &metric.Value, &metric.Hash)
+	return metric, err
 }
 
-func (p *pgRepository) Clear() {
-	//TODO implement me
-	panic("implement me")
+func (p *pgRepository) Clear() error {
+	exec, err := p.statements[truncate].Exec()
+	if err != nil {
+		return err
+	}
+	affected, err := exec.RowsAffected()
+	if err != nil {
+		return err
+	}
+	log.Printf("removed %d rows", affected)
+	return nil
+}
+
+func (p *pgRepository) Close() error {
+	for _, stmt := range p.statements {
+		err := stmt.Close()
+		if err != nil {
+			return err
+		}
+	}
+	err := p.db.Close()
+	return err
 }

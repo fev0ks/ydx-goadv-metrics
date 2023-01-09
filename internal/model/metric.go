@@ -13,8 +13,8 @@ type GaugeVT float64
 type CounterVT uint64
 
 type Metric struct {
-	ID    string     `json:"id"`
-	MType MetricType `json:"type"`
+	ID    string     `json:"id" pg:"name"`
+	MType MetricType `json:"type" pg:"type"`
 	Delta *CounterVT `json:"delta,omitempty"`
 	Value *GaugeVT   `json:"value,omitempty"`
 	Hash  string     `json:"hash,omitempty"`
