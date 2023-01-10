@@ -65,7 +65,7 @@ func (p *pgRepository) prepareStatements() error {
 	}
 	if saveGaugeMetricStmt, err := p.db.Prepare(
 		"insert into metrics(id, type, value, hash) values($1, $2, $3, $4) " +
-			"on conflict (id) do update set type = excluded.type, delta = excluded.delta, hash = excluded.hash",
+			"on conflict (id) do update set type = excluded.type, value = excluded.value, hash = excluded.hash",
 	); err != nil {
 		return err
 	} else {

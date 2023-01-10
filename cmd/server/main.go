@@ -78,6 +78,7 @@ func main() {
 	var repository server.MetricRepository
 	if dbConfig != "" {
 		repository = repositories.NewPgRepository(dbConfig, ctx)
+
 	} else {
 		repository = repositories.NewCommonRepository()
 		autoBackup = backup.NewFileAutoBackup(storeInterval, repository, storeFile)
@@ -93,9 +94,11 @@ func main() {
 	}
 
 	mh := rest.NewMetricsHandler(ctx, repository, hashKey)
+	hc := rest.NewHealthChecker(ctx, repository)
 
 	router := rest.NewRouter()
 	rest.HandleMetricRequests(router, mh)
+	rest.HandleHeathCheck(router, hc)
 
 	internal.ProperExitDefer(&internal.ExitHandler{
 		ToStop:    stopCh,
