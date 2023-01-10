@@ -4,7 +4,7 @@ CREATE table if not exists "metrics"
 (
     "id"    varchar UNIQUE NOT NULL,
     "type"  varchar        NOT null,
-    "delta" integer,
+    "delta" bigint,
     "value" decimal,
     "hash"  varchar
 );
