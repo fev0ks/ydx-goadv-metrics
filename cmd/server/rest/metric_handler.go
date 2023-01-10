@@ -19,13 +19,14 @@ import (
 type MetricsHandler struct {
 	Ctx        context.Context
 	Repository server.MetricRepository
+	HashKey    string
 }
 
-func NewMetricsHandler(ctx context.Context, repository server.MetricRepository) *MetricsHandler {
-	return &MetricsHandler{Ctx: ctx, Repository: repository}
+func NewMetricsHandler(ctx context.Context, repository server.MetricRepository, hashKey string) *MetricsHandler {
+	return &MetricsHandler{Ctx: ctx, Repository: repository, HashKey: hashKey}
 }
 
-func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
+func (mh *MetricsHandler) ReceptionMetricHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		contentType := request.Header.Get(rest.ContentType)
 		switch contentType {
@@ -58,7 +59,7 @@ func (mh *MetricsHandler) receptionTextMetricsHandler(writer http.ResponseWriter
 		http.Error(writer, "metric 'value' must be specified", http.StatusBadRequest)
 		return
 	}
-	metric, err := model.NewMetric(id, model.MTypeValueOf(mType), value)
+	metric, err := model.ParseMetric(id, model.MTypeValueOf(mType), value)
 	if err != nil {
 		log.Printf("failed to parse metric request: %v\n", err)
 		http.Error(writer, err.Error(), http.StatusBadRequest)
@@ -96,6 +97,12 @@ func (mh *MetricsHandler) receptionJSONMetricsHandler(writer http.ResponseWriter
 		http.Error(writer, err.Error(), http.StatusNotImplemented)
 		return
 	}
+	err = metric.CheckHash(mh.HashKey)
+	if err != nil {
+		log.Printf("failed to check metric hash: %v\n", err)
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
 	err = mh.Repository.SaveMetric(metric)
 	if err != nil {
 		log.Printf("failed to save metric: %v\n", err)
@@ -108,10 +115,17 @@ func (mh *MetricsHandler) receptionJSONMetricsHandler(writer http.ResponseWriter
 func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		log.Println("Get metrics")
-		metrics := mh.Repository.GetMetrics()
+		metrics, err := mh.Repository.GetMetrics()
+		if err != nil {
+			http.Error(writer, fmt.Sprintf("failed to get metrics: %v", err), http.StatusNotFound)
+			return
+		}
+		for _, metric := range metrics {
+			metric.UpdateHash(mh.HashKey)
+		}
 		page := pages.GetMetricsPage(metrics)
 		writer.Header().Add(rest.ContentType, rest.TextHTML)
-		_, err := writer.Write([]byte(page))
+		_, err = writer.Write([]byte(page))
 		if err != nil {
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
 			return
@@ -148,7 +162,11 @@ func (mh *MetricsHandler) GetTextMetricHandler(writer http.ResponseWriter, reque
 		http.Error(writer, "metric 'mType' must be specified", http.StatusBadRequest)
 		return
 	}
-	metric := mh.Repository.GetMetric(id)
+	metric, err := mh.Repository.GetMetric(id)
+	if err != nil {
+		http.Error(writer, fmt.Sprintf("failed to get metric %s: %v", id, err), http.StatusNotFound)
+		return
+	}
 	if metric == nil {
 		http.Error(writer, fmt.Sprintf("metric was not found: %s", id), http.StatusNotFound)
 		return
@@ -183,11 +201,16 @@ func (mh *MetricsHandler) GetJSONMetricHandler(writer http.ResponseWriter, reque
 		http.Error(writer, err.Error(), http.StatusNotImplemented)
 		return
 	}
-	metric := mh.Repository.GetMetric(metricToFind.ID)
+	metric, err := mh.Repository.GetMetric(metricToFind.ID)
+	if err != nil {
+		http.Error(writer, fmt.Sprintf("failed to get metric %s: %v", metricToFind.ID, err), http.StatusNotFound)
+		return
+	}
 	if metric == nil {
 		http.Error(writer, fmt.Sprintf("metric was not found: %s", metricToFind.ID), http.StatusNotFound)
 		return
 	}
+	metric.UpdateHash(mh.HashKey)
 	res, err := json.Marshal(metric)
 	if err != nil {
 		log.Printf("failed to marshal metric: %v\n", err)
@@ -204,4 +227,40 @@ func (mh *MetricsHandler) GetJSONMetricHandler(writer http.ResponseWriter, reque
 	}
 
 	writer.WriteHeader(http.StatusOK)
+}
+
+func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		var metrics []*model.Metric
+		body, _ := io.ReadAll(request.Body)
+		defer request.Body.Close()
+
+		err := json.Unmarshal(body, &metrics)
+		if err != nil {
+			log.Printf("failed to parse metric request: %v\n", err)
+			http.Error(writer, err.Error(), http.StatusBadRequest)
+			return
+		}
+		for _, metric := range metrics {
+			if metric.MType == model.NanType {
+				err = fmt.Errorf("type '%s' is not supported", metric.MType)
+				log.Printf("failed to save metric '%s': %v\n", metric.ID, err)
+				http.Error(writer, err.Error(), http.StatusNotImplemented)
+				return
+			}
+			err = metric.CheckHash(mh.HashKey)
+			if err != nil {
+				log.Printf("failed to check metric '%s' hash: %v\n", metric.ID, err)
+				http.Error(writer, err.Error(), http.StatusBadRequest)
+				return
+			}
+			err = mh.Repository.SaveMetric(metric)
+			if err != nil {
+				log.Printf("failed to save metric '%s': %v\n", metric.ID, err)
+				http.Error(writer, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			writer.WriteHeader(http.StatusOK)
+		}
+	}
 }

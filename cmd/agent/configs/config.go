@@ -10,6 +10,7 @@ const (
 	DefaultMetricReportInterval = time.Second * 2
 	DefaultMetricPollInterval   = time.Second * 10
 	DefaultServerAddress        = "localhost:8080"
+	DefaultHashKey              = ""
 )
 
 func GetReportInterval() time.Duration {
@@ -40,4 +41,8 @@ func GetPollInterval() time.Duration {
 
 func GetServerAddress() string {
 	return os.Getenv("ADDRESS")
+}
+
+func GetHashKey() string {
+	return os.Getenv("KEY")
 }

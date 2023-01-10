@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -67,10 +66,10 @@ func (eh *ExitHandler) endHeldObjects() {
 	}
 	log.Println("ToClose active resources")
 	for _, toClose := range eh.ToClose {
-		fmt.Println("kek1")
 		err := toClose.Close()
 		if err != nil {
 			log.Printf("failed to close an resource: %v\n", err)
 		}
 	}
+	log.Println("Success end final work")
 }

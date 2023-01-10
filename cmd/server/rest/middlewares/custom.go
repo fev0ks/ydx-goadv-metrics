@@ -15,7 +15,6 @@ import (
 func Decompress(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		rContentEncoding := r.Header.Get(rest.ContentEncoding)
-		log.Printf("Headers: %v\n", r.Header)
 		if rContentEncoding == "gzip" {
 			if r.Body != nil {
 				gz, err := zlib.NewReader(r.Body)

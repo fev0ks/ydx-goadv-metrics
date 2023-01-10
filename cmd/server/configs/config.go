@@ -11,6 +11,8 @@ const (
 	DefaultMetricStoreInterval = 300 * time.Second
 	DefaultStoreFile           = "/tmp/devops-metrics-db.json"
 	DefaultDoRestore           = true
+	DefaultHashKey             = ""
+	DefaultDBConfig            = ""
 )
 
 func GetAddress() string {
@@ -31,7 +33,11 @@ func GetStoreInterval() time.Duration {
 }
 
 func GetStoreFile() string {
-	return os.Getenv("STORE_FILE ")
+	return os.Getenv("STORE_FILE")
+}
+
+func GetHashKey() string {
+	return os.Getenv("KEY")
 }
 
 func GetDoReStore() *bool {
@@ -44,4 +50,8 @@ func GetDoReStore() *bool {
 		return nil
 	}
 	return &doReStoreVal
+}
+
+func GetDBConfig() string {
+	return os.Getenv("DATABASE_DSN")
 }
