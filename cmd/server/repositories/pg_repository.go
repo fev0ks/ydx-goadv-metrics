@@ -56,22 +56,22 @@ func (p *pgRepository) prepareStatements() error {
 	log.Println("Prepare statements")
 	p.statements = make(map[string]*sql.Stmt)
 	if saveCounterMetricStmt, err := p.db.Prepare(
-		"insert into metrics(name, type, delta, hash) values($1, $2, $3, $4) " +
-			"on conflict (name) do update set type = $2, delta = (excluded.delta + $3), hash = $4",
+		"insert into metrics(id, type, delta, hash) values($1, $2, $3, $4) " +
+			"on conflict (id) do update set type = $2, delta = (excluded.delta + $3), hash = $4",
 	); err != nil {
 		return err
 	} else {
 		p.statements[saveCounterMetric] = saveCounterMetricStmt
 	}
 	if saveGaugeMetricStmt, err := p.db.Prepare(
-		"insert into metrics(name, type, value, hash) values($1, $2, $3, $4) " +
-			"on conflict (name) do update set type = $2, value = $3, hash = $4",
+		"insert into metrics(id, type, value, hash) values($1, $2, $3, $4) " +
+			"on conflict (id) do update set type = $2, value = $3, hash = $4",
 	); err != nil {
 		return err
 	} else {
 		p.statements[saveGaugeMetric] = saveGaugeMetricStmt
 	}
-	if getMetricStmt, err := p.db.Prepare("select * from metrics where name = $1"); err != nil {
+	if getMetricStmt, err := p.db.Prepare("select * from metrics where id = $1"); err != nil {
 		return err
 	} else {
 		p.statements[getMetric] = getMetricStmt

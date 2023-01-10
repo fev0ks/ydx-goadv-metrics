@@ -74,15 +74,15 @@ func main() {
 	repository := repositories.NewCommonRepository()
 
 	mh := rest.NewMetricsHandler(ctx, repository, hashKey)
-	hc := rest.NewHealthChecker(ctx, repository)
 
 	router := rest.NewRouter()
 	rest.HandleMetricRequests(router, mh)
-	rest.HandleHeathCheck(router, hc)
 
 	var autoBackup backup.AutoBackup
 	if dbConfig != "" {
 		storage := repositories.NewPgRepository(dbConfig, ctx)
+		hc := rest.NewHealthChecker(ctx, storage)
+		rest.HandleHeathCheck(router, hc)
 		autoBackup = backup.NewPgAutoBackup(storeInterval, repository, storage)
 	} else {
 		autoBackup = backup.NewFileAutoBackup(storeInterval, repository, storeFile)
