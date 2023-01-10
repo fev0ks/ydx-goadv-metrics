@@ -57,7 +57,7 @@ func (p *pgRepository) prepareStatements() error {
 	p.statements = make(map[string]*sql.Stmt)
 	if saveCounterMetricStmt, err := p.db.Prepare(
 		"insert into metrics(id, type, delta, hash) values($1, $2, $3, $4) " +
-			"on conflict (id) do update set type = $2, delta = (excluded.delta + $3), hash = $4",
+			"on conflict (id) do update set type = excluded.type, delta = excluded.delta, hash = excluded.hash",
 	); err != nil {
 		return err
 	} else {
@@ -65,7 +65,7 @@ func (p *pgRepository) prepareStatements() error {
 	}
 	if saveGaugeMetricStmt, err := p.db.Prepare(
 		"insert into metrics(id, type, value, hash) values($1, $2, $3, $4) " +
-			"on conflict (id) do update set type = $2, value = $3, hash = $4",
+			"on conflict (id) do update set type = excluded.type, delta = excluded.delta, hash = excluded.hash",
 	); err != nil {
 		return err
 	} else {
@@ -130,6 +130,15 @@ func (p *pgRepository) SaveMetric(metric *model.Metric) error {
 	case model.GaugeType:
 		_, err = p.statements[saveGaugeMetric].Exec(metric.ID, metric.MType, metric.Value, metric.Hash)
 	case model.CounterType:
+		var currentMetric *model.Metric
+		currentMetric, err = p.GetMetric(metric.ID)
+		if err != nil && err != sql.ErrNoRows {
+			return err
+		}
+		if currentMetric != nil {
+			newValue := *currentMetric.Delta + *metric.Delta
+			metric.Delta = &newValue
+		}
 		_, err = p.statements[saveCounterMetric].Exec(metric.ID, metric.MType, metric.Delta, metric.Hash)
 	}
 	return err
@@ -171,7 +180,10 @@ func (p *pgRepository) GetMetric(name string) (*model.Metric, error) {
 	row := p.statements[getMetric].QueryRow(name)
 	metric := &model.Metric{}
 	err := row.Scan(&metric.ID, &metric.MType, &metric.Delta, &metric.Value, &metric.Hash)
-	return metric, err
+	if err != nil {
+		return nil, err
+	}
+	return metric, nil
 }
 
 func (p *pgRepository) Clear() error {
