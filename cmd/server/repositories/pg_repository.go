@@ -114,6 +114,16 @@ func (p *pgRepository) migrationUp() {
 	log.Printf("migrations are finished, total count: %d", countOfMigrations)
 }
 
+func (p *pgRepository) SaveMetrics(metrics []*model.Metric) error {
+	for _, metric := range metrics {
+		err := p.SaveMetric(metric)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (p *pgRepository) SaveMetric(metric *model.Metric) error {
 	var err error
 	switch metric.MType {

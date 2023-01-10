@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
 	"io"
 	"log"
 	"net/http"
@@ -72,12 +71,7 @@ func main() {
 		dbConfig = dbDsnF
 	}
 
-	var repository server.MetricRepository
-	if dbConfig != "" {
-		repository = repositories.NewPgRepository(dbConfig, ctx)
-	} else {
-		repository = repositories.NewCommonRepository()
-	}
+	repository := repositories.NewCommonRepository()
 
 	mh := rest.NewMetricsHandler(ctx, repository, hashKey)
 	hc := rest.NewHealthChecker(ctx, repository)
@@ -86,12 +80,18 @@ func main() {
 	rest.HandleMetricRequests(router, mh)
 	rest.HandleHeathCheck(router, hc)
 
-	autoBackup := backup.NewAutoBackup(storeFile, storeInterval, repository)
+	var autoBackup backup.AutoBackup
+	if dbConfig != "" {
+		storage := repositories.NewPgRepository(dbConfig, ctx)
+		autoBackup = backup.NewPgAutoBackup(storeInterval, repository, storage)
+	} else {
+		autoBackup = backup.NewFileAutoBackup(storeInterval, repository, storeFile)
+	}
 	if *restore {
-		log.Println("trying to restore metrics autoBackup...")
+		log.Println("trying to restore metrics...")
 		err := autoBackup.Restore()
 		if err != nil {
-			log.Fatalf("failed to restore metrics autoBackup: %v\n", err)
+			log.Fatalf("failed to restore metrics: %v\n", err)
 		}
 	}
 	backupCh := autoBackup.Start()

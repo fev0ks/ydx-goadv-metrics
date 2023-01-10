@@ -7,6 +7,7 @@ import (
 
 type MetricRepository interface {
 	SaveMetric(metric *model.Metric) error
+	SaveMetrics(metrics []*model.Metric) error
 	GetMetrics() (map[string]*model.Metric, error)
 	GetMetricsList() ([]*model.Metric, error)
 	GetMetric(name string) (*model.Metric, error)

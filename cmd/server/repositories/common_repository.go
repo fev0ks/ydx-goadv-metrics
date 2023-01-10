@@ -26,6 +26,16 @@ func (cr *commonRepository) HealthCheck(_ context.Context) error {
 	return nil
 }
 
+func (cr *commonRepository) SaveMetrics(metrics []*model.Metric) error {
+	for _, metric := range metrics {
+		err := cr.SaveMetric(metric)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (cr *commonRepository) SaveMetric(metric *model.Metric) error {
 	cr.Lock()
 	defer cr.Unlock()
