@@ -24,3 +24,13 @@ func parseSendMetricResponse(resp *resty.Response, metric *model.Metric) error {
 		return nil
 	}
 }
+
+func parseSendMetricsResponse(resp *resty.Response, metrics []*model.Metric) error {
+	if resp.StatusCode() != http.StatusOK {
+		respBody := resp.Body()
+		return fmt.Errorf("response status is not OK: %s, body: '%s'", resp.Status(), strings.TrimSpace(string(respBody)))
+	} else {
+		log.Printf("%d metrics was successfully pooled\n", len(metrics))
+		return nil
+	}
+}

@@ -26,7 +26,7 @@ func NewMetricsHandler(ctx context.Context, repository server.MetricRepository, 
 	return &MetricsHandler{Ctx: ctx, Repository: repository, HashKey: hashKey}
 }
 
-func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
+func (mh *MetricsHandler) ReceptionMetricHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		contentType := request.Header.Get(rest.ContentType)
 		switch contentType {
@@ -227,4 +227,40 @@ func (mh *MetricsHandler) GetJSONMetricHandler(writer http.ResponseWriter, reque
 	}
 
 	writer.WriteHeader(http.StatusOK)
+}
+
+func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		var metrics []*model.Metric
+		body, _ := io.ReadAll(request.Body)
+		defer request.Body.Close()
+
+		err := json.Unmarshal(body, &metrics)
+		if err != nil {
+			log.Printf("failed to parse metric request: %v\n", err)
+			http.Error(writer, err.Error(), http.StatusBadRequest)
+			return
+		}
+		for _, metric := range metrics {
+			if metric.MType == model.NanType {
+				err = fmt.Errorf("type '%s' is not supported", metric.MType)
+				log.Printf("failed to save metric '%s': %v\n", metric.ID, err)
+				http.Error(writer, err.Error(), http.StatusNotImplemented)
+				return
+			}
+			err = metric.CheckHash(mh.HashKey)
+			if err != nil {
+				log.Printf("failed to check metric '%s' hash: %v\n", metric.ID, err)
+				http.Error(writer, err.Error(), http.StatusBadRequest)
+				return
+			}
+			err = mh.Repository.SaveMetric(metric)
+			if err != nil {
+				log.Printf("failed to save metric '%s': %v\n", metric.ID, err)
+				http.Error(writer, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			writer.WriteHeader(http.StatusOK)
+		}
+	}
 }

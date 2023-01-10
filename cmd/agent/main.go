@@ -60,7 +60,7 @@ func main() {
 	client := getClient(address)
 
 	mpCtx, mpCancel := context.WithCancel(ctx)
-	metricSender := sender.NewJSONMetricSender(mpCtx, client)
+	metricSender := sender.NewJSONMetricSender(mpCtx, client, true)
 	metricPoller := service.NewCommonMetricPoller(mpCtx, client, metricSender, repository, pollInterval)
 	stopPollMetricsCh := metricPoller.PollMetrics()
 

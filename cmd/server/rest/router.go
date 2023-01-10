@@ -19,8 +19,9 @@ func NewRouter() chi.Router {
 
 func HandleMetricRequests(router chi.Router, mh *MetricsHandler) {
 	router.Get("/", mh.GetMetricsHandler())
-	router.Post("/update/{mType}/{id}/{value}", mh.ReceptionMetricsHandler())
-	router.Post("/update/", mh.ReceptionMetricsHandler())
+	router.Post("/update/{mType}/{id}/{value}", mh.ReceptionMetricHandler())
+	router.Post("/update/", mh.ReceptionMetricHandler())
+	router.Post("/updates/", mh.ReceptionMetricsHandler())
 	router.Get("/value/{mType}/{id}", mh.GetMetricHandler())
 	router.Post("/value/", mh.GetMetricHandler())
 }
