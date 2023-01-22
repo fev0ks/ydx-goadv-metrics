@@ -15,23 +15,24 @@ import (
 type AutoBackup interface {
 	Start() chan struct{}
 	Restore() error
+	Backup() error
 }
 
-type autoBackup struct {
-	storeFile  string
+type fileAutoBackup struct {
 	interval   time.Duration
 	repository server.MetricRepository
+	storeFile  string
 	*sync.RWMutex
 }
 
-func NewAutoBackup(storeFile string, interval time.Duration, repository server.MetricRepository) *autoBackup {
-	err := initDir(storeFile)
+func NewFileAutoBackup(interval time.Duration, repository server.MetricRepository, storage string) AutoBackup {
+	err := initDir(storage)
 	if err != nil {
-		log.Fatalf("failed to create directories for '%s': %v", storeFile, err)
+		log.Fatalf("failed to create directories for '%s': %v", storage, err)
 		return nil
 	}
-	return &autoBackup{
-		storeFile:  storeFile,
+	return &fileAutoBackup{
+		storeFile:  storage,
 		interval:   interval,
 		repository: repository,
 		RWMutex:    &sync.RWMutex{},
@@ -44,19 +45,19 @@ func initDir(storeFile string) error {
 	return os.MkdirAll(dir, 0755)
 }
 
-func (b *autoBackup) Start() chan struct{} {
-	log.Println("AutoBackup activated")
+func (b *fileAutoBackup) Start() chan struct{} {
+	log.Println("FileAutoBackup activated")
 	ticker := time.NewTicker(b.interval)
 	done := make(chan struct{})
 	go func() {
 		for {
 			select {
 			case <-done:
-				log.Println("AutoBackup metrics interrupted!")
+				log.Println("FileAutoBackup metrics interrupted!")
 				ticker.Stop()
 				return
 			case <-ticker.C:
-				log.Println("AutoBackup metrics start")
+				log.Println("FileAutoBackup metrics start")
 				err := b.Backup()
 				if err != nil {
 					log.Printf("failed to backup metrics: %v\n", err)
@@ -67,7 +68,7 @@ func (b *autoBackup) Start() chan struct{} {
 	return done
 }
 
-func (b *autoBackup) Restore() error {
+func (b *fileAutoBackup) Restore() error {
 	start := time.Now()
 	metrics, err := b.readBackup()
 	if err != nil {
@@ -83,9 +84,12 @@ func (b *autoBackup) Restore() error {
 	return nil
 }
 
-func (b *autoBackup) Backup() error {
+func (b *fileAutoBackup) Backup() error {
 	start := time.Now()
-	metrics := b.repository.GetMetricsList()
+	metrics, err := b.repository.GetMetricsList()
+	if err != nil {
+		return err
+	}
 	if len(metrics) == 0 {
 		return nil
 	}
@@ -102,11 +106,11 @@ func (b *autoBackup) Backup() error {
 	if err != nil {
 		return err
 	}
-	log.Printf("[%v] AutoBackup metrics finished, saved '%d' metrics\n", time.Since(start).String(), len(metrics))
+	log.Printf("[%v] FileAutoBackup metrics finished, saved '%d' metrics\n", time.Since(start).String(), len(metrics))
 	return nil
 }
 
-func (b *autoBackup) readBackup() ([]*model.Metric, error) {
+func (b *fileAutoBackup) readBackup() ([]*model.Metric, error) {
 	b.RLock()
 	defer b.RUnlock()
 	file, err := os.OpenFile(b.storeFile, os.O_RDONLY|os.O_CREATE, 0755)

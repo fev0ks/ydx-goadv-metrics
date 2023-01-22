@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -33,10 +35,16 @@ func main() {
 
 	storeFile := configs.GetStoreFile()
 	var storeFileF string
-	pflag.StringVarP(&storeFileF, "f", "f", configs.DefaultStoreFile, "Path of Backup store file ")
-	if storeFile == "" {
-		storeFile = storeFileF
-	}
+	pflag.StringVarP(&storeFileF, "f", "f", configs.DefaultStoreFile, "Path of Backup store file")
+
+	hashKey := configs.GetHashKey()
+	var hashKeyF string
+	pflag.StringVarP(&hashKeyF, "k", "k", configs.DefaultHashKey, "Hash key")
+
+	dbConfig := configs.GetDBConfig()
+	var dbDsnF string
+	pflag.StringVarP(&dbDsnF, "d", "d", configs.DefaultDBConfig, "Postgres DB DSN")
+
 	pflag.Parse()
 
 	if address == "" {
@@ -54,24 +62,49 @@ func main() {
 	if restore == nil {
 		restore = &restoreF
 	}
+	if storeFile == "" {
+		storeFile = storeFileF
+	}
+	if hashKey == "" {
+		hashKey = hashKeyF
+	}
+	if dbConfig == "" {
+		dbConfig = dbDsnF
+	}
 
-	repository := repositories.NewCommonRepository()
-	mh := rest.NewMetricsHandler(ctx, repository)
+	var autoBackup backup.AutoBackup
+	stopCh := make([]chan struct{}, 0)
+	toExecute := make([]func() error, 0)
+	var repository server.MetricRepository
+	if dbConfig != "" {
+		repository = repositories.NewPgRepository(dbConfig, ctx)
+
+	} else {
+		repository = repositories.NewCommonRepository()
+		autoBackup = backup.NewFileAutoBackup(storeInterval, repository, storeFile)
+		if *restore {
+			log.Println("trying to restore metrics...")
+			err := autoBackup.Restore()
+			if err != nil {
+				log.Fatalf("failed to restore metrics: %v\n", err)
+			}
+		}
+		stopCh = append(stopCh, autoBackup.Start())
+		toExecute = append(toExecute, autoBackup.Backup)
+	}
+
+	mh := rest.NewMetricsHandler(ctx, repository, hashKey)
+	hc := rest.NewHealthChecker(ctx, repository)
 
 	router := rest.NewRouter()
 	rest.HandleMetricRequests(router, mh)
+	rest.HandleHeathCheck(router, hc)
 
-	autoBackup := backup.NewAutoBackup(storeFile, storeInterval, repository)
-	if *restore {
-		log.Println("trying to restore metrics autoBackup...")
-		err := autoBackup.Restore()
-		if err != nil {
-			log.Fatalf("failed to restore metrics autoBackup: %v\n", err)
-		}
-	}
-	backupCh := autoBackup.Start()
-
-	internal.ProperExitDefer(&internal.ExitHandler{ToStop: []chan struct{}{backupCh}, ToExecute: []func() error{autoBackup.Backup}})
+	internal.ProperExitDefer(&internal.ExitHandler{
+		ToStop:    stopCh,
+		ToExecute: toExecute,
+		ToClose:   []io.Closer{repository},
+	})
 	log.Printf("Server started on %s\n", address)
 	log.Fatal(http.ListenAndServe(address, router))
 }

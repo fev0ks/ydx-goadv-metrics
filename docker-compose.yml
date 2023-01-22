@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15.1
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=ydx_metrics
+    ports:
+      - '5432:5432'
+    volumes: 
+      - ./pgdata:/var/lib/postgresql/data
