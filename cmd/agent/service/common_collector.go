@@ -6,6 +6,7 @@ import (
 	"log"
 	"math/rand"
 	"runtime"
+	"sync/atomic"
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
@@ -20,7 +21,7 @@ type commonMetricCollector struct {
 	mr        agent.MetricRepository
 	mf        MetricFactory
 	interval  time.Duration
-	pollCount model.CounterVT
+	pollCount uint64
 }
 
 func NewCommonMetricCollector(
@@ -43,38 +44,34 @@ func (cmr *commonMetricCollector) CollectMetrics() chan struct{} {
 				ticker.Stop()
 				return
 			case <-ticker.C:
-				start := time.Now()
-				log.Println("Collect metrics start")
-				cmr.mr.SaveMetric(cmr.collectMetrics())
-				log.Printf("[%v] Collect metrics finished\n", time.Since(start).String())
+				cmr.collectMetrics()
+				log.Println("Collect metrics started")
 			}
 		}
 	}()
 	return done
 }
 
-func (cmr *commonMetricCollector) collectMetrics() []*model.Metric {
-	metrics := make([]*model.Metric, 0)
-	metrics = append(metrics, cmr.getMemStatsMetrics()...)
-	metrics = append(metrics, cmr.getPollCounterMetric())
-	metrics = append(metrics, cmr.getRandomValueMetric())
-	metrics = append(metrics, cmr.getGopsMetrics()...)
-	return metrics
+func (cmr *commonMetricCollector) collectMetrics() {
+	go cmr.processMemStatsMetrics()
+	go cmr.processPollCounterMetric()
+	go cmr.processRandomValueMetric()
+	go cmr.processGopsMetrics()
 }
 
-func (cmr *commonMetricCollector) getPollCounterMetric() *model.Metric {
-	cmr.pollCount += 1
-	return cmr.mf.NewCounterMetric("PollCount", cmr.pollCount)
+func (cmr *commonMetricCollector) processPollCounterMetric() {
+	atomic.AddUint64(&cmr.pollCount, 1)
+	cmr.mr.SaveMetric(cmr.mf.NewCounterMetric("PollCount", model.CounterVT(cmr.pollCount)))
 }
 
-func (cmr *commonMetricCollector) getRandomValueMetric() *model.Metric {
+func (cmr *commonMetricCollector) processRandomValueMetric() {
 	rand.Seed(time.Now().Unix())
 	randomValue := rand.Float64() * 100
-	return cmr.mf.NewGaugeMetric("RandomValue", model.GaugeVT(randomValue))
+	cmr.mr.SaveMetric(cmr.mf.NewGaugeMetric("RandomValue", model.GaugeVT(randomValue)))
 }
 
-func (cmr *commonMetricCollector) getMemStatsMetrics() []*model.Metric {
-	metrics := make([]*model.Metric, 0)
+func (cmr *commonMetricCollector) processMemStatsMetrics() {
+	metrics := make([]*model.Metric, 0, 19)
 	memStats := runtime.MemStats{}
 	runtime.ReadMemStats(&memStats)
 
@@ -105,10 +102,10 @@ func (cmr *commonMetricCollector) getMemStatsMetrics() []*model.Metric {
 	metrics = append(metrics, cmr.mf.NewGaugeMetric("StackSys", model.GaugeVT(memStats.StackSys)))
 	metrics = append(metrics, cmr.mf.NewGaugeMetric("Sys", model.GaugeVT(memStats.Sys)))
 	metrics = append(metrics, cmr.mf.NewGaugeMetric("TotalAlloc", model.GaugeVT(memStats.TotalAlloc)))
-	return metrics
+	cmr.mr.SaveMetrics(metrics)
 }
 
-func (cmr *commonMetricCollector) getGopsMetrics() []*model.Metric {
+func (cmr *commonMetricCollector) processGopsMetrics() {
 	metrics := make([]*model.Metric, 0)
 	memoryStat, _ := mem.VirtualMemory()
 	metrics = append(metrics, cmr.mf.NewGaugeMetric("TotalMemory", model.GaugeVT(memoryStat.Total)))
@@ -117,5 +114,5 @@ func (cmr *commonMetricCollector) getGopsMetrics() []*model.Metric {
 	for i := range cpuUsed {
 		metrics = append(metrics, cmr.mf.NewGaugeMetric(fmt.Sprintf("CPUutilization%d", i+1), model.GaugeVT(cpuUsed[i])))
 	}
-	return metrics
+	cmr.mr.SaveMetrics(metrics)
 }

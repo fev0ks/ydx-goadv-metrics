@@ -49,7 +49,7 @@ func (cmp *commonMetricPoller) PollMetrics() chan struct{} {
 			case <-ticker.C:
 				start := time.Now()
 				log.Println("Poll metrics start")
-				metrics := cmp.mr.GetMetricsList()
+				metrics := cmp.mr.GetMetrics()
 				cmp.sendMetrics(metrics)
 				log.Printf("[%v] Poll metrics finished\n", time.Since(start).String())
 			}
@@ -58,7 +58,7 @@ func (cmp *commonMetricPoller) PollMetrics() chan struct{} {
 	return done
 }
 
-func (cmp *commonMetricPoller) sendMetrics(metrics []*model.Metric) {
+func (cmp *commonMetricPoller) sendMetrics(metrics map[string]*model.Metric) {
 	log.Printf("Polling %d metrics", len(metrics))
 	for _, metric := range metrics {
 		select {

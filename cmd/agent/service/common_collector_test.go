@@ -27,8 +27,8 @@ func TestCollectMetrics(t *testing.T) {
 			stopChannel := collector.CollectMetrics()
 			time.Sleep(5 * time.Second)
 			stopChannel <- struct{}{}
-			metrics := repo.GetMetricsList()
-			assert.True(t, 32 <= len(metrics))
+			metrics := repo.GetMetrics()
+			assert.True(t, 29 <= len(metrics))
 			for _, metric := range metrics {
 				assert.NotNil(t, metric)
 			}
