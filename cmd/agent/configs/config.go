@@ -11,8 +11,8 @@ const (
 	DefaultMetricPollInterval   = time.Second * 10
 	DefaultServerAddress        = "localhost:8080"
 	DefaultHashKey              = ""
-	defaultBuffSendInterval     = "50s"
-	defaultBuffBatchLimit       = 20
+	defaultBuffSendInterval     = "5s"
+	defaultBuffBatchLimit       = 10
 	defaultUseBuffSendClient    = true
 )
 
