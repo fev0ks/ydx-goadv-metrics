@@ -59,14 +59,21 @@ func main() {
 
 	client := getClient(address)
 
+	msCtx, msCancel := context.WithCancel(ctx)
+	var metricSender sender.MetricSender
+	if configs.UseBuffSenderClient() {
+		metricSender = sender.NewBulkMetricSender(msCtx, client, configs.GetBuffBatchLimit(), configs.GetBuffSendInterval())
+	} else {
+		metricSender = sender.NewJSONMetricSender(msCtx, client)
+	}
+
 	mpCtx, mpCancel := context.WithCancel(ctx)
-	metricSender := sender.NewJSONMetricSender(mpCtx, client, true)
 	metricPoller := service.NewCommonMetricPoller(mpCtx, client, metricSender, repository, pollInterval)
 	stopPollMetricsCh := metricPoller.PollMetrics()
 
 	log.Println("Agent started")
 	internal.ProperExitDefer(&internal.ExitHandler{
-		ToCancel: []context.CancelFunc{mcCancel, mpCancel},
+		ToCancel: []context.CancelFunc{mcCancel, msCancel, mpCancel},
 		ToStop:   []chan struct{}{stopCollectMetricsCh, stopPollMetricsCh},
 	})
 
