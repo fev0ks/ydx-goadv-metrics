@@ -33,9 +33,10 @@ func (cmr *commonMetricRepository) SaveMetrics(metrics []*model.Metric) {
 	}
 }
 
-func (cmr *commonMetricRepository) GetMetrics() map[string]*model.Metric {
-	cmr.RLock()
-	defer cmr.RUnlock()
+func (cmr *commonMetricRepository) PullMetrics() map[string]*model.Metric {
+	cmr.Lock()
+	defer cmr.Unlock()
 	metrics := cmr.Cache
+	cmr.Cache = make(map[string]*model.Metric, 0)
 	return metrics
 }

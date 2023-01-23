@@ -61,7 +61,7 @@ func (cmr *commonMetricCollector) collectMetrics() {
 
 func (cmr *commonMetricCollector) processPollCounterMetric() {
 	atomic.AddUint64(&cmr.pollCount, 1)
-	cmr.mr.SaveMetric(cmr.mf.NewCounterMetric("PollCount", model.CounterVT(cmr.pollCount)))
+	cmr.mr.SaveMetric(cmr.mf.NewCounterMetric("PollCount", model.CounterVT(atomic.LoadUint64(&cmr.pollCount))))
 }
 
 func (cmr *commonMetricCollector) processRandomValueMetric() {

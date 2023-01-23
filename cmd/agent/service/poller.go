@@ -49,7 +49,7 @@ func (cmp *commonMetricPoller) PollMetrics() chan struct{} {
 			case <-ticker.C:
 				start := time.Now()
 				log.Println("Poll metrics start")
-				metrics := cmp.mr.GetMetrics()
+				metrics := cmp.mr.PullMetrics()
 				cmp.sendMetrics(metrics)
 				log.Printf("[%v] Poll metrics finished\n", time.Since(start).String())
 			}
