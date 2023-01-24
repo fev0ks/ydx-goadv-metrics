@@ -13,7 +13,7 @@ const (
 	DefaultHashKey              = ""
 	defaultBuffSendInterval     = "1s"
 	defaultBuffBatchLimit       = 10
-	defaultUseBuffSendClient    = true
+	defaultUseBuffSendClient    = false
 )
 
 func GetReportInterval() time.Duration {
