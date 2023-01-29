@@ -11,9 +11,8 @@ const (
 	DefaultMetricPollInterval   = time.Second * 10
 	DefaultServerAddress        = "localhost:8080"
 	DefaultHashKey              = ""
-	defaultBuffSendInterval     = "1s"
-	defaultBuffBatchLimit       = 10
-	defaultUseBuffSendClient    = false
+	DefaultBuffBatchLimit       = 10
+	defaultUseBuffSendClient    = true
 )
 
 func GetReportInterval() time.Duration {
@@ -56,30 +55,4 @@ func UseBuffSenderClient() bool {
 		useBuffSendClient = defaultUseBuffSendClient
 	}
 	return useBuffSendClient
-}
-
-func GetBuffBatchLimit() int {
-	buffBatchLimit := os.Getenv("BUFF_BATCH_LIMIT")
-	if buffBatchLimit == "" {
-		return defaultBuffBatchLimit
-	}
-	buffBatchLimitVal, err := strconv.Atoi(buffBatchLimit)
-	if err != nil {
-		return defaultBuffBatchLimit
-	}
-	return buffBatchLimitVal
-}
-
-func GetBuffSendInterval() time.Duration {
-	buffSendInterval := os.Getenv("BUFF_SEND_INTERVAL")
-
-	if buffSendInterval == "" {
-		buffSendInterval = defaultBuffSendInterval
-	}
-
-	interval, err := time.ParseDuration(buffSendInterval)
-	if err != nil {
-		interval, _ = time.ParseDuration(defaultBuffSendInterval)
-	}
-	return interval
 }

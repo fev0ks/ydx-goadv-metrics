@@ -23,11 +23,11 @@ func TestCollectMetrics(t *testing.T) {
 			ctx := context.Background()
 			repo := repositories.NewCommonMetricsRepository()
 			metricFactory := NewMetricFactory("")
-			collector := NewCommonMetricCollector(ctx, repo, metricFactory, 2*time.Second)
-			stopChannel := collector.CollectMetrics()
+			collector := NewCommonMetricCollector(repo, metricFactory, 2*time.Second)
+			stopChannel := collector.CollectMetrics(ctx)
 			time.Sleep(5 * time.Second)
 			stopChannel <- struct{}{}
-			metrics := repo.PullMetrics()
+			metrics := repo.GetMetrics()
 			assert.True(t, 29 <= len(metrics))
 			for _, metric := range metrics {
 				assert.NotNil(t, metric)

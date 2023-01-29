@@ -37,7 +37,7 @@ func NewPgRepository(dbConfig string, ctx context.Context) server.MetricReposito
 		log.Println("Postgres DB config is empty")
 		return nil
 	}
-	log.Printf("Trying to connect: %s\n", dbConfig)
+	log.Printf("Trying to connect: %s", dbConfig)
 	db, err := sql.Open(dbDialect, dbConfig)
 	if err != nil {
 		log.Fatalf("failed to connect to Postgres DB: %v", err)
@@ -92,7 +92,7 @@ func (p *pgRepository) prepareStatements() error {
 
 func (p *pgRepository) HealthCheck(ctx context.Context) error {
 	if err := p.db.PingContext(ctx); err != nil {
-		log.Printf("failed to check connection to Postgres DB: %v\n", err)
+		log.Printf("failed to check connection to Postgres DB: %v", err)
 		return err
 	}
 	log.Println("Postgres DB connection is active")

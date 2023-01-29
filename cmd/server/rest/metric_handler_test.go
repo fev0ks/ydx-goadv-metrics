@@ -135,7 +135,7 @@ func TestGetMetricsHandler(t *testing.T) {
 	//		},
 	//		want: want{
 	//			http.StatusOK,
-	//			"<html><style>\ntable, th, td {\n  border:1px solid black;\n}\n</style>\n<body><body><h2>Metrics result</h2><table><tr><th>#</th><th>type</th><th>name</th><th>value</th></tr><tr><td>1</td><td>counter</td><td>counter1</td><td>123</td></tr><tr><td>2</td><td>gauge</td><td>gauge1</td><td>123.123000</td></tr></table></body><html>",
+	//			"<html><style>table, th, td {  border:1px solid black;}</style><body><body><h2>Metrics result</h2><table><tr><th>#</th><th>type</th><th>name</th><th>value</th></tr><tr><td>1</td><td>counter</td><td>counter1</td><td>123</td></tr><tr><td>2</td><td>gauge</td><td>gauge1</td><td>123.123000</td></tr></table></body><html>",
 	//		},
 	//	},
 	//	{
@@ -143,7 +143,7 @@ func TestGetMetricsHandler(t *testing.T) {
 	//		metrics: []*model.Metric{},
 	//		want: want{
 	//			http.StatusOK,
-	//			"<html><style>\ntable, th, td {\n  border:1px solid black;\n}\n</style>\n<body><body><h2>Metrics result</h2><table><tr><th>#</th><th>type</th><th>name</th><th>value</th></tr></table></body><html>",
+	//			"<html><style>table, th, td {  border:1px solid black;}</style><body><body><h2>Metrics result</h2><table><tr><th>#</th><th>type</th><th>name</th><th>value</th></tr></table></body><html>",
 	//		},
 	//	},
 	//}

@@ -1,6 +1,7 @@
 package sender
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,7 +13,7 @@ import (
 )
 
 type MetricSender interface {
-	SendMetric(metrics *model.Metric) error
+	SendMetrics(ctx context.Context, metrics []*model.Metric)
 }
 
 func parseSendMetricResponse(resp *resty.Response, metric *model.Metric) error {
@@ -20,7 +21,7 @@ func parseSendMetricResponse(resp *resty.Response, metric *model.Metric) error {
 		respBody := resp.Body()
 		return fmt.Errorf("response status is not OK '%v': %s, body: '%s'", metric, resp.Status(), strings.TrimSpace(string(respBody)))
 	} else {
-		log.Printf("metric was succesfully pooled: %v\n", metric)
+		log.Printf("metric was succesfully pooled: %v", metric)
 		return nil
 	}
 }
@@ -30,7 +31,7 @@ func parseSendMetricsResponse(resp *resty.Response, metrics []*model.Metric) err
 		respBody := resp.Body()
 		return fmt.Errorf("response status is not OK: %s, body: '%s'", resp.Status(), strings.TrimSpace(string(respBody)))
 	} else {
-		log.Printf("%d metrics was successfully pooled\n", len(metrics))
+		log.Printf("%d metrics was successfully pooled", len(metrics))
 		return nil
 	}
 }

@@ -25,7 +25,7 @@ func TestGaugesMetrics(t *testing.T) {
 	//		err := repository.SaveMetric(metric)
 	//		require.NoError(t, err)
 	//	}
-	//	actualMetrics := repository.PullMetrics()
+	//	actualMetrics := repository.GetMetrics()
 	//	for key, value := range tc.expectedValue {
 	//		assert.Equal(t, model.GaugeVT(value), *actualMetrics[key].Value)
 	//
@@ -33,7 +33,7 @@ func TestGaugesMetrics(t *testing.T) {
 	//		assert.Equal(t, model.GaugeVT(value), *metricByName.Value)
 	//	}
 	//	repository.Clear()
-	//	assert.Equal(t, 0, len(repository.PullMetrics()))
+	//	assert.Equal(t, 0, len(repository.GetMetrics()))
 	//})
 }
 
@@ -58,7 +58,7 @@ func TestCounterMetrics(t *testing.T) {
 	//		err := repository.SaveMetric(metric)
 	//		require.NoError(t, err)
 	//	}
-	//	actualMetrics := repository.PullMetrics()
+	//	actualMetrics := repository.GetMetrics()
 	//	for key, value := range tc.expectedValue {
 	//		assert.Equal(t, model.CounterVT(value), *actualMetrics[key].Delta)
 	//
@@ -66,6 +66,6 @@ func TestCounterMetrics(t *testing.T) {
 	//		assert.Equal(t, model.CounterVT(value), *metricByName.Delta)
 	//	}
 	//	repository.Clear()
-	//	assert.Equal(t, 0, len(repository.PullMetrics()))
+	//	assert.Equal(t, 0, len(repository.GetMetrics()))
 	//})
 }

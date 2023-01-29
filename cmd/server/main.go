@@ -20,7 +20,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	log.Printf("Server args: %s\n", os.Args[1:])
+	log.Printf("Server args: %s", os.Args[1:])
 	address := configs.GetAddress()
 	var addressF string
 	pflag.StringVarP(&addressF, "a", "a", configs.DefaultAddress, "Address of the server")
@@ -86,7 +86,7 @@ func main() {
 			log.Println("trying to restore metrics...")
 			err := autoBackup.Restore()
 			if err != nil {
-				log.Fatalf("failed to restore metrics: %v\n", err)
+				log.Fatalf("failed to restore metrics: %v", err)
 			}
 		}
 		stopCh = append(stopCh, autoBackup.Start())
@@ -105,6 +105,6 @@ func main() {
 		ToExecute: toExecute,
 		ToClose:   []io.Closer{repository},
 	})
-	log.Printf("Server started on %s\n", address)
+	log.Printf("Server started on %s", address)
 	log.Fatal(http.ListenAndServe(address, router))
 }

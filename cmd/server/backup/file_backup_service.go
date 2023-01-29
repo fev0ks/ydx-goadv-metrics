@@ -60,7 +60,7 @@ func (b *fileAutoBackup) Start() chan struct{} {
 				log.Println("FileAutoBackup metrics start")
 				err := b.Backup()
 				if err != nil {
-					log.Printf("failed to backup metrics: %v\n", err)
+					log.Printf("failed to backup metrics: %v", err)
 				}
 			}
 		}
@@ -80,7 +80,7 @@ func (b *fileAutoBackup) Restore() error {
 			return err
 		}
 	}
-	log.Printf("[%v] Restore metrics finished, restored '%d' metrics\n", time.Since(start).String(), len(metrics))
+	log.Printf("[%v] Restore metrics finished, restored '%d' metrics", time.Since(start).String(), len(metrics))
 	return nil
 }
 
@@ -106,7 +106,7 @@ func (b *fileAutoBackup) Backup() error {
 	if err != nil {
 		return err
 	}
-	log.Printf("[%v] FileAutoBackup metrics finished, saved '%d' metrics\n", time.Since(start).String(), len(metrics))
+	log.Printf("[%v] FileAutoBackup metrics finished, saved '%d' metrics", time.Since(start).String(), len(metrics))
 	return nil
 }
 

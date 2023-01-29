@@ -49,27 +49,16 @@ func (cmp *commonMetricPoller) PollMetrics() chan struct{} {
 			case <-ticker.C:
 				start := time.Now()
 				log.Println("Poll metrics start")
-				metrics := cmp.mr.PullMetrics()
+				metrics := cmp.mr.GetMetrics()
 				cmp.sendMetrics(metrics)
-				log.Printf("[%v] Poll metrics finished\n", time.Since(start).String())
+				log.Printf("[%v] Poll metrics finished", time.Since(start).String())
 			}
 		}
 	}()
 	return done
 }
 
-func (cmp *commonMetricPoller) sendMetrics(metrics map[string]*model.Metric) {
+func (cmp *commonMetricPoller) sendMetrics(metrics []*model.Metric) {
 	log.Printf("Polling %d metrics", len(metrics))
-	for _, metric := range metrics {
-		select {
-		case <-cmp.mpCtx.Done():
-			log.Println("Context was cancelled!")
-			return
-		default:
-			err := cmp.sender.SendMetric(metric)
-			if err != nil {
-				log.Printf("failed to poll metric %v: %v\n", metric, err)
-			}
-		}
-	}
+	cmp.sender.SendMetrics(cmp.mpCtx, metrics)
 }

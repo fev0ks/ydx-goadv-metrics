@@ -1,5 +1,7 @@
 package agent
 
+import "context"
+
 type MetricCollector interface {
-	CollectMetrics() chan struct{}
+	CollectMetrics(ctx context.Context) chan struct{}
 }

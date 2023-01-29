@@ -3,6 +3,7 @@ package sender
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
@@ -22,7 +23,22 @@ func NewTextMetricSender(mpCtx context.Context, client *resty.Client) MetricSend
 	}
 }
 
-func (ts textSender) SendMetric(metric *model.Metric) error {
+func (ts *textSender) SendMetrics(ctx context.Context, metrics []*model.Metric) {
+	for _, metric := range metrics {
+		select {
+		case <-ctx.Done():
+			log.Println("Context was cancelled!")
+			return
+		default:
+			err := ts.sendMetric(metric)
+			if err != nil {
+				log.Printf("failed to poll metric %v: %v", metric, err)
+			}
+		}
+	}
+}
+
+func (ts *textSender) sendMetric(metric *model.Metric) error {
 	value := metric.GetValue()
 	if value == model.NanVal {
 		return fmt.Errorf("metric type '%s' is not supported", metric.MType)

@@ -18,7 +18,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	log.Printf("Agent args: %s\n", os.Args[1:])
+	log.Printf("Agent args: %s", os.Args[1:])
 
 	address := configs.GetServerAddress()
 	var addressF string
@@ -54,17 +54,17 @@ func main() {
 	repository := repositories.NewCommonMetricsRepository()
 	metricFactory := service.NewMetricFactory(hashKey)
 	mcCtx, mcCancel := context.WithCancel(ctx)
-	metricCollector := service.NewCommonMetricCollector(mcCtx, repository, metricFactory, reportInterval)
-	stopCollectMetricsCh := metricCollector.CollectMetrics()
+	metricCollector := service.NewCommonMetricCollector(repository, metricFactory, reportInterval)
+	stopCollectMetricsCh := metricCollector.CollectMetrics(mcCtx)
 
 	client := getClient(address)
 
 	msCtx, msCancel := context.WithCancel(ctx)
 	var metricSender sender.MetricSender
 	if configs.UseBuffSenderClient() {
-		metricSender = sender.NewBulkMetricSender(msCtx, client, configs.GetBuffBatchLimit(), configs.GetBuffSendInterval())
+		metricSender = sender.NewBulkMetricSender(msCtx, client, configs.DefaultBuffBatchLimit)
 	} else {
-		metricSender = sender.NewJSONMetricSender(msCtx, client)
+		metricSender = sender.NewJSONMetricSender(client)
 	}
 
 	mpCtx, mpCancel := context.WithCancel(ctx)

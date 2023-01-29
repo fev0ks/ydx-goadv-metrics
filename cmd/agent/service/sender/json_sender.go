@@ -5,24 +5,38 @@ import (
 	"encoding/json"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
+	"log"
 
 	"github.com/go-resty/resty/v2"
 )
 
 type jsonSender struct {
-	msCtx  context.Context
 	client *resty.Client
 }
 
-func NewJSONMetricSender(msCtx context.Context, client *resty.Client) MetricSender {
+func NewJSONMetricSender(client *resty.Client) MetricSender {
 	sender := &jsonSender{
-		msCtx:  msCtx,
 		client: client,
 	}
 	return sender
 }
 
-func (js *jsonSender) SendMetric(metric *model.Metric) error {
+func (js *jsonSender) SendMetrics(ctx context.Context, metrics []*model.Metric) {
+	for _, metric := range metrics {
+		select {
+		case <-ctx.Done():
+			log.Println("Context was cancelled!")
+			return
+		default:
+			err := js.sendMetric(metric)
+			if err != nil {
+				log.Printf("failed to poll metric %v: %v", metric, err)
+			}
+		}
+	}
+}
+
+func (js *jsonSender) sendMetric(metric *model.Metric) error {
 	body, err := json.Marshal(*metric)
 	if err != nil {
 		return err
