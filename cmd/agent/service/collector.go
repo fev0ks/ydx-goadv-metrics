@@ -1,7 +1,6 @@
 package service
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"math/rand"
@@ -36,23 +35,17 @@ func NewCommonMetricCollector(
 	}
 }
 
-func (cmr *commonMetricCollector) CollectMetrics(ctx context.Context, done chan struct{}) {
-	colCtx, cancel := context.WithCancel(ctx)
-	go func() {
-		<-done
-		log.Println("Collect metrics interrupted!")
-		cancel()
-	}()
-	cmr.collectCommonMetrics(colCtx)
-	cmr.collectGopsMetrics(colCtx)
+func (cmr *commonMetricCollector) CollectMetrics(done chan struct{}) {
+	cmr.collectCommonMetrics(done)
+	cmr.collectGopsMetrics(done)
 }
 
-func (cmr *commonMetricCollector) collectCommonMetrics(ctx context.Context) {
+func (cmr *commonMetricCollector) collectCommonMetrics(done chan struct{}) {
 	ticker := time.NewTicker(cmr.interval)
 	go func() {
 		for {
 			select {
-			case <-ctx.Done():
+			case <-done:
 				log.Println("Collect common metrics interrupted!")
 				ticker.Stop()
 				return
@@ -113,12 +106,12 @@ func (cmr *commonMetricCollector) processMemStatsMetrics() {
 	log.Printf("MemStats metrics finished")
 }
 
-func (cmr *commonMetricCollector) collectGopsMetrics(ctx context.Context) {
+func (cmr *commonMetricCollector) collectGopsMetrics(done chan struct{}) {
 	ticker := time.NewTicker(cmr.interval)
 	go func() {
 		for {
 			select {
-			case <-ctx.Done():
+			case <-done:
 				log.Println("Collect gops metrics interrupted!")
 				ticker.Stop()
 				return

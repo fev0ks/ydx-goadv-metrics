@@ -23,9 +23,8 @@ func main() {
 	done := make(chan struct{})
 	repository := repositories.NewCommonMetricsRepository()
 	metricFactory := service.NewMetricFactory(appConfig.HashKey)
-	mcCtx, mcCancel := context.WithCancel(ctx)
 	metricCollector := service.NewCommonMetricCollector(repository, metricFactory, appConfig.ReportInterval)
-	metricCollector.CollectMetrics(mcCtx, done)
+	metricCollector.CollectMetrics(done)
 
 	client := getClient(appConfig.ServerAddress)
 
@@ -42,7 +41,7 @@ func main() {
 
 	log.Println("Agent started")
 	internal.ProperExitDefer(&internal.ExitHandler{
-		ToCancel: []context.CancelFunc{mcCancel, mpCancel},
+		ToCancel: []context.CancelFunc{mpCancel},
 		ToStop:   []chan struct{}{done},
 	})
 
