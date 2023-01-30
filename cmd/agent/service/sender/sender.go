@@ -12,15 +12,24 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
+type Sender interface {
+	MetricSender
+	MetricsSender
+}
+
 type MetricSender interface {
-	SendMetrics(ctx context.Context, metrics []*model.Metric) error
 	SendMetric(metric *model.Metric) error
 }
 
-type abstractMetricSender struct {
+type MetricsSender interface {
+	SendMetrics(ctx context.Context, metrics []*model.Metric) error
 }
 
-func (ms *abstractMetricSender) SendMetrics(ctx context.Context, metrics []*model.Metric) error {
+type metricsSender struct {
+	MetricSender
+}
+
+func (ms *metricsSender) SendMetrics(ctx context.Context, metrics []*model.Metric) error {
 	errors := make([]string, 0)
 	for _, metric := range metrics {
 		select {
@@ -28,7 +37,7 @@ func (ms *abstractMetricSender) SendMetrics(ctx context.Context, metrics []*mode
 			log.Println("Context was cancelled!")
 			return nil
 		default:
-			err := ms.SendMetric(metric)
+			err := ms.MetricSender.SendMetric(metric)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("{%v: %v}", metric, err))
 			}
@@ -38,10 +47,6 @@ func (ms *abstractMetricSender) SendMetrics(ctx context.Context, metrics []*mode
 		return fmt.Errorf("failed to send metrics: %s", strings.Join(errors, "; "))
 	}
 	return nil
-}
-
-func (ms *abstractMetricSender) SendMetric(_ *model.Metric) error {
-	panic("abstract func!")
 }
 
 func parseSendMetricResponse(resp *resty.Response, metric *model.Metric) error {

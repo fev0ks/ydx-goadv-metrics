@@ -29,7 +29,7 @@ func main() {
 
 	client := getClient(appConfig.ServerAddress)
 
-	var metricSender sender.MetricSender
+	var metricSender sender.Sender
 	if appConfig.UseBuffSenderClient {
 		metricSender = sender.NewBulkMetricSender(client, appConfig.BuffBatchLimit)
 	} else {

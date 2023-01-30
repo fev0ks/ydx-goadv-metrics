@@ -8,19 +8,19 @@ import (
 )
 
 type jsonSender struct {
-	MetricSender
 	client *resty.Client
 }
 
-func NewJSONMetricSender(client *resty.Client) MetricSender {
-	sender := &jsonSender{
-		&abstractMetricSender{},
-		client,
+func NewJSONMetricSender(client *resty.Client) Sender {
+	sender := &metricsSender{
+		&jsonSender{
+			client,
+		},
 	}
 	return sender
 }
 
-func (js *jsonSender) sendMetric(metric *model.Metric) error {
+func (js *jsonSender) SendMetric(metric *model.Metric) error {
 	body, err := json.Marshal(*metric)
 	if err != nil {
 		return err

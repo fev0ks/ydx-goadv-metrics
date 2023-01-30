@@ -21,7 +21,7 @@ type bulkSender struct {
 func NewBulkMetricSender(
 	client *resty.Client,
 	batchLimit int,
-) MetricSender {
+) Sender {
 	sender := &bulkSender{
 		client:     client,
 		batchLimit: batchLimit,

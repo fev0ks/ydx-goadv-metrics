@@ -14,14 +14,14 @@ import (
 
 type commonMetricPoller struct {
 	client   *resty.Client
-	sender   sender.MetricSender
+	sender   sender.Sender
 	mr       agent.MetricRepository
 	interval time.Duration
 }
 
 func NewCommonMetricPoller(
 	client *resty.Client,
-	metricSender sender.MetricSender,
+	metricSender sender.Sender,
 	repository agent.MetricRepository,
 	pollInterval time.Duration,
 ) agent.MetricPoller {
