@@ -1,10 +1,10 @@
 package repositories
 
 import (
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
-	"sync"
-
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
+	"golang.org/x/exp/maps"
+	"sync"
 )
 
 type commonMetricRepository struct {
@@ -36,9 +36,5 @@ func (cmr *commonMetricRepository) SaveMetrics(metrics []*model.Metric) {
 func (cmr *commonMetricRepository) GetMetrics() []*model.Metric {
 	cmr.Lock()
 	defer cmr.Unlock()
-	metrics := make([]*model.Metric, 0, len(cmr.cache))
-	for _, metric := range cmr.cache {
-		metrics = append(metrics, metric)
-	}
-	return metrics
+	return maps.Values(cmr.cache)
 }

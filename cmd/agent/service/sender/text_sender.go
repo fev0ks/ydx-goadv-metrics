@@ -3,8 +3,6 @@ package sender
 import (
 	"context"
 	"fmt"
-	"log"
-
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 
@@ -12,29 +10,16 @@ import (
 )
 
 type textSender struct {
+	MetricSender
 	mpCtx  context.Context
 	client *resty.Client
 }
 
 func NewTextMetricSender(mpCtx context.Context, client *resty.Client) MetricSender {
 	return &textSender{
-		mpCtx:  mpCtx,
-		client: client,
-	}
-}
-
-func (ts *textSender) SendMetrics(ctx context.Context, metrics []*model.Metric) {
-	for _, metric := range metrics {
-		select {
-		case <-ctx.Done():
-			log.Println("Context was cancelled!")
-			return
-		default:
-			err := ts.sendMetric(metric)
-			if err != nil {
-				log.Printf("failed to poll metric %v: %v", metric, err)
-			}
-		}
+		&abstractMetricSender{},
+		mpCtx,
+		client,
 	}
 }
 

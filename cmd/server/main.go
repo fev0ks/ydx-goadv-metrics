@@ -2,87 +2,37 @@ package main
 
 import (
 	"context"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
-	"io"
-	"log"
-	"net/http"
-	"os"
-	"time"
-
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/backup"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/configs"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/repositories"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
-
-	"github.com/spf13/pflag"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
+	"io"
+	"log"
+	"net/http"
+	"os"
 )
 
 func main() {
 	ctx := context.Background()
+	var err error
 	log.Printf("Server args: %s", os.Args[1:])
-	address := configs.GetAddress()
-	var addressF string
-	pflag.StringVarP(&addressF, "a", "a", configs.DefaultAddress, "Address of the server")
-
-	restore := configs.GetDoReStore()
-	var restoreF bool
-	pflag.BoolVarP(&restoreF, "r", "r", configs.DefaultDoRestore, "Do autoBackup restore?")
-
-	storeInterval := configs.GetStoreInterval()
-	var storeIntervalF time.Duration
-	pflag.DurationVarP(&storeIntervalF, "i", "i", configs.DefaultMetricStoreInterval, "Backup interval in sec")
-
-	storeFile := configs.GetStoreFile()
-	var storeFileF string
-	pflag.StringVarP(&storeFileF, "f", "f", configs.DefaultStoreFile, "Path of Backup store file")
-
-	hashKey := configs.GetHashKey()
-	var hashKeyF string
-	pflag.StringVarP(&hashKeyF, "k", "k", configs.DefaultHashKey, "Hash key")
-
-	dbConfig := configs.GetDBConfig()
-	var dbDsnF string
-	pflag.StringVarP(&dbDsnF, "d", "d", configs.DefaultDBConfig, "Postgres DB DSN")
-
-	pflag.Parse()
-
-	if address == "" {
-		address = addressF
-	}
-	if restore == nil {
-		restore = &restoreF
-	}
-	if storeInterval == 0 {
-		storeInterval = storeIntervalF
-	}
-	if address == "" {
-		address = addressF
-	}
-	if restore == nil {
-		restore = &restoreF
-	}
-	if storeFile == "" {
-		storeFile = storeFileF
-	}
-	if hashKey == "" {
-		hashKey = hashKeyF
-	}
-	if dbConfig == "" {
-		dbConfig = dbDsnF
-	}
+	appConfig := configs.InitAppConfig()
 
 	var autoBackup backup.AutoBackup
 	stopCh := make([]chan struct{}, 0)
 	toExecute := make([]func() error, 0)
 	var repository server.MetricRepository
-	if dbConfig != "" {
-		repository = repositories.NewPgRepository(dbConfig, ctx)
-
+	if appConfig.DBConfig != "" {
+		repository, err = repositories.NewPgRepository(appConfig.DBConfig, ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
 	} else {
 		repository = repositories.NewCommonRepository()
-		autoBackup = backup.NewFileAutoBackup(storeInterval, repository, storeFile)
-		if *restore {
+		autoBackup = backup.NewFileAutoBackup(repository, appConfig)
+		if appConfig.DoRestore {
 			log.Println("trying to restore metrics...")
 			err := autoBackup.Restore()
 			if err != nil {
@@ -93,7 +43,7 @@ func main() {
 		toExecute = append(toExecute, autoBackup.Backup)
 	}
 
-	mh := rest.NewMetricsHandler(ctx, repository, hashKey)
+	mh := rest.NewMetricsHandler(ctx, repository, appConfig.HashKey)
 	hc := rest.NewHealthChecker(ctx, repository)
 
 	router := rest.NewRouter()
@@ -105,6 +55,6 @@ func main() {
 		ToExecute: toExecute,
 		ToClose:   []io.Closer{repository},
 	})
-	log.Printf("Server started on %s", address)
-	log.Fatal(http.ListenAndServe(address, router))
+	log.Printf("Server started on %s", appConfig.ServerAddress)
+	log.Fatal(http.ListenAndServe(appConfig.ServerAddress, router))
 }

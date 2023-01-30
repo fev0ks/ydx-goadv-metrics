@@ -13,7 +13,6 @@ import (
 )
 
 type commonMetricPoller struct {
-	mpCtx    context.Context
 	client   *resty.Client
 	sender   sender.MetricSender
 	mr       agent.MetricRepository
@@ -21,14 +20,12 @@ type commonMetricPoller struct {
 }
 
 func NewCommonMetricPoller(
-	ctx context.Context,
 	client *resty.Client,
 	metricSender sender.MetricSender,
 	repository agent.MetricRepository,
 	pollInterval time.Duration,
 ) agent.MetricPoller {
 	return &commonMetricPoller{
-		mpCtx:    ctx,
 		client:   client,
 		sender:   metricSender,
 		mr:       repository,
@@ -36,9 +33,8 @@ func NewCommonMetricPoller(
 	}
 }
 
-func (cmp *commonMetricPoller) PollMetrics() chan struct{} {
+func (cmp *commonMetricPoller) PollMetrics(ctx context.Context, done chan struct{}) {
 	ticker := time.NewTicker(cmp.interval)
-	done := make(chan struct{})
 	go func() {
 		for {
 			select {
@@ -50,15 +46,18 @@ func (cmp *commonMetricPoller) PollMetrics() chan struct{} {
 				start := time.Now()
 				log.Println("Poll metrics start")
 				metrics := cmp.mr.GetMetrics()
-				cmp.sendMetrics(metrics)
-				log.Printf("[%v] Poll metrics finished", time.Since(start).String())
+				err := cmp.sendMetrics(ctx, metrics)
+				if err != nil {
+					log.Printf("[%v] Poll metrics finished with errors: %v", time.Since(start).String(), err)
+				} else {
+					log.Printf("[%v] Poll metrics finished", time.Since(start).String())
+				}
 			}
 		}
 	}()
-	return done
 }
 
-func (cmp *commonMetricPoller) sendMetrics(metrics []*model.Metric) {
+func (cmp *commonMetricPoller) sendMetrics(ctx context.Context, metrics []*model.Metric) error {
 	log.Printf("Polling %d metrics", len(metrics))
-	cmp.sender.SendMetrics(cmp.mpCtx, metrics)
+	return cmp.sender.SendMetrics(ctx, metrics)
 }

@@ -2,6 +2,7 @@ package backup
 
 import (
 	"encoding/json"
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/configs"
 	"log"
 	"os"
 	"strings"
@@ -25,15 +26,15 @@ type fileAutoBackup struct {
 	*sync.RWMutex
 }
 
-func NewFileAutoBackup(interval time.Duration, repository server.MetricRepository, storage string) AutoBackup {
-	err := initDir(storage)
+func NewFileAutoBackup(repository server.MetricRepository, appConfig *configs.AppConfig) AutoBackup {
+	err := initDir(appConfig.StoreFile)
 	if err != nil {
-		log.Fatalf("failed to create directories for '%s': %v", storage, err)
+		log.Fatalf("failed to create directories for '%s': %v", appConfig.StoreFile, err)
 		return nil
 	}
 	return &fileAutoBackup{
-		storeFile:  storage,
-		interval:   interval,
+		storeFile:  appConfig.StoreFile,
+		interval:   appConfig.StoreInterval,
 		repository: repository,
 		RWMutex:    &sync.RWMutex{},
 	}

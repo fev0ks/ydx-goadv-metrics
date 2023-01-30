@@ -1,5 +1,7 @@
 package agent
 
+import "context"
+
 type MetricPoller interface {
-	PollMetrics() chan struct{}
+	PollMetrics(ctx context.Context, done chan struct{})
 }

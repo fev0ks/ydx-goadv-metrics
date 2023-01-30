@@ -36,9 +36,8 @@ func NewCommonMetricCollector(
 	}
 }
 
-func (cmr *commonMetricCollector) CollectMetrics(ctx context.Context) chan struct{} {
+func (cmr *commonMetricCollector) CollectMetrics(ctx context.Context, done chan struct{}) {
 	colCtx, cancel := context.WithCancel(ctx)
-	done := make(chan struct{})
 	go func() {
 		<-done
 		log.Println("Collect metrics interrupted!")
@@ -46,8 +45,8 @@ func (cmr *commonMetricCollector) CollectMetrics(ctx context.Context) chan struc
 	}()
 	cmr.collectCommonMetrics(colCtx)
 	cmr.collectGopsMetrics(colCtx)
-	return done
 }
+
 func (cmr *commonMetricCollector) collectCommonMetrics(ctx context.Context) {
 	ticker := time.NewTicker(cmr.interval)
 	go func() {
@@ -132,7 +131,7 @@ func (cmr *commonMetricCollector) collectGopsMetrics(ctx context.Context) {
 }
 
 func (cmr *commonMetricCollector) processGopsMetrics() {
-	metrics := make([]*model.Metric, 0)
+	metrics := make([]*model.Metric, 0, 3)
 	memoryStat, _ := mem.VirtualMemory()
 	metrics = append(metrics, cmr.mf.NewGaugeMetric("TotalMemory", model.GaugeVT(memoryStat.Total)))
 	metrics = append(metrics, cmr.mf.NewGaugeMetric("FreeMemory", model.GaugeVT(memoryStat.Free)))

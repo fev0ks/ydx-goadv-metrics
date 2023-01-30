@@ -41,7 +41,6 @@ func (eh *ExitHandler) shutdown() {
 	select {
 	case <-successfullyFinished:
 		log.Println("System finished work, graceful shutdown")
-		//time.Sleep(time.Second)
 		os.Exit(0)
 	case <-time.After(1 * time.Minute):
 		log.Println("System has not shutdown in time '1m', shutdown with interruption")

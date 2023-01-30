@@ -24,7 +24,8 @@ func TestCollectMetrics(t *testing.T) {
 			repo := repositories.NewCommonMetricsRepository()
 			metricFactory := NewMetricFactory("")
 			collector := NewCommonMetricCollector(repo, metricFactory, 2*time.Second)
-			stopChannel := collector.CollectMetrics(ctx)
+			stopChannel := make(chan struct{})
+			collector.CollectMetrics(ctx, stopChannel)
 			time.Sleep(5 * time.Second)
 			stopChannel <- struct{}{}
 			metrics := repo.GetMetrics()
