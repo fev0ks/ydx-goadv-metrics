@@ -15,6 +15,8 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
 )
 
+const defaultCPUUsedMetricInterval = time.Second * 10
+
 type commonMetricCollector struct {
 	mr        agent.MetricRepository
 	mf        MetricFactory
@@ -116,7 +118,7 @@ func (cmr *commonMetricCollector) collectGopsMetrics(done chan struct{}) {
 				ticker.Stop()
 				return
 			case <-ticker.C:
-				// processGopsMetrics takes 10 sec
+				// takes 'defaultCPUUsedMetricInterval'
 				go cmr.processGopsMetrics()
 			}
 		}
@@ -128,7 +130,7 @@ func (cmr *commonMetricCollector) processGopsMetrics() {
 	memoryStat, _ := mem.VirtualMemory()
 	metrics = append(metrics, cmr.mf.NewGaugeMetric("TotalMemory", model.GaugeVT(memoryStat.Total)))
 	metrics = append(metrics, cmr.mf.NewGaugeMetric("FreeMemory", model.GaugeVT(memoryStat.Free)))
-	cpuUsed, _ := cpu.Percent(time.Second*10, true)
+	cpuUsed, _ := cpu.Percent(defaultCPUUsedMetricInterval, true)
 	for i := range cpuUsed {
 		metrics = append(metrics, cmr.mf.NewGaugeMetric(fmt.Sprintf("CPUutilization%d", i+1), model.GaugeVT(cpuUsed[i])))
 	}

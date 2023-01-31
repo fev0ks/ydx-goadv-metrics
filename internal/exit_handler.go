@@ -62,7 +62,7 @@ func (eh *ExitHandler) endHeldObjects() {
 	}
 	log.Println("ToStop active goroutines")
 	for _, toStop := range eh.ToStop {
-		toStop <- struct{}{}
+		close(toStop)
 	}
 	log.Println("ToClose active resources")
 	for _, toClose := range eh.ToClose {
