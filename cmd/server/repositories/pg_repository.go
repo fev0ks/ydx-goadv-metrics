@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
@@ -32,12 +33,12 @@ type pgRepository struct {
 	statements map[string]*sql.Stmt
 }
 
-func NewPgRepository(dbConfig string, ctx context.Context) server.MetricRepository {
+func NewPgRepository(dbConfig string, ctx context.Context) (server.MetricRepository, error) {
 	if dbConfig == "" {
 		log.Println("Postgres DB config is empty")
-		return nil
+		return nil, errors.New("failed to init pg repository: config is empty")
 	}
-	log.Printf("Trying to connect: %s\n", dbConfig)
+	log.Printf("Trying to connect: %s", dbConfig)
 	db, err := sql.Open(dbDialect, dbConfig)
 	if err != nil {
 		log.Fatalf("failed to connect to Postgres DB: %v", err)
@@ -47,9 +48,9 @@ func NewPgRepository(dbConfig string, ctx context.Context) server.MetricReposito
 	pgRep.migrationUp()
 	err = pgRep.prepareStatements()
 	if err != nil {
-		log.Fatalf("failed to prepareStatements for Postgres DB: %v", err)
+		return nil, fmt.Errorf("failed to prepareStatements for Postgres DB: %v", err)
 	}
-	return pgRep
+	return pgRep, nil
 }
 
 func (p *pgRepository) prepareStatements() error {
@@ -92,7 +93,7 @@ func (p *pgRepository) prepareStatements() error {
 
 func (p *pgRepository) HealthCheck(ctx context.Context) error {
 	if err := p.db.PingContext(ctx); err != nil {
-		log.Printf("failed to check connection to Postgres DB: %v\n", err)
+		log.Printf("failed to check connection to Postgres DB: %v", err)
 		return err
 	}
 	log.Println("Postgres DB connection is active")

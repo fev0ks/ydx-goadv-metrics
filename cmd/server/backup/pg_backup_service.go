@@ -40,7 +40,7 @@ func (b *pgAutoBackup) Start() chan struct{} {
 				log.Println("PgAutoBackup metrics start")
 				err := b.Backup()
 				if err != nil {
-					log.Printf("failed to backup metrics: %v\n", err)
+					log.Printf("failed to backup metrics: %v", err)
 				}
 			}
 		}
@@ -60,7 +60,7 @@ func (b *pgAutoBackup) Restore() error {
 			return err
 		}
 	}
-	log.Printf("[%v] Restore metrics finished, restored '%d' metrics\n", time.Since(start).String(), len(metrics))
+	log.Printf("[%v] Restore metrics finished, restored '%d' metrics", time.Since(start).String(), len(metrics))
 	return nil
 }
 
@@ -79,7 +79,7 @@ func (b *pgAutoBackup) Backup() error {
 	if err != nil {
 		return err
 	}
-	log.Printf("[%v] PgAutoBackup metrics finished, saved '%d' metrics\n", time.Since(start).String(), len(metrics))
+	log.Printf("[%v] PgAutoBackup metrics finished, saved '%d' metrics", time.Since(start).String(), len(metrics))
 	return nil
 }
 

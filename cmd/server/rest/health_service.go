@@ -20,7 +20,7 @@ func (hc *HealthChecker) CheckDBHandler() func(writer http.ResponseWriter, reque
 	return func(writer http.ResponseWriter, request *http.Request) {
 		err := hc.repo.HealthCheck(hc.ctx)
 		if err != nil {
-			log.Printf("failed db health check: %v\n", err)
+			log.Printf("failed db health check: %v", err)
 			http.Error(writer, err.Error(), http.StatusInternalServerError)
 			return
 		}

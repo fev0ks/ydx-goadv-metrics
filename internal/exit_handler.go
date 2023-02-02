@@ -27,7 +27,7 @@ func ProperExitDefer(exitHandler *ExitHandler) {
 	)
 	go func() {
 		s := <-signals
-		log.Printf("Received a signal '%s'\n", s)
+		log.Printf("Received a signal '%s'", s)
 		exitHandler.shutdown()
 	}()
 }
@@ -53,7 +53,7 @@ func (eh *ExitHandler) endHeldObjects() {
 	for _, execute := range eh.ToExecute {
 		err := execute()
 		if err != nil {
-			log.Printf("func error: %v\n", err)
+			log.Printf("func error: %v", err)
 		}
 	}
 	log.Println("ToCancel active contexts")
@@ -62,13 +62,13 @@ func (eh *ExitHandler) endHeldObjects() {
 	}
 	log.Println("ToStop active goroutines")
 	for _, toStop := range eh.ToStop {
-		toStop <- struct{}{}
+		close(toStop)
 	}
 	log.Println("ToClose active resources")
 	for _, toClose := range eh.ToClose {
 		err := toClose.Close()
 		if err != nil {
-			log.Printf("failed to close an resource: %v\n", err)
+			log.Printf("failed to close an resource: %v", err)
 		}
 	}
 	log.Println("Success end final work")

@@ -30,7 +30,7 @@ func Decompress(next http.Handler) http.Handler {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				log.Printf("Length: %d\n", len(body))
+				log.Printf("Length: %d", len(body))
 				r.Body = io.NopCloser(strings.NewReader(string(body)))
 			}
 		} else if rContentEncoding != "" {
@@ -46,6 +46,6 @@ func TimerTrace(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		next.ServeHTTP(w, r)
-		log.Printf("[%v] Request time execution for: %s '%s' \r\n", time.Since(start), r.Method, r.RequestURI)
+		log.Printf("[%v] Request time execution for: %s '%s' \r", time.Since(start), r.Method, r.RequestURI)
 	})
 }

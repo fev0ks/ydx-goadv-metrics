@@ -1,7 +1,6 @@
 package service
 
 import (
-	"context"
 	"testing"
 	"time"
 
@@ -20,15 +19,15 @@ func TestCollectMetrics(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
 			repo := repositories.NewCommonMetricsRepository()
 			metricFactory := NewMetricFactory("")
-			collector := NewCommonMetricCollector(ctx, repo, metricFactory, 2*time.Second)
-			stopChannel := collector.CollectMetrics()
+			collector := NewCommonMetricCollector(repo, metricFactory, 2*time.Second)
+			stopChannel := make(chan struct{})
+			collector.CollectMetrics(stopChannel)
 			time.Sleep(5 * time.Second)
 			stopChannel <- struct{}{}
-			metrics := repo.GetMetricsList()
-			assert.Equal(t, 29, len(metrics))
+			metrics := repo.GetMetrics()
+			assert.True(t, 29 <= len(metrics))
 			for _, metric := range metrics {
 				assert.NotNil(t, metric)
 			}

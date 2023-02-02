@@ -22,5 +22,5 @@ const (
 	OLine = "<tr>"
 	CLine = "</tr>"
 
-	TableStile = "<style>\ntable, th, td {\n  border:1px solid black;\n}\n</style>\n<body>"
+	TableStile = "<style>table, th, td {  border:1px solid black;}</style><body>"
 )

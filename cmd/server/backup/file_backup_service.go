@@ -2,6 +2,7 @@ package backup
 
 import (
 	"encoding/json"
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/configs"
 	"log"
 	"os"
 	"strings"
@@ -25,15 +26,15 @@ type fileAutoBackup struct {
 	*sync.RWMutex
 }
 
-func NewFileAutoBackup(interval time.Duration, repository server.MetricRepository, storage string) AutoBackup {
-	err := initDir(storage)
+func NewFileAutoBackup(repository server.MetricRepository, appConfig *configs.AppConfig) AutoBackup {
+	err := initDir(appConfig.StoreFile)
 	if err != nil {
-		log.Fatalf("failed to create directories for '%s': %v", storage, err)
+		log.Fatalf("failed to create directories for '%s': %v", appConfig.StoreFile, err)
 		return nil
 	}
 	return &fileAutoBackup{
-		storeFile:  storage,
-		interval:   interval,
+		storeFile:  appConfig.StoreFile,
+		interval:   appConfig.StoreInterval,
 		repository: repository,
 		RWMutex:    &sync.RWMutex{},
 	}
@@ -60,7 +61,7 @@ func (b *fileAutoBackup) Start() chan struct{} {
 				log.Println("FileAutoBackup metrics start")
 				err := b.Backup()
 				if err != nil {
-					log.Printf("failed to backup metrics: %v\n", err)
+					log.Printf("failed to backup metrics: %v", err)
 				}
 			}
 		}
@@ -80,7 +81,7 @@ func (b *fileAutoBackup) Restore() error {
 			return err
 		}
 	}
-	log.Printf("[%v] Restore metrics finished, restored '%d' metrics\n", time.Since(start).String(), len(metrics))
+	log.Printf("[%v] Restore metrics finished, restored '%d' metrics", time.Since(start).String(), len(metrics))
 	return nil
 }
 
@@ -106,7 +107,7 @@ func (b *fileAutoBackup) Backup() error {
 	if err != nil {
 		return err
 	}
-	log.Printf("[%v] FileAutoBackup metrics finished, saved '%d' metrics\n", time.Since(start).String(), len(metrics))
+	log.Printf("[%v] FileAutoBackup metrics finished, saved '%d' metrics", time.Since(start).String(), len(metrics))
 	return nil
 }
 

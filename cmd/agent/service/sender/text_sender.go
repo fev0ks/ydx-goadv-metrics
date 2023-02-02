@@ -1,9 +1,7 @@
 package sender
 
 import (
-	"context"
 	"fmt"
-
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 
@@ -11,18 +9,18 @@ import (
 )
 
 type textSender struct {
-	mpCtx  context.Context
 	client *resty.Client
 }
 
-func NewTextMetricSender(mpCtx context.Context, client *resty.Client) MetricSender {
-	return &textSender{
-		mpCtx:  mpCtx,
-		client: client,
+func NewTextMetricSender(client *resty.Client) Sender {
+	return &metricsSender{
+		&textSender{
+			client,
+		},
 	}
 }
 
-func (ts textSender) SendMetric(metric *model.Metric) error {
+func (ts *textSender) SendMetric(metric *model.Metric) error {
 	value := metric.GetValue()
 	if value == model.NanVal {
 		return fmt.Errorf("metric type '%s' is not supported", metric.MType)

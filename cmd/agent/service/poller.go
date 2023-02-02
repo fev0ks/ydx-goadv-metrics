@@ -13,22 +13,19 @@ import (
 )
 
 type commonMetricPoller struct {
-	mpCtx    context.Context
 	client   *resty.Client
-	sender   sender.MetricSender
+	sender   sender.Sender
 	mr       agent.MetricRepository
 	interval time.Duration
 }
 
 func NewCommonMetricPoller(
-	ctx context.Context,
 	client *resty.Client,
-	metricSender sender.MetricSender,
+	metricSender sender.Sender,
 	repository agent.MetricRepository,
 	pollInterval time.Duration,
 ) agent.MetricPoller {
 	return &commonMetricPoller{
-		mpCtx:    ctx,
 		client:   client,
 		sender:   metricSender,
 		mr:       repository,
@@ -36,9 +33,8 @@ func NewCommonMetricPoller(
 	}
 }
 
-func (cmp *commonMetricPoller) PollMetrics() chan struct{} {
+func (cmp *commonMetricPoller) PollMetrics(ctx context.Context, done chan struct{}) {
 	ticker := time.NewTicker(cmp.interval)
-	done := make(chan struct{})
 	go func() {
 		for {
 			select {
@@ -49,27 +45,19 @@ func (cmp *commonMetricPoller) PollMetrics() chan struct{} {
 			case <-ticker.C:
 				start := time.Now()
 				log.Println("Poll metrics start")
-				metrics := cmp.mr.GetMetricsList()
-				cmp.sendMetrics(metrics)
-				log.Printf("[%v] Poll metrics finished\n", time.Since(start).String())
+				metrics := cmp.mr.GetMetrics()
+				err := cmp.sendMetrics(ctx, metrics)
+				if err != nil {
+					log.Printf("[%v] Poll metrics finished with errors: %v", time.Since(start).String(), err)
+				} else {
+					log.Printf("[%v] Poll metrics finished", time.Since(start).String())
+				}
 			}
 		}
 	}()
-	return done
 }
 
-func (cmp *commonMetricPoller) sendMetrics(metrics []*model.Metric) {
+func (cmp *commonMetricPoller) sendMetrics(ctx context.Context, metrics []*model.Metric) error {
 	log.Printf("Polling %d metrics", len(metrics))
-	for _, metric := range metrics {
-		select {
-		case <-cmp.mpCtx.Done():
-			log.Println("Context was cancelled!")
-			return
-		default:
-			err := cmp.sender.SendMetric(metric)
-			if err != nil {
-				log.Printf("failed to poll metric %v: %v\n", metric, err)
-			}
-		}
-	}
+	return cmp.sender.SendMetrics(ctx, metrics)
 }
