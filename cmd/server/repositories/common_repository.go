@@ -3,11 +3,11 @@ package repositories
 import (
 	"context"
 	"fmt"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
 	"log"
 	"sync"
 
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
 )
 
 type commonRepository struct {
@@ -15,7 +15,7 @@ type commonRepository struct {
 	storage map[string]*model.Metric
 }
 
-func NewCommonRepository() server.MetricRepository {
+func NewCommonRepository() server.IMetricRepository {
 	return &commonRepository{
 		&sync.RWMutex{},
 		make(map[string]*model.Metric),

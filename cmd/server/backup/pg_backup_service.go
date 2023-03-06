@@ -11,12 +11,12 @@ import (
 
 type pgAutoBackup struct {
 	interval   time.Duration
-	repository server.MetricRepository
-	storage    server.MetricRepository
+	repository server.IMetricRepository
+	storage    server.IMetricRepository
 	*sync.RWMutex
 }
 
-func NewPgAutoBackup(interval time.Duration, repository server.MetricRepository, storage server.MetricRepository) AutoBackup {
+func NewPgAutoBackup(interval time.Duration, repository server.IMetricRepository, storage server.IMetricRepository) IAutoBackup {
 	return &pgAutoBackup{
 		interval:   interval,
 		repository: repository,

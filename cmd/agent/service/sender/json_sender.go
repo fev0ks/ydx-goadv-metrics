@@ -2,9 +2,10 @@ package sender
 
 import (
 	"encoding/json"
+	"github.com/go-resty/resty/v2"
+
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
-	"github.com/go-resty/resty/v2"
 )
 
 type jsonSender struct {

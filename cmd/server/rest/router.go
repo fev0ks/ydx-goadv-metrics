@@ -1,10 +1,11 @@
 package rest
 
 import (
-	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 )
 
 func NewRouter() chi.Router {

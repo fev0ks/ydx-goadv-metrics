@@ -2,10 +2,11 @@ package server
 
 import (
 	"context"
+
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 )
 
-type MetricRepository interface {
+type IMetricRepository interface {
 	SaveMetric(metric *model.Metric) error
 	SaveMetrics(metrics []*model.Metric) error
 	GetMetrics() (map[string]*model.Metric, error)

@@ -8,13 +8,14 @@ import (
 	"os"
 	"time"
 
+	"github.com/go-resty/resty/v2"
+	_ "net/http/pprof"
+
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/configs"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/repositories"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
-	"github.com/go-resty/resty/v2"
-	_ "net/http/pprof"
 )
 
 func main() {

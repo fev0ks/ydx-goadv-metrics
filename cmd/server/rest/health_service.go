@@ -2,17 +2,18 @@ package rest
 
 import (
 	"context"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
 	"log"
 	"net/http"
+
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
 )
 
 type HealthChecker struct {
 	ctx  context.Context
-	repo server.MetricRepository
+	repo server.IMetricRepository
 }
 
-func NewHealthChecker(ctx context.Context, repo server.MetricRepository) HealthChecker {
+func NewHealthChecker(ctx context.Context, repo server.IMetricRepository) HealthChecker {
 	return HealthChecker{ctx, repo}
 }
 

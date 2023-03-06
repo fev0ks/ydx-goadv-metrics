@@ -2,18 +2,18 @@ package backup
 
 import (
 	"encoding/json"
-	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/configs"
 	"log"
 	"os"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/configs"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
 )
 
-type AutoBackup interface {
+type IAutoBackup interface {
 	Start() chan struct{}
 	Restore() error
 	Backup() error
@@ -21,12 +21,12 @@ type AutoBackup interface {
 
 type fileAutoBackup struct {
 	interval   time.Duration
-	repository server.MetricRepository
+	repository server.IMetricRepository
 	storeFile  string
 	*sync.RWMutex
 }
 
-func NewFileAutoBackup(repository server.MetricRepository, appConfig *configs.AppConfig) AutoBackup {
+func NewFileAutoBackup(repository server.IMetricRepository, appConfig *configs.AppConfig) IAutoBackup {
 	err := initDir(appConfig.StoreFile)
 	if err != nil {
 		log.Fatalf("failed to create directories for '%s': %v", appConfig.StoreFile, err)

@@ -33,7 +33,7 @@ type pgRepository struct {
 	statements map[string]*sql.Stmt
 }
 
-func NewPgRepository(dbConfig string, ctx context.Context) (server.MetricRepository, error) {
+func NewPgRepository(dbConfig string, ctx context.Context) (server.IMetricRepository, error) {
 	if dbConfig == "" {
 		log.Println("Postgres DB config is empty")
 		return nil, errors.New("failed to init pg repository: config is empty")

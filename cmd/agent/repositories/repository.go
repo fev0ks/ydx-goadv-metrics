@@ -1,10 +1,11 @@
 package repositories
 
 import (
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
 	"golang.org/x/exp/maps"
 	"sync"
+
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
 )
 
 type commonMetricRepository struct {
@@ -12,7 +13,7 @@ type commonMetricRepository struct {
 	cache map[string]*model.Metric
 }
 
-func NewCommonMetricsRepository() agent.MetricRepository {
+func NewCommonMetricsRepository() agent.IMetricRepository {
 	return &commonMetricRepository{
 		&sync.RWMutex{},
 		make(map[string]*model.Metric, 0),

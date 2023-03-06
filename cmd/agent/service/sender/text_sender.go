@@ -2,6 +2,7 @@ package sender
 
 import (
 	"fmt"
+
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 

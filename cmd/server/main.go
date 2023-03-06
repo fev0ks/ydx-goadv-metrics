@@ -2,17 +2,18 @@ package main
 
 import (
 	"context"
+	"io"
+	"log"
+	"net/http"
+	_ "net/http/pprof"
+	"os"
+
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/backup"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/configs"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/repositories"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
-	"io"
-	"log"
-	"net/http"
-	_ "net/http/pprof"
-	"os"
 )
 
 func main() {
@@ -21,10 +22,10 @@ func main() {
 	log.Printf("Server args: %s", os.Args[1:])
 	appConfig := configs.InitAppConfig()
 
-	var autoBackup backup.AutoBackup
+	var autoBackup backup.IAutoBackup
 	stopCh := make([]chan struct{}, 0)
 	toExecute := make([]func() error, 0)
-	var repository server.MetricRepository
+	var repository server.IMetricRepository
 	if appConfig.DBConfig != "" {
 		repository, err = repositories.NewPgRepository(appConfig.DBConfig, ctx)
 		if err != nil {

@@ -18,11 +18,11 @@ import (
 
 type MetricsHandler struct {
 	Ctx        context.Context
-	Repository server.MetricRepository
+	Repository server.IMetricRepository
 	HashKey    string
 }
 
-func NewMetricsHandler(ctx context.Context, repository server.MetricRepository, hashKey string) *MetricsHandler {
+func NewMetricsHandler(ctx context.Context, repository server.IMetricRepository, hashKey string) *MetricsHandler {
 	return &MetricsHandler{Ctx: ctx, Repository: repository, HashKey: hashKey}
 }
 
