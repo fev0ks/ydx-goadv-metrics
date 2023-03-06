@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
 	"github.com/go-resty/resty/v2"
+	_ "net/http/pprof"
 )
 
 func main() {
@@ -45,7 +47,7 @@ func main() {
 		ToStop:   []chan struct{}{done},
 	})
 
-	<-ctx.Done()
+	log.Fatal(http.ListenAndServe(appConfig.AgentAddress, nil))
 }
 
 func getClient(address string) *resty.Client {

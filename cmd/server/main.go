@@ -11,6 +11,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 )
 
@@ -49,6 +50,7 @@ func main() {
 	router := rest.NewRouter()
 	rest.HandleMetricRequests(router, mh)
 	rest.HandleHeathCheck(router, hc)
+	rest.HandlePprof(router)
 
 	internal.ProperExitDefer(&internal.ExitHandler{
 		ToStop:    stopCh,

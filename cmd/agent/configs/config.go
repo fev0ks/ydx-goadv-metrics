@@ -11,6 +11,7 @@ const (
 	defaultMetricReportInterval = time.Second * 2
 	defaultMetricPollInterval   = time.Second * 10
 	defaultServerAddress        = "localhost:8080"
+	defaultAgentAddress         = "localhost:8085"
 	defaultHashKey              = ""
 	defaultBuffBatchLimit       = 10
 	defaultUseBuffSendClient    = true
@@ -18,6 +19,7 @@ const (
 
 type AppConfig struct {
 	ServerAddress       string
+	AgentAddress        string
 	ReportInterval      time.Duration
 	PollInterval        time.Duration
 	HashKey             string
@@ -56,8 +58,15 @@ func InitAppConfig() *AppConfig {
 	if hashKey == "" {
 		hashKey = hashKeyF
 	}
+
+	agentAddress := getAgentAddress()
+	if agentAddress == "" {
+		agentAddress = defaultAgentAddress
+	}
+
 	return &AppConfig{
 		ServerAddress:       address,
+		AgentAddress:        agentAddress,
 		ReportInterval:      reportInterval,
 		PollInterval:        pollInterval,
 		HashKey:             hashKey,
@@ -94,6 +103,10 @@ func getPollInterval() time.Duration {
 
 func getServerAddress() string {
 	return os.Getenv("ADDRESS")
+}
+
+func getAgentAddress() string {
+	return os.Getenv("AGENT_ADDRESS")
 }
 
 func getHashKey() string {

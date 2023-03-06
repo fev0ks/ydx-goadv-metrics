@@ -29,3 +29,7 @@ func HandleMetricRequests(router chi.Router, mh *MetricsHandler) {
 func HandleHeathCheck(router chi.Router, hc HealthChecker) {
 	router.Get("/ping", hc.CheckDBHandler())
 }
+
+func HandlePprof(router chi.Router) {
+	router.Mount("/debug", middleware.Profiler())
+}
