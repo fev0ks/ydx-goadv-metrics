@@ -1,10 +1,11 @@
 package configs
 
 import (
-	"github.com/spf13/pflag"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/spf13/pflag"
 )
 
 const (
@@ -17,12 +18,19 @@ const (
 )
 
 type AppConfig struct {
+	// ServerAddress - Адресс сервиса
 	ServerAddress string
+	// StoreInterval - Временной интервал для беккапа метрик
 	StoreInterval time.Duration
-	DoRestore     bool
-	StoreFile     string
-	HashKey       string
-	DBConfig      string
+	// DoRestore - Восстанавливать ли метрики в память из беккапа при старте сервиса
+	DoRestore bool
+	// StoreFile - Имя файла при беккапе метрик в файл
+	StoreFile string
+	// HashKey - Любое текстовое значение,
+	// обязательно должно совпадать с аналогичным параметров в Агент сервисе для архивации//разархивации сообщений
+	HashKey string
+	// DBConfig - Конфиг подключения к базе
+	DBConfig string
 }
 
 func InitAppConfig() *AppConfig {

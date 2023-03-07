@@ -43,6 +43,111 @@ func (g *metricGenerator) generateMetrics(count int) []*model.Metric {
 	return metrics
 }
 
+func ExampleCommonRepository_SaveMetric() {
+	repo := NewCommonRepository()
+	counterValue := model.CounterVT(123)
+	metric := &model.Metric{
+		ID:    "metric name",
+		MType: model.CounterType,
+		Delta: &counterValue,
+		Hash:  "qwrtyuiopasjklzxcvbnm,",
+	}
+	err := repo.SaveMetric(metric)
+	if err != nil {
+		// err - ошибка сохранения метрики в хранилище
+		fmt.Print(err)
+	}
+	fmt.Println(metric)
+	// Output:
+	// ID: metric name, Type: counter, Value: 123
+}
+
+func ExampleCommonRepository_SaveMetrics() {
+	repo := NewCommonRepository()
+	counterValue := model.CounterVT(123)
+	gaugeValue := model.GaugeVT(123.321)
+	metrics := []*model.Metric{
+		{
+			ID:    "metric name1",
+			MType: model.CounterType,
+			Delta: &counterValue,
+			Hash:  "qwrtyuiopasjklzxcvbnm,",
+		},
+		{
+			ID:    "metric name2",
+			MType: model.GaugeType,
+			Value: &gaugeValue,
+			Hash:  "qwrtyuiopasjklzxcvbnm,",
+		},
+	}
+
+	err := repo.SaveMetrics(metrics)
+	if err != nil {
+		// err - ошибка сохранения метрик в хранилище
+		fmt.Print(err)
+	}
+	fmt.Println(metrics)
+	// Output:
+	// [ID: metric name1, Type: counter, Value: 123 ID: metric name2, Type: gauge, Value: 123.321000]
+}
+
+func ExampleCommonRepository_GetMetric() {
+	repo := NewCommonRepository()
+	counterValue := model.CounterVT(123)
+	metric := &model.Metric{
+		ID:    "metric name",
+		MType: model.CounterType,
+		Delta: &counterValue,
+		Hash:  "qwrtyuiopasjklzxcvbnm,",
+	}
+	err := repo.SaveMetric(metric)
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	metricRepo, err := repo.GetMetric("metric name")
+	if err != nil {
+		// error - ошибка получения метрики из хранилища
+		fmt.Print(err)
+	}
+	fmt.Println(metricRepo)
+	// Output:
+	// ID: metric name, Type: counter, Value: 123
+}
+
+func ExampleCommonRepository_GetMetrics() {
+	repo := NewCommonRepository()
+	counterValue := model.CounterVT(123)
+	gaugeValue := model.GaugeVT(123.321)
+	metrics := []*model.Metric{
+		{
+			ID:    "metric name1",
+			MType: model.CounterType,
+			Delta: &counterValue,
+			Hash:  "qwrtyuiopasjklzxcvbnm,",
+		},
+		{
+			ID:    "metric name2",
+			MType: model.GaugeType,
+			Value: &gaugeValue,
+			Hash:  "qwrtyuiopasjklzxcvbnm,",
+		},
+	}
+	err := repo.SaveMetrics(metrics)
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	metricsMap, err := repo.GetMetrics()
+	if err != nil {
+		// err - ошибка получения метрик из хранилища
+		fmt.Print(err)
+	}
+	fmt.Println(metricsMap)
+	// Output:
+	// map[metric name1:ID: metric name1, Type: counter, Value: 123 metric name2:ID: metric name2, Type: gauge, Value: 123.321000]
+}
+
 func TestGaugesMetrics(t *testing.T) {
 	//tc := struct {
 	//	name          string

@@ -8,8 +8,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/go-resty/resty/v2"
 	_ "net/http/pprof"
+
+	"github.com/go-resty/resty/v2"
 
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/configs"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/repositories"
@@ -54,7 +55,7 @@ func main() {
 func getClient(address string) *resty.Client {
 	client := resty.New().
 		SetBaseURL(fmt.Sprintf("http://%s", address)).
-		SetRetryCount(1).
+		SetRetryCount(3).
 		SetRetryWaitTime(1 * time.Second).
 		SetRetryMaxWaitTime(2 * time.Second)
 	return client

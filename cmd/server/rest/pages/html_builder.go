@@ -6,6 +6,7 @@ type htmlBuilder struct {
 	bytes.Buffer
 }
 
+// GetHTMLBuilder - конструктор html страницы
 func GetHTMLBuilder() *htmlBuilder {
 	builder := htmlBuilder{}
 	builder.WriteString(OHtml)

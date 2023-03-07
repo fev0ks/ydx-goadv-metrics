@@ -8,7 +8,7 @@ import (
 	"log"
 
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server/repository"
 
 	_ "github.com/lib/pq"
 	migrate "github.com/rubenv/sql-migrate"
@@ -33,7 +33,9 @@ type pgRepository struct {
 	statements map[string]*sql.Stmt
 }
 
-func NewPgRepository(dbConfig string, ctx context.Context) (server.IMetricRepository, error) {
+// NewPgRepository - инициализация хранилища pgRepository, реализующего repository.IMetricRepository в виде Postgres базы данных
+// TODO - поменять на "github.com/jackc/pgx/v4"
+func NewPgRepository(dbConfig string, ctx context.Context) (repository.IMetricRepository, error) {
 	if dbConfig == "" {
 		log.Println("Postgres DB config is empty")
 		return nil, errors.New("failed to init pg repository: config is empty")
@@ -182,6 +184,9 @@ func (p *pgRepository) GetMetric(name string) (*model.Metric, error) {
 	metric := &model.Metric{}
 	err := row.Scan(&metric.ID, &metric.MType, &metric.Delta, &metric.Value, &metric.Hash)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return metric, nil

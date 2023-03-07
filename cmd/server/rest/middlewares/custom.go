@@ -12,6 +12,8 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 )
 
+// Decompress - посредник обработчика запросов, для разархивации тела запроса
+// поддерживаемые форматы: gzip
 func Decompress(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		rContentEncoding := r.Header.Get(rest.ContentEncoding)
@@ -42,6 +44,7 @@ func Decompress(next http.Handler) http.Handler {
 	})
 }
 
+// TimerTrace - посредник обработчика запросов, для вычисления времени обработки запроса
 func TimerTrace(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()

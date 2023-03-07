@@ -1,0 +1,129 @@
+definitions:
+  model.Metric:
+    properties:
+      delta:
+        type: integer
+      hash:
+        type: string
+      id:
+        type: string
+      type:
+        type: string
+      value:
+        type: number
+    type: object
+info:
+  contact: {}
+paths:
+  /:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            type: string
+      summary: Запрос состояния метрик
+      tags:
+      - Таблица метрик
+  /updates/:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Неверный формат запроса
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            type: string
+        "501":
+          description: Тип метрики не поддерживается
+          schema:
+            type: string
+      summary: Запрос на обновление списка метрик
+      tags:
+      - Обновление метрик
+  /value/:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Metric'
+        "400":
+          description: Неверный формат запроса
+          schema:
+            type: string
+        "404":
+          description: Метрика не найдена
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            type: string
+        "501":
+          description: Запрашиваемый тип метрики не поддерживается
+          schema:
+            type: string
+      summary: Запрос на получение метрики
+      tags:
+      - Получение метрики
+  /value/{mType}/{id}:
+    get:
+      parameters:
+      - description: тип метрики
+        in: path
+        name: mType
+        required: true
+        type: string
+      - description: имя метрики
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Metric'
+        "400":
+          description: Неверный формат запроса
+          schema:
+            type: string
+        "404":
+          description: Метрика не найдена
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка
+          schema:
+            type: string
+        "501":
+          description: Запрашиваемый тип метрики не поддерживается
+          schema:
+            type: string
+      summary: Запрос на получение метрики
+      tags:
+      - Получение метрики
+swagger: "2.0"

@@ -6,17 +6,19 @@ import (
 	"time"
 
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server/backup"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server/repository"
 )
 
 type pgAutoBackup struct {
 	interval   time.Duration
-	repository server.IMetricRepository
-	storage    server.IMetricRepository
+	repository repository.IMetricRepository
+	storage    repository.IMetricRepository
 	*sync.RWMutex
 }
 
-func NewPgAutoBackup(interval time.Duration, repository server.IMetricRepository, storage server.IMetricRepository) IAutoBackup {
+// NewPgAutoBackup - инициализация pgAutoBackup, реализующего backup.IAutoBackup, для выгрузки метрик в Postgres базу данных
+func NewPgAutoBackup(interval time.Duration, repository repository.IMetricRepository, storage repository.IMetricRepository) backup.IAutoBackup {
 	return &pgAutoBackup{
 		interval:   interval,
 		repository: repository,
@@ -29,23 +31,27 @@ func (b *pgAutoBackup) Start() chan struct{} {
 	log.Println("PgAutoBackup activated")
 	ticker := time.NewTicker(b.interval)
 	done := make(chan struct{})
-	go func() {
+	go func(one chan struct{}, ticker *time.Ticker) {
 		for {
-			select {
-			case <-done:
-				log.Println("PgAutoBackup metrics interrupted!")
-				ticker.Stop()
-				return
-			case <-ticker.C:
-				log.Println("PgAutoBackup metrics start")
-				err := b.Backup()
-				if err != nil {
-					log.Printf("failed to backup metrics: %v", err)
-				}
-			}
+			b.doBackupIfNotCanceled(done, ticker)
 		}
-	}()
+	}(done, ticker)
 	return done
+}
+
+func (b *pgAutoBackup) doBackupIfNotCanceled(done chan struct{}, ticker *time.Ticker) {
+	select {
+	case <-done:
+		log.Println("PgAutoBackup metrics interrupted!")
+		ticker.Stop()
+		return
+	case <-ticker.C:
+		log.Println("PgAutoBackup metrics start")
+		err := b.Backup()
+		if err != nil {
+			log.Printf("failed to backup metrics: %v", err)
+		}
+	}
 }
 
 func (b *pgAutoBackup) Restore() error {

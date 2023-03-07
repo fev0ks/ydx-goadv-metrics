@@ -12,6 +12,7 @@ type GaugeVT float64
 
 type CounterVT uint64
 
+// Metric - структура обекта Метрики
 type Metric struct {
 	ID    string     `json:"id" pg:"name"`
 	MType MetricType `json:"type" pg:"type"`

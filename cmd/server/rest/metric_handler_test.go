@@ -15,6 +15,38 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// Добавьте примеры работы с эндпоинтами практического трека в формате - втф?
+func ExampleMetricsHandler_GetMetricHandler() {
+	ctx := context.Background()
+	cr := repositories.NewCommonRepository()
+	mh := NewMetricsHandler(ctx, cr, "")
+
+	mh.GetMetricHandler()
+}
+
+func ExampleMetricsHandler_GetMetricsHandler() {
+	ctx := context.Background()
+	cr := repositories.NewCommonRepository()
+	mh := NewMetricsHandler(ctx, cr, "")
+
+	mh.GetMetricsHandler()
+}
+func ExampleMetricsHandler_ReceptionMetricHandler() {
+	ctx := context.Background()
+	cr := repositories.NewCommonRepository()
+	mh := NewMetricsHandler(ctx, cr, "")
+
+	mh.ReceptionMetricHandler()
+}
+
+func ExampleMetricsHandler_ReceptionMetricsHandler() {
+	ctx := context.Background()
+	cr := repositories.NewCommonRepository()
+	mh := NewMetricsHandler(ctx, cr, "")
+
+	mh.ReceptionMetricsHandler()
+}
+
 func TestReceptionTextMetricsHandler(t *testing.T) {
 	type want struct {
 		statusCode int

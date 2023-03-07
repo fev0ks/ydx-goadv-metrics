@@ -10,23 +10,19 @@ import (
 
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/configs"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server/backup"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server/repository"
 )
-
-type IAutoBackup interface {
-	Start() chan struct{}
-	Restore() error
-	Backup() error
-}
 
 type fileAutoBackup struct {
 	interval   time.Duration
-	repository server.IMetricRepository
+	repository repository.IMetricRepository
 	storeFile  string
 	*sync.RWMutex
 }
 
-func NewFileAutoBackup(repository server.IMetricRepository, appConfig *configs.AppConfig) IAutoBackup {
+// NewFileAutoBackup - инициализация fileAutoBackup, реализующего backup.IAutoBackup, для выгрузки метрик в текстоывй файл
+func NewFileAutoBackup(repository repository.IMetricRepository, appConfig *configs.AppConfig) backup.IAutoBackup {
 	err := initDir(appConfig.StoreFile)
 	if err != nil {
 		log.Fatalf("failed to create directories for '%s': %v", appConfig.StoreFile, err)

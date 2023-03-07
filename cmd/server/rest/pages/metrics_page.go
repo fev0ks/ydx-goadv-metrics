@@ -9,15 +9,17 @@ import (
 )
 
 var (
+	// metricsTableTitles - название колонок в таблице метрик
 	metricsTableTitles = []string{"#", "type", "name", "value"}
 )
 
+// GetMetricsPage - генерация таблицы метрик
+// metrics - список метрик
 func GetMetricsPage(metrics map[string]*model.Metric) string {
 	hb := GetHTMLBuilder()
 	hb.
 		Add(TableStile).
 		Add(OBody).
-		//AddHeader(fmt.Sprintf("Metrics result at %v", time.Now().Format(time.RFC1123))).
 		AddHeader("Metrics result").
 		Add(OTable)
 	addTableTitles(hb, metricsTableTitles)
