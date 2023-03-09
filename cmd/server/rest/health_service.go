@@ -2,20 +2,22 @@ package rest
 
 import (
 	"context"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
 	"log"
 	"net/http"
+
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server/repository"
 )
 
 type HealthChecker struct {
 	ctx  context.Context
-	repo server.MetricRepository
+	repo repository.IMetricRepository
 }
 
-func NewHealthChecker(ctx context.Context, repo server.MetricRepository) HealthChecker {
+func NewHealthChecker(ctx context.Context, repo repository.IMetricRepository) HealthChecker {
 	return HealthChecker{ctx, repo}
 }
 
+// CheckDBHandler - проверка состояния соединения с базой данных
 func (hc *HealthChecker) CheckDBHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		err := hc.repo.HealthCheck(hc.ctx)

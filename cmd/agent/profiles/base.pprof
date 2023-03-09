@@ -1,0 +1,759 @@
+heap profile: 12: 114656 [278: 25965992] @ heap/1048576
+1: 106496 [86: 9158656] @ 0x7c561a 0x7c530e 0x7c52a8 0x7c4bd5 0x7c4bc0 0x8044d6 0x8044b4 0x58bfe1
+#	0x7c5619	github.com/shirou/gopsutil/cpu.perfInfo+0x39								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:188
+#	0x7c530d	github.com/shirou/gopsutil/cpu.perCPUTimes+0x2d								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:164
+#	0x7c52a7	github.com/shirou/gopsutil/cpu.TimesWithContext+0x267							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:78
+#	0x7c4bd4	github.com/shirou/gopsutil/cpu.Times+0x54								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:73
+#	0x7c4bbf	github.com/shirou/gopsutil/cpu.PercentWithContext+0x3f							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:147
+#	0x8044d5	github.com/shirou/gopsutil/cpu.Percent+0x175								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:138
+#	0x8044b3	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x153	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:133
+
+5: 5120 [5: 5120] @ 0x55ff9e 0x56075b 0x560dcf 0x56133a 0x562d05 0x563145 0x56364d 0x589c6a
+#	0x55ff9d	runtime.allocm+0x9d		C:/Program Files/Go/src/runtime/proc.go:1759
+#	0x56075a	runtime.newm+0x3a		C:/Program Files/Go/src/runtime/proc.go:2109
+#	0x560dce	runtime.startm+0xce		C:/Program Files/Go/src/runtime/proc.go:2325
+#	0x561339	runtime.wakep+0x59		C:/Program Files/Go/src/runtime/proc.go:2430
+#	0x562d04	runtime.resetspinning+0x44	C:/Program Files/Go/src/runtime/proc.go:3110
+#	0x563144	runtime.schedule+0xe4		C:/Program Files/Go/src/runtime/proc.go:3220
+#	0x56364c	runtime.park_m+0x14c		C:/Program Files/Go/src/runtime/proc.go:3363
+#	0x589c69	runtime.mcall+0x49		C:/Program Files/Go/src/runtime/asm_amd64.s:448
+
+2: 2048 [2: 2048] @ 0x55ff9e 0x56075b 0x560dcf 0x56133a 0x562d05 0x563145 0x55f7d7 0x55f6cc 0x589be5
+#	0x55ff9d	runtime.allocm+0x9d		C:/Program Files/Go/src/runtime/proc.go:1759
+#	0x56075a	runtime.newm+0x3a		C:/Program Files/Go/src/runtime/proc.go:2109
+#	0x560dce	runtime.startm+0xce		C:/Program Files/Go/src/runtime/proc.go:2325
+#	0x561339	runtime.wakep+0x59		C:/Program Files/Go/src/runtime/proc.go:2430
+#	0x562d04	runtime.resetspinning+0x44	C:/Program Files/Go/src/runtime/proc.go:3110
+#	0x563144	runtime.schedule+0xe4		C:/Program Files/Go/src/runtime/proc.go:3220
+#	0x55f7d6	runtime.mstart1+0xd6		C:/Program Files/Go/src/runtime/proc.go:1432
+#	0x55f6cb	runtime.mstart0+0x6b		C:/Program Files/Go/src/runtime/proc.go:1382
+#	0x589be4	runtime.mstart+0x4		C:/Program Files/Go/src/runtime/asm_amd64.s:390
+
+2: 832 [2: 832] @ 0x564fc8 0x56529e 0x5651c5 0x589cee
+#	0x564fc7	runtime.malg+0x27		C:/Program Files/Go/src/runtime/proc.go:4076
+#	0x56529d	runtime.newproc1+0x7d		C:/Program Files/Go/src/runtime/proc.go:4123
+#	0x5651c4	runtime.newproc.func1+0x24	C:/Program Files/Go/src/runtime/proc.go:4098
+#	0x589ced	runtime.systemstack+0x4d	C:/Program Files/Go/src/runtime/asm_amd64.s:492
+
+1: 96 [1: 96] @ 0x55d3d7 0x56c82a 0x804c45 0x58bfe1
+#	0x804c44	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).PollMetrics.func1+0xa4	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:40
+
+1: 64 [1: 64] @ 0x5f172c 0x79ce1f 0x80489d 0x80488e 0x8050fc 0x8045b5 0x58bfe1
+#	0x5f172b	fmt.Sprintf+0x6b											C:/Program Files/Go/src/fmt/print.go:220
+#	0x79ce1e	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x25e				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:41
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b			E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8045b4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x254	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:135
+
+0: 0 [2: 256] @ 0x673ee5 0x66eca7 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x802ed1 0x8027c5 0x58bfe1
+#	0x673ee4	crypto/sha256.New+0x24												C:/Program Files/Go/src/crypto/sha256/sha256.go:166
+#	0x66eca6	crypto/hmac.New+0x46												C:/Program Files/Go/src/crypto/hmac/hmac.go:138
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x802ed0	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x4b0	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:86
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 96] @ 0x66ec98 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x8045b5 0x58bfe1
+#	0x66ec97	crypto/hmac.New+0x37											C:/Program Files/Go/src/crypto/hmac/hmac.go:137
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b			E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8045b4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x254	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:135
+
+0: 0 [1: 128] @ 0x673ee5 0x66ecd5 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x802d13 0x8027c5 0x58bfe1
+#	0x673ee4	crypto/sha256.New+0x24												C:/Program Files/Go/src/crypto/sha256/sha256.go:166
+#	0x66ecd4	crypto/hmac.New+0x74												C:/Program Files/Go/src/crypto/hmac/hmac.go:139
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x802d12	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x2f2	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:84
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 2048] @ 0x595725 0x59556e 0x5952a5 0x5e022e 0x5dfe8b 0x779b2d 0x779b15 0x7796b8 0x763466 0x788eb4 0x58bfe1
+#	0x595724	sync.(*Pool).pinSlow+0x184			C:/Program Files/Go/src/sync/pool.go:230
+#	0x59556d	sync.(*Pool).pin+0x4d				C:/Program Files/Go/src/sync/pool.go:209
+#	0x5952a4	sync.(*Pool).Get+0x24				C:/Program Files/Go/src/sync/pool.go:131
+#	0x5e022d	io.discard.ReadFrom+0x2d			C:/Program Files/Go/src/io/io.go:608
+#	0x5dfe8a	io.copyBuffer+0x14a				C:/Program Files/Go/src/io/io.go:413
+#	0x779b2c	io.Copy+0x4c					C:/Program Files/Go/src/io/io.go:386
+#	0x779b14	net/http.(*transferWriter).doBodyCopy+0x34	C:/Program Files/Go/src/net/http/transfer.go:412
+#	0x7796b7	net/http.(*transferWriter).writeBody+0x417	C:/Program Files/Go/src/net/http/transfer.go:375
+#	0x763465	net/http.(*Request).write+0xb45			C:/Program Files/Go/src/net/http/request.go:701
+#	0x788eb3	net/http.(*persistConn).writeLoop+0x173		C:/Program Files/Go/src/net/http/transport.go:2395
+
+0: 0 [1: 128] @ 0x673ee5 0x66eca7 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x802fb1 0x8027c5 0x58bfe1
+#	0x673ee4	crypto/sha256.New+0x24												C:/Program Files/Go/src/crypto/sha256/sha256.go:166
+#	0x66eca6	crypto/hmac.New+0x46												C:/Program Files/Go/src/crypto/hmac/hmac.go:138
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x802fb0	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x590	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:87
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 139264] @ 0x70ef65 0x70ef9b 0x70f748 0x7191f9 0x824a50 0x829717 0x8281b5 0x82d21a 0x822425 0x822087 0x82068b 0x8300e5 0x82f996 0x82f7ad 0x8302fe 0x76fb4f 0x7714e9 0x77270c 0x76e8a7 0x58bfe1
+#	0x70ef64	compress/flate.newDeflateFast+0x424				C:/Program Files/Go/src/compress/flate/deflatefast.go:64
+#	0x70ef9a	compress/flate.(*compressor).init+0x45a				C:/Program Files/Go/src/compress/flate/deflate.go:585
+#	0x70f747	compress/flate.NewWriter+0x47					C:/Program Files/Go/src/compress/flate/deflate.go:667
+#	0x7191f8	compress/gzip.(*Writer).Write+0x2d8				C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0x824a4f	runtime/pprof.(*profileBuilder).flush+0x4f			C:/Program Files/Go/src/runtime/pprof/proto.go:146
+#	0x829716	runtime/pprof.(*profileBuilder).emitLocation+0xdd6		C:/Program Files/Go/src/runtime/pprof/proto.go:639
+#	0x8281b4	runtime/pprof.(*profileBuilder).appendLocsForStack+0x514	C:/Program Files/Go/src/runtime/pprof/proto.go:459
+#	0x82d219	runtime/pprof.writeHeapProto+0x559				C:/Program Files/Go/src/runtime/pprof/protomem.go:46
+#	0x822424	runtime/pprof.writeHeapInternal+0x304				C:/Program Files/Go/src/runtime/pprof/pprof.go:575
+#	0x822086	runtime/pprof.writeHeap+0x26					C:/Program Files/Go/src/runtime/pprof/pprof.go:535
+#	0x82068a	runtime/pprof.(*Profile).WriteTo+0x14a				C:/Program Files/Go/src/runtime/pprof/pprof.go:330
+#	0x8300e4	net/http/pprof.collectProfile+0x44				C:/Program Files/Go/src/net/http/pprof/pprof.go:323
+#	0x82f995	net/http/pprof.handler.serveDeltaProfile+0x155			C:/Program Files/Go/src/net/http/pprof/pprof.go:276
+#	0x82f7ac	net/http/pprof.handler.ServeHTTP+0x4ec				C:/Program Files/Go/src/net/http/pprof/pprof.go:239
+#	0x8302fd	net/http/pprof.Index+0x13d					C:/Program Files/Go/src/net/http/pprof/pprof.go:371
+#	0x76fb4e	net/http.HandlerFunc.ServeHTTP+0x2e				C:/Program Files/Go/src/net/http/server.go:2109
+#	0x7714e8	net/http.(*ServeMux).ServeHTTP+0x148				C:/Program Files/Go/src/net/http/server.go:2487
+#	0x77270b	net/http.serverHandler.ServeHTTP+0x30b				C:/Program Files/Go/src/net/http/server.go:2947
+#	0x76e8a6	net/http.(*conn).serve+0x606					C:/Program Files/Go/src/net/http/server.go:1991
+
+0: 0 [1: 2048] @ 0x595725 0x59556e 0x5952a5 0x7a4e25 0x7a4667 0x801755 0x801434 0x804f03 0x804cd8 0x58bfe1
+#	0x595724	sync.(*Pool).pinSlow+0x184										C:/Program Files/Go/src/sync/pool.go:230
+#	0x59556d	sync.(*Pool).pin+0x4d											C:/Program Files/Go/src/sync/pool.go:209
+#	0x5952a4	sync.(*Pool).Get+0x24											C:/Program Files/Go/src/sync/pool.go:131
+#	0x7a4e24	encoding/json.newEncodeState+0x24									C:/Program Files/Go/src/encoding/json/encode.go:304
+#	0x7a4666	encoding/json.Marshal+0x26										C:/Program Files/Go/src/encoding/json/encode.go:158
+#	0x801754	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).sendMetrics+0x54		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:63
+#	0x801433	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).SendMetrics+0x193		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:45
+#	0x804f02	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).sendMetrics+0xa2		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:62
+#	0x804cd7	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).PollMetrics.func1+0x137	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:49
+
+0: 0 [1: 64] @ 0x804817 0x8050fc 0x802df2 0x8027c5 0x58bfe1
+#	0x804816	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0x56					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:37
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x802df1	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x3d1	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:85
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 64] @ 0x5f172c 0x79ce1f 0x80489d 0x80488e 0x8050fc 0x802d13 0x8027c5 0x58bfe1
+#	0x5f172b	fmt.Sprintf+0x6b												C:/Program Files/Go/src/fmt/print.go:220
+#	0x79ce1e	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x25e					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:41
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x802d12	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x2f2	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:84
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 24] @ 0x79cdf0 0x80489d 0x80488e 0x8050fc 0x802b5d 0x8027c5 0x58bfe1
+#	0x79cdef	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x22f					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:41
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x802b5c	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x13c	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:81
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 663552] @ 0x70f72f 0x7191f9 0x824a50 0x829717 0x8281b5 0x82d21a 0x822425 0x822087 0x82068b 0x8300e5 0x82f996 0x82f7ad 0x8302fe 0x76fb4f 0x7714e9 0x77270c 0x76e8a7 0x58bfe1
+#	0x70f72e	compress/flate.NewWriter+0x2e					C:/Program Files/Go/src/compress/flate/deflate.go:666
+#	0x7191f8	compress/gzip.(*Writer).Write+0x2d8				C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0x824a4f	runtime/pprof.(*profileBuilder).flush+0x4f			C:/Program Files/Go/src/runtime/pprof/proto.go:146
+#	0x829716	runtime/pprof.(*profileBuilder).emitLocation+0xdd6		C:/Program Files/Go/src/runtime/pprof/proto.go:639
+#	0x8281b4	runtime/pprof.(*profileBuilder).appendLocsForStack+0x514	C:/Program Files/Go/src/runtime/pprof/proto.go:459
+#	0x82d219	runtime/pprof.writeHeapProto+0x559				C:/Program Files/Go/src/runtime/pprof/protomem.go:46
+#	0x822424	runtime/pprof.writeHeapInternal+0x304				C:/Program Files/Go/src/runtime/pprof/pprof.go:575
+#	0x822086	runtime/pprof.writeHeap+0x26					C:/Program Files/Go/src/runtime/pprof/pprof.go:535
+#	0x82068a	runtime/pprof.(*Profile).WriteTo+0x14a				C:/Program Files/Go/src/runtime/pprof/pprof.go:330
+#	0x8300e4	net/http/pprof.collectProfile+0x44				C:/Program Files/Go/src/net/http/pprof/pprof.go:323
+#	0x82f995	net/http/pprof.handler.serveDeltaProfile+0x155			C:/Program Files/Go/src/net/http/pprof/pprof.go:276
+#	0x82f7ac	net/http/pprof.handler.ServeHTTP+0x4ec				C:/Program Files/Go/src/net/http/pprof/pprof.go:239
+#	0x8302fd	net/http/pprof.Index+0x13d					C:/Program Files/Go/src/net/http/pprof/pprof.go:371
+#	0x76fb4e	net/http.HandlerFunc.ServeHTTP+0x2e				C:/Program Files/Go/src/net/http/server.go:2109
+#	0x7714e8	net/http.(*ServeMux).ServeHTTP+0x148				C:/Program Files/Go/src/net/http/server.go:2487
+#	0x77270b	net/http.serverHandler.ServeHTTP+0x30b				C:/Program Files/Go/src/net/http/server.go:2947
+#	0x76e8a6	net/http.(*conn).serve+0x606					C:/Program Files/Go/src/net/http/server.go:1991
+
+0: 0 [1: 65536] @ 0x70eec5 0x70f748 0x7191f9 0x827aa5 0x823ebb 0x58bfe1
+#	0x70eec4	compress/flate.(*compressor).init+0x384		C:/Program Files/Go/src/compress/flate/deflate.go:582
+#	0x70f747	compress/flate.NewWriter+0x47			C:/Program Files/Go/src/compress/flate/deflate.go:667
+#	0x7191f8	compress/gzip.(*Writer).Write+0x2d8		C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0x827aa4	runtime/pprof.(*profileBuilder).build+0x364	C:/Program Files/Go/src/runtime/pprof/proto.go:390
+#	0x823eba	runtime/pprof.profileWriter+0xba		C:/Program Files/Go/src/runtime/pprof/pprof.go:812
+
+0: 0 [1: 16] @ 0x79cd4a 0x80489d 0x80488e 0x8050fc 0x8045b5 0x58bfe1
+#	0x79cd49	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x189				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:36
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b			E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8045b4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x254	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:135
+
+0: 0 [1: 16] @ 0x79cd4a 0x80489d 0x80488e 0x8050fc 0x803f1a 0x8027c5 0x58bfe1
+#	0x79cd49	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x189					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:36
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803f19	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x14f9	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:105
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [2: 3072] @ 0x7c54f8 0x7c52a8 0x7c4c25 0x7c4c0b 0x8044d6 0x8044b4 0x58bfe1
+#	0x7c54f7	github.com/shirou/gopsutil/cpu.perCPUTimes+0x217							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:176
+#	0x7c52a7	github.com/shirou/gopsutil/cpu.TimesWithContext+0x267							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:78
+#	0x7c4c24	github.com/shirou/gopsutil/cpu.Times+0xa4								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:73
+#	0x7c4c0a	github.com/shirou/gopsutil/cpu.PercentWithContext+0x8a							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:157
+#	0x8044d5	github.com/shirou/gopsutil/cpu.Percent+0x175								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:138
+#	0x8044b3	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x153	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:133
+
+0: 0 [1: 32] @ 0x6743f7 0x66e778 0x79cde5 0x80489d 0x80488e 0x8050fc 0x8045b5 0x58bfe1
+#	0x6743f6	crypto/sha256.(*digest).Sum+0x196									C:/Program Files/Go/src/crypto/sha256/sha256.go:223
+#	0x66e777	crypto/hmac.(*hmac).Sum+0x37										C:/Program Files/Go/src/crypto/hmac/hmac.go:58
+#	0x79cde4	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x224				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:41
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b			E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8045b4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x254	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:135
+
+0: 0 [1: 24] @ 0x5f172c 0x79cda5 0x80489d 0x80488e 0x8050fc 0x803abb 0x8027c5 0x58bfe1
+#	0x5f172b	fmt.Sprintf+0x6b												C:/Program Files/Go/src/fmt/print.go:220
+#	0x79cda4	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x1e4					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:36
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803aba	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x109a	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:100
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [2: 704] @ 0x5335f3 0x7f77fa 0x7f5882 0x7fc188 0x7fd7bb 0x7fbf17 0x801a33 0x801a13 0x801434 0x804f03 0x804cd8 0x58bfe1
+#	0x7f77f9	github.com/go-resty/resty/v2.parseRequestHeader+0x2d9							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/middleware.go:110
+#	0x7f5881	github.com/go-resty/resty/v2.(*Client).execute+0x1a1							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/client.go:909
+#	0x7fc187	github.com/go-resty/resty/v2.(*Request).Execute.func1+0x87						E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:769
+#	0x7fd7ba	github.com/go-resty/resty/v2.Backoff+0x19a								E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/retry.go:105
+#	0x7fbf16	github.com/go-resty/resty/v2.(*Request).Execute+0x536							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:763
+#	0x801a32	github.com/go-resty/resty/v2.(*Request).Post+0x332							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:699
+#	0x801a12	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).sendMetrics+0x312		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:70
+#	0x801433	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).SendMetrics+0x193		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:45
+#	0x804f02	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).sendMetrics+0xa2		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:62
+#	0x804cd7	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).PollMetrics.func1+0x137	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:49
+
+0: 0 [1: 320] @ 0x803a45 0x8027c5 0x58bfe1
+#	0x803a44	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x1024	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:99
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 139264] @ 0x70ef65 0x70ef9b 0x70f748 0x7191f9 0x827aa5 0x823ebb 0x58bfe1
+#	0x70ef64	compress/flate.newDeflateFast+0x424		C:/Program Files/Go/src/compress/flate/deflatefast.go:64
+#	0x70ef9a	compress/flate.(*compressor).init+0x45a		C:/Program Files/Go/src/compress/flate/deflate.go:585
+#	0x70f747	compress/flate.NewWriter+0x47			C:/Program Files/Go/src/compress/flate/deflate.go:667
+#	0x7191f8	compress/gzip.(*Writer).Write+0x2d8		C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0x827aa4	runtime/pprof.(*profileBuilder).build+0x364	C:/Program Files/Go/src/runtime/pprof/proto.go:390
+#	0x823eba	runtime/pprof.profileWriter+0xba		C:/Program Files/Go/src/runtime/pprof/pprof.go:812
+
+0: 0 [1: 32] @ 0x8281fc 0x82793f 0x823ebb 0x58bfe1
+#	0x8281fb	runtime/pprof.(*profileBuilder).appendLocsForStack+0x55b	C:/Program Files/Go/src/runtime/pprof/proto.go:460
+#	0x82793e	runtime/pprof.(*profileBuilder).build+0x1fe			C:/Program Files/Go/src/runtime/pprof/proto.go:376
+#	0x823eba	runtime/pprof.profileWriter+0xba				C:/Program Files/Go/src/runtime/pprof/pprof.go:812
+
+0: 0 [2: 262144] @ 0x56a379 0x52701d 0x823c3f 0x82e6fe 0x76fb4f 0x7714e9 0x77270c 0x76e8a7 0x58bfe1
+#	0x823c3e	runtime/pprof.StartCPUProfile+0xfe	C:/Program Files/Go/src/runtime/pprof/pprof.go:782
+#	0x82e6fd	net/http/pprof.Profile+0x29d		C:/Program Files/Go/src/net/http/pprof/pprof.go:136
+#	0x76fb4e	net/http.HandlerFunc.ServeHTTP+0x2e	C:/Program Files/Go/src/net/http/server.go:2109
+#	0x7714e8	net/http.(*ServeMux).ServeHTTP+0x148	C:/Program Files/Go/src/net/http/server.go:2487
+#	0x77270b	net/http.serverHandler.ServeHTTP+0x30b	C:/Program Files/Go/src/net/http/server.go:2947
+#	0x76e8a6	net/http.(*conn).serve+0x606		C:/Program Files/Go/src/net/http/server.go:1991
+
+0: 0 [1: 32] @ 0x57384b 0x79cdb5 0x80489d 0x80488e 0x8050fc 0x803091 0x8027c5 0x58bfe1
+#	0x79cdb4	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x1f4					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:40
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803090	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x670	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:88
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 96] @ 0x66ec98 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x803b9a 0x8027c5 0x58bfe1
+#	0x66ec97	crypto/hmac.New+0x37												C:/Program Files/Go/src/crypto/hmac/hmac.go:137
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803b99	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x1179	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:101
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 32] @ 0x57384b 0x79cdb5 0x80489d 0x80488e 0x8050fc 0x803e3a 0x8027c5 0x58bfe1
+#	0x79cdb4	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x1f4					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:40
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803e39	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x1419	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:104
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 96] @ 0x7c54f8 0x7c52a8 0x7c4bd5 0x7c4bc0 0x8044d6 0x8044b4 0x58bfe1
+#	0x7c54f7	github.com/shirou/gopsutil/cpu.perCPUTimes+0x217							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:176
+#	0x7c52a7	github.com/shirou/gopsutil/cpu.TimesWithContext+0x267							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:78
+#	0x7c4bd4	github.com/shirou/gopsutil/cpu.Times+0x54								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:73
+#	0x7c4bbf	github.com/shirou/gopsutil/cpu.PercentWithContext+0x3f							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:147
+#	0x8044d5	github.com/shirou/gopsutil/cpu.Percent+0x175								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:138
+#	0x8044b3	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x153	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:133
+
+0: 0 [1: 24] @ 0x79cdf0 0x80489d 0x80488e 0x8050fc 0x80386e 0x8027c5 0x58bfe1
+#	0x79cdef	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x22f					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:41
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x80386d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0xe4d	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:97
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 64] @ 0x804817 0x8050fc 0x803091 0x8027c5 0x58bfe1
+#	0x804816	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0x56					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:37
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803090	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x670	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:88
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 16] @ 0x80425a 0x58bfe1
+#	0x804259	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectGopsMetrics.func1+0x99	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:122
+
+0: 0 [1: 262144] @ 0x70efe5 0x70f748 0x7191f9 0x824a50 0x829717 0x8281b5 0x82d21a 0x822425 0x822087 0x82068b 0x8300e5 0x82f996 0x82f7ad 0x8302fe 0x76fb4f 0x7714e9 0x77270c 0x76e8a7 0x58bfe1
+#	0x70efe4	compress/flate.(*compressor).init+0x4a4				C:/Program Files/Go/src/compress/flate/deflate.go:586
+#	0x70f747	compress/flate.NewWriter+0x47					C:/Program Files/Go/src/compress/flate/deflate.go:667
+#	0x7191f8	compress/gzip.(*Writer).Write+0x2d8				C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0x824a4f	runtime/pprof.(*profileBuilder).flush+0x4f			C:/Program Files/Go/src/runtime/pprof/proto.go:146
+#	0x829716	runtime/pprof.(*profileBuilder).emitLocation+0xdd6		C:/Program Files/Go/src/runtime/pprof/proto.go:639
+#	0x8281b4	runtime/pprof.(*profileBuilder).appendLocsForStack+0x514	C:/Program Files/Go/src/runtime/pprof/proto.go:459
+#	0x82d219	runtime/pprof.writeHeapProto+0x559				C:/Program Files/Go/src/runtime/pprof/protomem.go:46
+#	0x822424	runtime/pprof.writeHeapInternal+0x304				C:/Program Files/Go/src/runtime/pprof/pprof.go:575
+#	0x822086	runtime/pprof.writeHeap+0x26					C:/Program Files/Go/src/runtime/pprof/pprof.go:535
+#	0x82068a	runtime/pprof.(*Profile).WriteTo+0x14a				C:/Program Files/Go/src/runtime/pprof/pprof.go:330
+#	0x8300e4	net/http/pprof.collectProfile+0x44				C:/Program Files/Go/src/net/http/pprof/pprof.go:323
+#	0x82f995	net/http/pprof.handler.serveDeltaProfile+0x155			C:/Program Files/Go/src/net/http/pprof/pprof.go:276
+#	0x82f7ac	net/http/pprof.handler.ServeHTTP+0x4ec				C:/Program Files/Go/src/net/http/pprof/pprof.go:239
+#	0x8302fd	net/http/pprof.Index+0x13d					C:/Program Files/Go/src/net/http/pprof/pprof.go:371
+#	0x76fb4e	net/http.HandlerFunc.ServeHTTP+0x2e				C:/Program Files/Go/src/net/http/server.go:2109
+#	0x7714e8	net/http.(*ServeMux).ServeHTTP+0x148				C:/Program Files/Go/src/net/http/server.go:2487
+#	0x77270b	net/http.serverHandler.ServeHTTP+0x30b				C:/Program Files/Go/src/net/http/server.go:2947
+#	0x76e8a6	net/http.(*conn).serve+0x606					C:/Program Files/Go/src/net/http/server.go:1991
+
+0: 0 [1: 139264] @ 0x70ef65 0x70ef9b 0x70f748 0x7191f9 0x824a50 0x8253a9 0x82d13d 0x822425 0x822087 0x82068b 0x8300e5 0x82fb75 0x82f7ad 0x8302fe 0x76fb4f 0x7714e9 0x77270c 0x76e8a7 0x58bfe1
+#	0x70ef64	compress/flate.newDeflateFast+0x424		C:/Program Files/Go/src/compress/flate/deflatefast.go:64
+#	0x70ef9a	compress/flate.(*compressor).init+0x45a		C:/Program Files/Go/src/compress/flate/deflate.go:585
+#	0x70f747	compress/flate.NewWriter+0x47			C:/Program Files/Go/src/compress/flate/deflate.go:667
+#	0x7191f8	compress/gzip.(*Writer).Write+0x2d8		C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0x824a4f	runtime/pprof.(*profileBuilder).flush+0x4f	C:/Program Files/Go/src/runtime/pprof/proto.go:146
+#	0x8253a8	runtime/pprof.(*profileBuilder).pbSample+0xc8	C:/Program Files/Go/src/runtime/pprof/proto.go:168
+#	0x82d13c	runtime/pprof.writeHeapProto+0x47c		C:/Program Files/Go/src/runtime/pprof/protomem.go:59
+#	0x822424	runtime/pprof.writeHeapInternal+0x304		C:/Program Files/Go/src/runtime/pprof/pprof.go:575
+#	0x822086	runtime/pprof.writeHeap+0x26			C:/Program Files/Go/src/runtime/pprof/pprof.go:535
+#	0x82068a	runtime/pprof.(*Profile).WriteTo+0x14a		C:/Program Files/Go/src/runtime/pprof/pprof.go:330
+#	0x8300e4	net/http/pprof.collectProfile+0x44		C:/Program Files/Go/src/net/http/pprof/pprof.go:323
+#	0x82fb74	net/http/pprof.handler.serveDeltaProfile+0x334	C:/Program Files/Go/src/net/http/pprof/pprof.go:297
+#	0x82f7ac	net/http/pprof.handler.ServeHTTP+0x4ec		C:/Program Files/Go/src/net/http/pprof/pprof.go:239
+#	0x8302fd	net/http/pprof.Index+0x13d			C:/Program Files/Go/src/net/http/pprof/pprof.go:371
+#	0x76fb4e	net/http.HandlerFunc.ServeHTTP+0x2e		C:/Program Files/Go/src/net/http/server.go:2109
+#	0x7714e8	net/http.(*ServeMux).ServeHTTP+0x148		C:/Program Files/Go/src/net/http/server.go:2487
+#	0x77270b	net/http.serverHandler.ServeHTTP+0x30b		C:/Program Files/Go/src/net/http/server.go:2947
+#	0x76e8a6	net/http.(*conn).serve+0x606			C:/Program Files/Go/src/net/http/server.go:1991
+
+0: 0 [4: 6144] @ 0x7c54f8 0x7c52a8 0x7c4bd5 0x7c4bc0 0x8044d6 0x8044b4 0x58bfe1
+#	0x7c54f7	github.com/shirou/gopsutil/cpu.perCPUTimes+0x217							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:176
+#	0x7c52a7	github.com/shirou/gopsutil/cpu.TimesWithContext+0x267							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:78
+#	0x7c4bd4	github.com/shirou/gopsutil/cpu.Times+0x54								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:73
+#	0x7c4bbf	github.com/shirou/gopsutil/cpu.PercentWithContext+0x3f							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:147
+#	0x8044d5	github.com/shirou/gopsutil/cpu.Percent+0x175								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:138
+#	0x8044b3	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x153	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:133
+
+0: 0 [0: 0] @ 0x7c54f8 0x7c52a8 0x7c4bd5 0x7c4bc0 0x8044d6 0x8044b4 0x58bfe1
+#	0x7c54f7	github.com/shirou/gopsutil/cpu.perCPUTimes+0x217							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:176
+#	0x7c52a7	github.com/shirou/gopsutil/cpu.TimesWithContext+0x267							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:78
+#	0x7c4bd4	github.com/shirou/gopsutil/cpu.Times+0x54								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:73
+#	0x7c4bbf	github.com/shirou/gopsutil/cpu.PercentWithContext+0x3f							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:147
+#	0x8044d5	github.com/shirou/gopsutil/cpu.Percent+0x175								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:138
+#	0x8044b3	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x153	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:133
+
+0: 0 [1: 8192] @ 0x52ebee 0x5304b9 0x533647 0x829448 0x8281b5 0x82d21a 0x822425 0x822087 0x82068b 0x8300e5 0x82f996 0x82f7ad 0x8302fe 0x76fb4f 0x7714e9 0x77270c 0x76e8a7 0x58bfe1
+#	0x829447	runtime/pprof.(*profileBuilder).emitLocation+0xb07		C:/Program Files/Go/src/runtime/pprof/proto.go:612
+#	0x8281b4	runtime/pprof.(*profileBuilder).appendLocsForStack+0x514	C:/Program Files/Go/src/runtime/pprof/proto.go:459
+#	0x82d219	runtime/pprof.writeHeapProto+0x559				C:/Program Files/Go/src/runtime/pprof/protomem.go:46
+#	0x822424	runtime/pprof.writeHeapInternal+0x304				C:/Program Files/Go/src/runtime/pprof/pprof.go:575
+#	0x822086	runtime/pprof.writeHeap+0x26					C:/Program Files/Go/src/runtime/pprof/pprof.go:535
+#	0x82068a	runtime/pprof.(*Profile).WriteTo+0x14a				C:/Program Files/Go/src/runtime/pprof/pprof.go:330
+#	0x8300e4	net/http/pprof.collectProfile+0x44				C:/Program Files/Go/src/net/http/pprof/pprof.go:323
+#	0x82f995	net/http/pprof.handler.serveDeltaProfile+0x155			C:/Program Files/Go/src/net/http/pprof/pprof.go:276
+#	0x82f7ac	net/http/pprof.handler.ServeHTTP+0x4ec				C:/Program Files/Go/src/net/http/pprof/pprof.go:239
+#	0x8302fd	net/http/pprof.Index+0x13d					C:/Program Files/Go/src/net/http/pprof/pprof.go:371
+#	0x76fb4e	net/http.HandlerFunc.ServeHTTP+0x2e				C:/Program Files/Go/src/net/http/server.go:2109
+#	0x7714e8	net/http.(*ServeMux).ServeHTTP+0x148				C:/Program Files/Go/src/net/http/server.go:2487
+#	0x77270b	net/http.serverHandler.ServeHTTP+0x30b				C:/Program Files/Go/src/net/http/server.go:2947
+#	0x76e8a6	net/http.(*conn).serve+0x606					C:/Program Files/Go/src/net/http/server.go:1991
+
+0: 0 [1: 262144] @ 0x70efe5 0x70f748 0x7191f9 0x824a50 0x8253a9 0x82d13d 0x822425 0x822087 0x82068b 0x8300e5 0x82fb75 0x82f7ad 0x8302fe 0x76fb4f 0x7714e9 0x77270c 0x76e8a7 0x58bfe1
+#	0x70efe4	compress/flate.(*compressor).init+0x4a4		C:/Program Files/Go/src/compress/flate/deflate.go:586
+#	0x70f747	compress/flate.NewWriter+0x47			C:/Program Files/Go/src/compress/flate/deflate.go:667
+#	0x7191f8	compress/gzip.(*Writer).Write+0x2d8		C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0x824a4f	runtime/pprof.(*profileBuilder).flush+0x4f	C:/Program Files/Go/src/runtime/pprof/proto.go:146
+#	0x8253a8	runtime/pprof.(*profileBuilder).pbSample+0xc8	C:/Program Files/Go/src/runtime/pprof/proto.go:168
+#	0x82d13c	runtime/pprof.writeHeapProto+0x47c		C:/Program Files/Go/src/runtime/pprof/protomem.go:59
+#	0x822424	runtime/pprof.writeHeapInternal+0x304		C:/Program Files/Go/src/runtime/pprof/pprof.go:575
+#	0x822086	runtime/pprof.writeHeap+0x26			C:/Program Files/Go/src/runtime/pprof/pprof.go:535
+#	0x82068a	runtime/pprof.(*Profile).WriteTo+0x14a		C:/Program Files/Go/src/runtime/pprof/pprof.go:330
+#	0x8300e4	net/http/pprof.collectProfile+0x44		C:/Program Files/Go/src/net/http/pprof/pprof.go:323
+#	0x82fb74	net/http/pprof.handler.serveDeltaProfile+0x334	C:/Program Files/Go/src/net/http/pprof/pprof.go:297
+#	0x82f7ac	net/http/pprof.handler.ServeHTTP+0x4ec		C:/Program Files/Go/src/net/http/pprof/pprof.go:239
+#	0x8302fd	net/http/pprof.Index+0x13d			C:/Program Files/Go/src/net/http/pprof/pprof.go:371
+#	0x76fb4e	net/http.HandlerFunc.ServeHTTP+0x2e		C:/Program Files/Go/src/net/http/server.go:2109
+#	0x7714e8	net/http.(*ServeMux).ServeHTTP+0x148		C:/Program Files/Go/src/net/http/server.go:2487
+#	0x77270b	net/http.serverHandler.ServeHTTP+0x30b		C:/Program Files/Go/src/net/http/server.go:2947
+#	0x76e8a6	net/http.(*conn).serve+0x606			C:/Program Files/Go/src/net/http/server.go:1991
+
+0: 0 [0: 0] @ 0x595725 0x59556e 0x5952a5 0x761345 0x761791 0x7631eb 0x788eb4 0x58bfe1
+#	0x595724	sync.(*Pool).pinSlow+0x184		C:/Program Files/Go/src/sync/pool.go:230
+#	0x59556d	sync.(*Pool).pin+0x4d			C:/Program Files/Go/src/sync/pool.go:209
+#	0x5952a4	sync.(*Pool).Get+0x24			C:/Program Files/Go/src/sync/pool.go:131
+#	0x761344	net/http.Header.sortedKeyValues+0x44	C:/Program Files/Go/src/net/http/header.go:174
+#	0x761790	net/http.Header.writeSubset+0xd0	C:/Program Files/Go/src/net/http/header.go:201
+#	0x7631ea	net/http.(*Request).write+0x8ca		C:/Program Files/Go/src/net/http/request.go:654
+#	0x788eb3	net/http.(*persistConn).writeLoop+0x173	C:/Program Files/Go/src/net/http/transport.go:2395
+
+0: 0 [1: 262144] @ 0x70efe5 0x70f748 0x7191f9 0x827aa5 0x823ebb 0x58bfe1
+#	0x70efe4	compress/flate.(*compressor).init+0x4a4		C:/Program Files/Go/src/compress/flate/deflate.go:586
+#	0x70f747	compress/flate.NewWriter+0x47			C:/Program Files/Go/src/compress/flate/deflate.go:667
+#	0x7191f8	compress/gzip.(*Writer).Write+0x2d8		C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0x827aa4	runtime/pprof.(*profileBuilder).build+0x364	C:/Program Files/Go/src/runtime/pprof/proto.go:390
+#	0x823eba	runtime/pprof.profileWriter+0xba		C:/Program Files/Go/src/runtime/pprof/pprof.go:812
+
+0: 0 [1: 2048] @ 0x595725 0x59556e 0x5952a5 0x7ea605 0x7ea61e 0x7ecab2 0x7feee8 0x7feec1 0x7feeba 0x7f7a67 0x7f5882 0x7fc188 0x7fd7bb 0x7fbf17 0x801a33 0x801a13 0x801434 0x804f03 0x804cd8 0x58bfe1
+#	0x595724	sync.(*Pool).pinSlow+0x184										C:/Program Files/Go/src/sync/pool.go:230
+#	0x59556d	sync.(*Pool).pin+0x4d											C:/Program Files/Go/src/sync/pool.go:209
+#	0x5952a4	sync.(*Pool).Get+0x24											C:/Program Files/Go/src/sync/pool.go:131
+#	0x7ea604	regexp.newBitState+0xa4											C:/Program Files/Go/src/regexp/backtrack.go:50
+#	0x7ea61d	regexp.(*Regexp).backtrack+0xbd										C:/Program Files/Go/src/regexp/backtrack.go:317
+#	0x7ecab1	regexp.(*Regexp).doExecute+0x271									C:/Program Files/Go/src/regexp/exec.go:535
+#	0x7feee7	regexp.(*Regexp).doMatch+0x47										C:/Program Files/Go/src/regexp/exec.go:514
+#	0x7feec0	regexp.(*Regexp).MatchString+0x20									C:/Program Files/Go/src/regexp/regexp.go:533
+#	0x7feeb9	github.com/go-resty/resty/v2.IsJSONType+0x19								E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/util.go:98
+#	0x7f7a66	github.com/go-resty/resty/v2.parseRequestHeader+0x546							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/middleware.go:119
+#	0x7f5881	github.com/go-resty/resty/v2.(*Client).execute+0x1a1							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/client.go:909
+#	0x7fc187	github.com/go-resty/resty/v2.(*Request).Execute.func1+0x87						E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:769
+#	0x7fd7ba	github.com/go-resty/resty/v2.Backoff+0x19a								E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/retry.go:105
+#	0x7fbf16	github.com/go-resty/resty/v2.(*Request).Execute+0x536							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:763
+#	0x801a32	github.com/go-resty/resty/v2.(*Request).Post+0x332							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:699
+#	0x801a12	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).sendMetrics+0x312		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:70
+#	0x801433	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).SendMetrics+0x193		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:45
+#	0x804f02	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).sendMetrics+0xa2		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:62
+#	0x804cd7	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).PollMetrics.func1+0x137	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:49
+
+0: 0 [1: 64] @ 0x66ed85 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x803251 0x8027c5 0x58bfe1
+#	0x66ed84	crypto/hmac.New+0x124												C:/Program Files/Go/src/crypto/hmac/hmac.go:155
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803250	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x830	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:90
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 24576] @ 0x8221ea 0x822087 0x82068b 0x82f765 0x8302fe 0x76fb4f 0x7714e9 0x77270c 0x76e8a7 0x58bfe1
+#	0x8221e9	runtime/pprof.writeHeapInternal+0xc9	C:/Program Files/Go/src/runtime/pprof/pprof.go:565
+#	0x822086	runtime/pprof.writeHeap+0x26		C:/Program Files/Go/src/runtime/pprof/pprof.go:535
+#	0x82068a	runtime/pprof.(*Profile).WriteTo+0x14a	C:/Program Files/Go/src/runtime/pprof/pprof.go:330
+#	0x82f764	net/http/pprof.handler.ServeHTTP+0x4a4	C:/Program Files/Go/src/net/http/pprof/pprof.go:253
+#	0x8302fd	net/http/pprof.Index+0x13d		C:/Program Files/Go/src/net/http/pprof/pprof.go:371
+#	0x76fb4e	net/http.HandlerFunc.ServeHTTP+0x2e	C:/Program Files/Go/src/net/http/server.go:2109
+#	0x7714e8	net/http.(*ServeMux).ServeHTTP+0x148	C:/Program Files/Go/src/net/http/server.go:2487
+#	0x77270b	net/http.serverHandler.ServeHTTP+0x30b	C:/Program Files/Go/src/net/http/server.go:2947
+#	0x76e8a6	net/http.(*conn).serve+0x606		C:/Program Files/Go/src/net/http/server.go:1991
+
+0: 0 [1: 128] @ 0x673ee5 0x66ecd5 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x8045b5 0x58bfe1
+#	0x673ee4	crypto/sha256.New+0x24											C:/Program Files/Go/src/crypto/sha256/sha256.go:166
+#	0x66ecd4	crypto/hmac.New+0x74											C:/Program Files/Go/src/crypto/hmac/hmac.go:139
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b			E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8045b4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x254	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:135
+
+0: 0 [1: 64] @ 0x66ed85 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x803951 0x8027c5 0x58bfe1
+#	0x66ed84	crypto/hmac.New+0x124												C:/Program Files/Go/src/crypto/hmac/hmac.go:155
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803950	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0xf30	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:98
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 32] @ 0x57384b 0x79cdb5 0x80489d 0x80488e 0x8050fc 0x8045b5 0x58bfe1
+#	0x79cdb4	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x1f4				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:40
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b			E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8045b4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x254	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:135
+
+0: 0 [1: 96] @ 0x66ec98 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x8034f1 0x8027c5 0x58bfe1
+#	0x66ec97	crypto/hmac.New+0x37												C:/Program Files/Go/src/crypto/hmac/hmac.go:137
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8034f0	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0xad0	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:93
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 128] @ 0x673ee5 0x66eca7 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x802df2 0x8027c5 0x58bfe1
+#	0x673ee4	crypto/sha256.New+0x24												C:/Program Files/Go/src/crypto/sha256/sha256.go:166
+#	0x66eca6	crypto/hmac.New+0x46												C:/Program Files/Go/src/crypto/hmac/hmac.go:138
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x802df1	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x3d1	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:85
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 48] @ 0x5f172c 0x79cda5 0x80489d 0x80488e 0x8050fc 0x80448d 0x58bfe1
+#	0x5f172b	fmt.Sprintf+0x6b											C:/Program Files/Go/src/fmt/print.go:220
+#	0x79cda4	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x1e4				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:36
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b			E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x80448c	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x12c	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:132
+
+0: 0 [1: 64] @ 0x66ed85 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x803331 0x8027c5 0x58bfe1
+#	0x66ed84	crypto/hmac.New+0x124												C:/Program Files/Go/src/crypto/hmac/hmac.go:155
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803330	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x910	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:91
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 64] @ 0x804817 0x8050fc 0x803e3a 0x8027c5 0x58bfe1
+#	0x804816	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0x56					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:37
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803e39	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x1419	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:104
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [2: 256] @ 0x673ee5 0x66eca7 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x802d13 0x8027c5 0x58bfe1
+#	0x673ee4	crypto/sha256.New+0x24												C:/Program Files/Go/src/crypto/sha256/sha256.go:166
+#	0x66eca6	crypto/hmac.New+0x46												C:/Program Files/Go/src/crypto/hmac/hmac.go:138
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x802d12	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x2f2	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:84
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 16] @ 0x8047fe 0x8050fc 0x8036b1 0x8027c5 0x58bfe1
+#	0x8047fd	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0x3d					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:36
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8036b0	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0xc90	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:95
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 1280] @ 0x7a46ea 0x801755 0x801434 0x804f03 0x804cd8 0x58bfe1
+#	0x7a46e9	encoding/json.Marshal+0xa9										C:/Program Files/Go/src/encoding/json/encode.go:164
+#	0x801754	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).sendMetrics+0x54		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:63
+#	0x801433	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).SendMetrics+0x193		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:45
+#	0x804f02	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).sendMetrics+0xa2		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:62
+#	0x804cd7	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).PollMetrics.func1+0x137	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:49
+
+0: 0 [6: 196608] @ 0x7e962f 0x7ea6fc 0x7ecab2 0x7feee8 0x7feec1 0x7feeba 0x7f7a67 0x7f5882 0x7fc188 0x7fd7bb 0x7fbf17 0x801a33 0x801a13 0x801434 0x804f03 0x804cd8 0x58bfe1
+#	0x7e962e	regexp.(*bitState).reset+0x10e										C:/Program Files/Go/src/regexp/backtrack.go:91
+#	0x7ea6fb	regexp.(*Regexp).backtrack+0x19b									C:/Program Files/Go/src/regexp/backtrack.go:319
+#	0x7ecab1	regexp.(*Regexp).doExecute+0x271									C:/Program Files/Go/src/regexp/exec.go:535
+#	0x7feee7	regexp.(*Regexp).doMatch+0x47										C:/Program Files/Go/src/regexp/exec.go:514
+#	0x7feec0	regexp.(*Regexp).MatchString+0x20									C:/Program Files/Go/src/regexp/regexp.go:533
+#	0x7feeb9	github.com/go-resty/resty/v2.IsJSONType+0x19								E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/util.go:98
+#	0x7f7a66	github.com/go-resty/resty/v2.parseRequestHeader+0x546							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/middleware.go:119
+#	0x7f5881	github.com/go-resty/resty/v2.(*Client).execute+0x1a1							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/client.go:909
+#	0x7fc187	github.com/go-resty/resty/v2.(*Request).Execute.func1+0x87						E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:769
+#	0x7fd7ba	github.com/go-resty/resty/v2.Backoff+0x19a								E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/retry.go:105
+#	0x7fbf16	github.com/go-resty/resty/v2.(*Request).Execute+0x536							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:763
+#	0x801a32	github.com/go-resty/resty/v2.(*Request).Post+0x332							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:699
+#	0x801a12	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).sendMetrics+0x312		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:70
+#	0x801433	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).SendMetrics+0x193		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:45
+#	0x804f02	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).sendMetrics+0xa2		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:62
+#	0x804cd7	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).PollMetrics.func1+0x137	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:49
+
+0: 0 [1: 416] @ 0x80179f 0x80176e 0x801434 0x804f03 0x804cd8 0x58bfe1
+#	0x80179e	github.com/go-resty/resty/v2.(*Client).R+0x9e								E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/client.go:382
+#	0x80176d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).sendMetrics+0x6d		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:67
+#	0x801433	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).SendMetrics+0x193		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:45
+#	0x804f02	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).sendMetrics+0xa2		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:62
+#	0x804cd7	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).PollMetrics.func1+0x137	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:49
+
+0: 0 [4: 512] @ 0x673ee5 0x66eca7 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x8045b5 0x58bfe1
+#	0x673ee4	crypto/sha256.New+0x24											C:/Program Files/Go/src/crypto/sha256/sha256.go:166
+#	0x66eca6	crypto/hmac.New+0x46											C:/Program Files/Go/src/crypto/hmac/hmac.go:138
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b			E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8045b4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x254	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:135
+
+0: 0 [1: 64] @ 0x66ed46 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x803e3a 0x8027c5 0x58bfe1
+#	0x66ed45	crypto/hmac.New+0xe5												C:/Program Files/Go/src/crypto/hmac/hmac.go:154
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803e39	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x1419	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:104
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 96] @ 0x66ec98 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x8036b1 0x8027c5 0x58bfe1
+#	0x66ec97	crypto/hmac.New+0x37												C:/Program Files/Go/src/crypto/hmac/hmac.go:137
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8036b0	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0xc90	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:95
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [2: 16384] @ 0x5e019e 0x595332 0x5e022e 0x5dfe8b 0x779b2d 0x779b15 0x7796b8 0x763466 0x788eb4 0x58bfe1
+#	0x5e019d	io.glob..func1+0x3d				C:/Program Files/Go/src/io/io.go:602
+#	0x595331	sync.(*Pool).Get+0xb1				C:/Program Files/Go/src/sync/pool.go:151
+#	0x5e022d	io.discard.ReadFrom+0x2d			C:/Program Files/Go/src/io/io.go:608
+#	0x5dfe8a	io.copyBuffer+0x14a				C:/Program Files/Go/src/io/io.go:413
+#	0x779b2c	io.Copy+0x4c					C:/Program Files/Go/src/io/io.go:386
+#	0x779b14	net/http.(*transferWriter).doBodyCopy+0x34	C:/Program Files/Go/src/net/http/transfer.go:412
+#	0x7796b7	net/http.(*transferWriter).writeBody+0x417	C:/Program Files/Go/src/net/http/transfer.go:375
+#	0x763465	net/http.(*Request).write+0xb45			C:/Program Files/Go/src/net/http/request.go:701
+#	0x788eb3	net/http.(*persistConn).writeLoop+0x173		C:/Program Files/Go/src/net/http/transport.go:2395
+
+0: 0 [1: 65536] @ 0x70ef50 0x70ef9b 0x70f748 0x7191f9 0x827aa5 0x823ebb 0x58bfe1
+#	0x70ef4f	compress/flate.newDeflateFast+0x40f		C:/Program Files/Go/src/compress/flate/deflatefast.go:64
+#	0x70ef9a	compress/flate.(*compressor).init+0x45a		C:/Program Files/Go/src/compress/flate/deflate.go:585
+#	0x70f747	compress/flate.NewWriter+0x47			C:/Program Files/Go/src/compress/flate/deflate.go:667
+#	0x7191f8	compress/gzip.(*Writer).Write+0x2d8		C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0x827aa4	runtime/pprof.(*profileBuilder).build+0x364	C:/Program Files/Go/src/runtime/pprof/proto.go:390
+#	0x823eba	runtime/pprof.profileWriter+0xba		C:/Program Files/Go/src/runtime/pprof/pprof.go:812
+
+0: 0 [2: 1327104] @ 0x70f72f 0x7191f9 0x827aa5 0x823ebb 0x58bfe1
+#	0x70f72e	compress/flate.NewWriter+0x2e			C:/Program Files/Go/src/compress/flate/deflate.go:666
+#	0x7191f8	compress/gzip.(*Writer).Write+0x2d8		C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0x827aa4	runtime/pprof.(*profileBuilder).build+0x364	C:/Program Files/Go/src/runtime/pprof/proto.go:390
+#	0x823eba	runtime/pprof.profileWriter+0xba		C:/Program Files/Go/src/runtime/pprof/pprof.go:812
+
+0: 0 [1: 16] @ 0x5c007e 0x5bfac5 0x778dc8 0x7631a5 0x788eb4 0x58bfe1
+#	0x5c007d	strconv.formatBits+0x21d			C:/Program Files/Go/src/strconv/itoa.go:199
+#	0x5bfac4	strconv.FormatInt+0xa4				C:/Program Files/Go/src/strconv/itoa.go:29
+#	0x778dc7	net/http.(*transferWriter).writeHeader+0x2c7	C:/Program Files/Go/src/net/http/transfer.go:293
+#	0x7631a4	net/http.(*Request).write+0x884			C:/Program Files/Go/src/net/http/request.go:649
+#	0x788eb3	net/http.(*persistConn).writeLoop+0x173		C:/Program Files/Go/src/net/http/transport.go:2395
+
+0: 0 [2: 512] @ 0x763fbe 0x7f7f71 0x7f7f46 0x7f5882 0x7fc188 0x7fd7bb 0x7fbf17 0x801a33 0x801a13 0x801434 0x804f03 0x804cd8 0x58bfe1
+#	0x763fbd	net/http.NewRequestWithContext+0x27d									C:/Program Files/Go/src/net/http/request.go:884
+#	0x7f7f70	net/http.NewRequest+0x70										C:/Program Files/Go/src/net/http/request.go:836
+#	0x7f7f45	github.com/go-resty/resty/v2.createHTTPRequest+0x45							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/middleware.go:175
+#	0x7f5881	github.com/go-resty/resty/v2.(*Client).execute+0x1a1							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/client.go:909
+#	0x7fc187	github.com/go-resty/resty/v2.(*Request).Execute.func1+0x87						E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:769
+#	0x7fd7ba	github.com/go-resty/resty/v2.Backoff+0x19a								E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/retry.go:105
+#	0x7fbf16	github.com/go-resty/resty/v2.(*Request).Execute+0x536							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:763
+#	0x801a32	github.com/go-resty/resty/v2.(*Request).Post+0x332							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:699
+#	0x801a12	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).sendMetrics+0x312		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:70
+#	0x801433	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).SendMetrics+0x193		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:45
+#	0x804f02	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).sendMetrics+0xa2		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:62
+#	0x804cd7	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).PollMetrics.func1+0x137	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:49
+
+0: 0 [2: 128] @ 0x66ed85 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x8045b5 0x58bfe1
+#	0x66ed84	crypto/hmac.New+0x124											C:/Program Files/Go/src/crypto/hmac/hmac.go:155
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc				E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b			E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8045b4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x254	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:135
+
+0: 0 [1: 96] @ 0x66ec98 0x79cc0d 0x80489d 0x80488e 0x8050fc 0x803e3a 0x8027c5 0x58bfe1
+#	0x66ec97	crypto/hmac.New+0x37												C:/Program Files/Go/src/crypto/hmac/hmac.go:137
+#	0x79cc0c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).GetHash+0x4c					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:32
+#	0x80489c	github.com/fev0ks/ydx-goadv-metrics/internal/model.(*Metric).UpdateHash+0xdc					E:/Projects/Go/ydx-goadv-metrics/internal/model/metric.go:28
+#	0x80488d	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0xcd					E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:42
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x803e39	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processMemStatsMetrics+0x1419	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:104
+#	0x8027c4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x64	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:57
+
+0: 0 [1: 16] @ 0x6b8b45 0x6b8adb 0x7f6df9 0x7f5882 0x7fc188 0x7fd7bb 0x7fbf17 0x801a33 0x801a13 0x801434 0x804f03 0x804cd8 0x58bfe1
+#	0x6b8b44	strings.(*Builder).WriteString+0x844									C:/Program Files/Go/src/strings/builder.go:124
+#	0x6b8ada	net/url.(*URL).String+0x7da										C:/Program Files/Go/src/net/url/url.go:845
+#	0x7f6df8	github.com/go-resty/resty/v2.parseRequestURL+0x218							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/middleware.go:51
+#	0x7f5881	github.com/go-resty/resty/v2.(*Client).execute+0x1a1							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/client.go:909
+#	0x7fc187	github.com/go-resty/resty/v2.(*Request).Execute.func1+0x87						E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:769
+#	0x7fd7ba	github.com/go-resty/resty/v2.Backoff+0x19a								E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/retry.go:105
+#	0x7fbf16	github.com/go-resty/resty/v2.(*Request).Execute+0x536							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:763
+#	0x801a32	github.com/go-resty/resty/v2.(*Request).Post+0x332							E:/Projects/GOGO/pkg/mod/github.com/go-resty/resty/v2@v2.7.0/request.go:699
+#	0x801a12	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).sendMetrics+0x312		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:70
+#	0x801433	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender.(*bulkSender).SendMetrics+0x193		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/sender/bulk_sender.go:45
+#	0x804f02	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).sendMetrics+0xa2		E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:62
+#	0x804cd7	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricPoller).PollMetrics.func1+0x137	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/poller.go:49
+
+0: 0 [2: 128] @ 0x804817 0x8050fc 0x8045b5 0x58bfe1
+#	0x804816	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.newGaugeMetric+0x56				E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:37
+#	0x8050fb	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.metricFactory.NewGaugeMetric+0x3b			E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/metric_factory.go:21
+#	0x8045b4	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x254	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:135
+
+0: 0 [92: 9797632] @ 0x7c561a 0x7c530e 0x7c52a8 0x7c4c25 0x7c4c0b 0x8044d6 0x8044b4 0x58bfe1
+#	0x7c5619	github.com/shirou/gopsutil/cpu.perfInfo+0x39								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:188
+#	0x7c530d	github.com/shirou/gopsutil/cpu.perCPUTimes+0x2d								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:164
+#	0x7c52a7	github.com/shirou/gopsutil/cpu.TimesWithContext+0x267							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:78
+#	0x7c4c24	github.com/shirou/gopsutil/cpu.Times+0xa4								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu_windows.go:73
+#	0x7c4c0a	github.com/shirou/gopsutil/cpu.PercentWithContext+0x8a							E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:157
+#	0x8044d5	github.com/shirou/gopsutil/cpu.Percent+0x175								E:/Projects/GOGO/pkg/mod/github.com/shirou/gopsutil@v3.21.11+incompatible/cpu/cpu.go:138
+#	0x8044b3	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processGopsMetrics+0x153	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:133
+
+0: 0 [0: 0] @ 0x8221ea 0x822087 0x82068b 0x82f765 0x8302fe 0x76fb4f 0x7714e9 0x77270c 0x76e8a7 0x58bfe1
+#	0x8221e9	runtime/pprof.writeHeapInternal+0xc9	C:/Program Files/Go/src/runtime/pprof/pprof.go:565
+#	0x822086	runtime/pprof.writeHeap+0x26		C:/Program Files/Go/src/runtime/pprof/pprof.go:535
+#	0x82068a	runtime/pprof.(*Profile).WriteTo+0x14a	C:/Program Files/Go/src/runtime/pprof/pprof.go:330
+#	0x82f764	net/http/pprof.handler.ServeHTTP+0x4a4	C:/Program Files/Go/src/net/http/pprof/pprof.go:253
+#	0x8302fd	net/http/pprof.Index+0x13d		C:/Program Files/Go/src/net/http/pprof/pprof.go:371
+#	0x76fb4e	net/http.HandlerFunc.ServeHTTP+0x2e	C:/Program Files/Go/src/net/http/server.go:2109
+#	0x7714e8	net/http.(*ServeMux).ServeHTTP+0x148	C:/Program Files/Go/src/net/http/server.go:2487
+#	0x77270b	net/http.serverHandler.ServeHTTP+0x30b	C:/Program Files/Go/src/net/http/server.go:2947
+#	0x76e8a6	net/http.(*conn).serve+0x606		C:/Program Files/Go/src/net/http/server.go:1991
+
+0: 0 [1: 16] @ 0x5e5519 0x5e7b17 0x69da3c 0x6addff 0x6ad93e 0x6a5c65 0x6b05a5 0x6b0489 0x695994 0x695352 0x694ed2 0x58bfe1
+#	0x5e5518	internal/poll.execIO+0x1d8			C:/Program Files/Go/src/internal/poll/fd_windows.go:206
+#	0x5e7b16	internal/poll.(*FD).ConnectEx+0x56		C:/Program Files/Go/src/internal/poll/fd_windows.go:932
+#	0x69da3b	net.(*netFD).connect+0x3bb			C:/Program Files/Go/src/net/fd_windows.go:106
+#	0x6addfe	net.(*netFD).dial+0x39e				C:/Program Files/Go/src/net/sock_posix.go:149
+#	0x6ad93d	net.socket+0x2bd				C:/Program Files/Go/src/net/sock_posix.go:70
+#	0x6a5c64	net.internetSocket+0x204			C:/Program Files/Go/src/net/ipsock_posix.go:142
+#	0x6b05a4	net.(*sysDialer).doDialTCP+0xa4			C:/Program Files/Go/src/net/tcpsock_posix.go:68
+#	0x6b0488	net.(*sysDialer).dialTCP+0x68			C:/Program Files/Go/src/net/tcpsock_posix.go:64
+#	0x695993	net.(*sysDialer).dialSingle+0x213		C:/Program Files/Go/src/net/dial.go:582
+#	0x695351	net.(*sysDialer).dialSerial+0x311		C:/Program Files/Go/src/net/dial.go:550
+#	0x694ed1	net.(*sysDialer).dialParallel.func1+0x91	C:/Program Files/Go/src/net/dial.go:470
+
+0: 0 [1: 96] @ 0x5968db 0x5e78f7 0x5e718f 0x5ea185 0x5ea17b 0x5fa228 0x5fa575 0x8028f4 0x8027ad 0x58bfe1
+#	0x5968da	unicode/utf16.Encode+0x5a											C:/Program Files/Go/src/unicode/utf16/utf16.go:64
+#	0x5e78f6	internal/poll.(*FD).writeConsole+0x436										C:/Program Files/Go/src/internal/poll/fd_windows.go:738
+#	0x5e718e	internal/poll.(*FD).Write+0x22e											C:/Program Files/Go/src/internal/poll/fd_windows.go:676
+#	0x5ea184	os.(*File).write+0x64												C:/Program Files/Go/src/os/file_posix.go:48
+#	0x5ea17a	os.(*File).Write+0x5a												C:/Program Files/Go/src/os/file.go:175
+#	0x5fa227	log.(*Logger).Output+0x367											C:/Program Files/Go/src/log/log.go:198
+#	0x5fa574	log.Printf+0x54													C:/Program Files/Go/src/log/log.go:354
+#	0x8028f3	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).processPollCounterMetric+0x73	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:65
+#	0x8027ac	github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service.(*commonMetricCollector).collectCommonMetrics.func1+0x4c	E:/Projects/Go/ydx-goadv-metrics/cmd/agent/service/collector.go:55
+
+0: 0 [3: 3145728] @ 0x56a338 0x52701d 0x823c3f 0x82e6fe 0x76fb4f 0x7714e9 0x77270c 0x76e8a7 0x58bfe1
+#	0x823c3e	runtime/pprof.StartCPUProfile+0xfe	C:/Program Files/Go/src/runtime/pprof/pprof.go:782
+#	0x82e6fd	net/http/pprof.Profile+0x29d		C:/Program Files/Go/src/net/http/pprof/pprof.go:136
+#	0x76fb4e	net/http.HandlerFunc.ServeHTTP+0x2e	C:/Program Files/Go/src/net/http/server.go:2109
+#	0x7714e8	net/http.(*ServeMux).ServeHTTP+0x148	C:/Program Files/Go/src/net/http/server.go:2487
+#	0x77270b	net/http.serverHandler.ServeHTTP+0x30b	C:/Program Files/Go/src/net/http/server.go:2947
+#	0x76e8a6	net/http.(*conn).serve+0x606		C:/Program Files/Go/src/net/http/server.go:1991
+
+
+# runtime.MemStats
+# Alloc = 3081888
+# TotalAlloc = 149588768
+# Sys = 24566632
+# Lookups = 0
+# Mallocs = 444364
+# Frees = 435201
+# HeapAlloc = 3081888
+# HeapSys = 12124160
+# HeapIdle = 7847936
+# HeapInuse = 4276224
+# HeapReleased = 7028736
+# HeapObjects = 9163
+# Stack = 458752 / 458752
+# MSpan = 169592 / 179520
+# MCache = 18688 / 32704
+# BuckHashSys = 1465044
+# GCSys = 7364264
+# OtherSys = 2942188
+# NextGC = 4194304
+# LastGC = 1678115571704283000
+# PauseNs = [0 0 0 0 501800 500200 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 502500 500500 0 0 0 0 0 0 516700 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+# PauseEnd = [1678114619700907700 1678114629762908400 1678114636304909000 1678114645700408400 1678114661700409100 1678114677700907700 1678114691699909100 1678114709700910000 1678114725699407000 1678114741700909600 1678114759699908300 1678114775699918700 1678114795700918600 1678114811699918400 1678114829733420000 1678114847699420500 1678114867700419500 1678114889699920500 1678114909731917800 1678114931699919800 1678114953700839100 1678114961699839500 1678114981700338800 1678114984932838000 1678114999699838900 1678115019730839400 1678115039732842200 1678115063699838000 1678115085699839000 1678115107699839200 1678115129700338100 1678115149700339000 1678115159700338300 1678115171699838400 1678115183700337600 1678115189700339600 1678115211700340700 1678115231700838300 1678115245700338600 1678115259699838800 1678115263700338900 1678115287699838000 1678115307708175100 1678115329701407800 1678115349708562200 1678115369709283600 1678115391702733900 1678115411709441800 1678115431707222200 1678115449746215300 1678115471708274700 1678115491706387000 1678115511704053800 1678115531703423200 1678115551712667200 1678115571704283000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+# NumGC = 56
+# NumForcedGC = 0
+# GCCPUFraction = 3.810385493095253e-06
+# DebugGC = false

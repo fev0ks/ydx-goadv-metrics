@@ -4,7 +4,7 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 )
 
-type MetricFactory interface {
+type IMetricFactory interface {
 	NewGaugeMetric(name string, value model.GaugeVT) *model.Metric
 	NewCounterMetric(name string, value model.CounterVT) *model.Metric
 }
@@ -13,7 +13,7 @@ type metricFactory struct {
 	hashKey string
 }
 
-func NewMetricFactory(hashKey string) MetricFactory {
+func NewMetricFactory(hashKey string) IMetricFactory {
 	return &metricFactory{hashKey: hashKey}
 }
 

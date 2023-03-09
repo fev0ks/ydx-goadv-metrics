@@ -1,0 +1,203 @@
+heap profile: 11: 1411632 [13: 2140720] @ heap/1048576
+2: 1327104 [2: 1327104] @ 0xe3ae2f 0xe44f19 0xee1e1a 0xedfbca 0xedf965 0xe800cf 0xeaec36 0xe800cf 0xee35b3 0xe800cf 0xead995 0xeae65c 0xe800cf 0xeaec36 0xe800cf 0xeb43de 0xe800cf 0xee12f1 0xe800cf 0xee4363 0xe800cf 0xee40fe 0xe800cf 0xeb45ec 0xe800cf 0xead950 0xe82c8c 0xe7ee27 0xc3bd81
+#	0xe3ae2e	compress/flate.NewWriter+0x2e								C:/Program Files/Go/src/compress/flate/deflate.go:666
+#	0xe44f18	compress/gzip.(*Writer).Write+0x2d8							C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0xee1e19	github.com/go-chi/chi/v5/middleware.(*compressResponseWriter).Write+0x99		E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:333
+#	0xedfbc9	net/http/pprof.indexTmplExecute+0x129							C:/Program Files/Go/src/net/http/pprof/pprof.go:447
+#	0xedf964	net/http/pprof.Index+0x764								C:/Program Files/Go/src/net/http/pprof/pprof.go:402
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeaec35	github.com/go-chi/chi/v5.(*Mux).routeHTTP+0x215						E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:442
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee35b2	github.com/go-chi/chi/v5/middleware.NoCache.func1+0x1f2					E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/nocache.go:54
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xead994	github.com/go-chi/chi/v5.(*Mux).ServeHTTP+0x354						E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:71
+#	0xeae65b	github.com/go-chi/chi/v5.(*Mux).Mount.func1+0x19b					E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:314
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeaec35	github.com/go-chi/chi/v5.(*Mux).routeHTTP+0x215						E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:442
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeb43dd	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares.Decompress.func1+0x51d	E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/middlewares/custom.go:41
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee12f0	github.com/go-chi/chi/v5/middleware.(*Compressor).Handler.func1+0x270			E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:213
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee4362	github.com/go-chi/chi/v5/middleware.Recoverer.func1+0x82				E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/recoverer.go:38
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee40fd	github.com/go-chi/chi/v5/middleware.RealIP.func1+0x9d					E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/realip.go:35
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeb45eb	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares.TimerTrace.func1+0x8b	E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/middlewares/custom.go:48
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xead94f	github.com/go-chi/chi/v5.(*Mux).ServeHTTP+0x30f						E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:88
+#	0xe82c8b	net/http.serverHandler.ServeHTTP+0x30b							C:/Program Files/Go/src/net/http/server.go:2947
+#	0xe7ee26	net/http.(*conn).serve+0x606								C:/Program Files/Go/src/net/http/server.go:1991
+
+1: 73728 [1: 73728] @ 0xe3a815 0xe3a79c 0xe3ae48 0xe44f19 0xee1e1a 0xedfbca 0xedf965 0xe800cf 0xeaec36 0xe800cf 0xee35b3 0xe800cf 0xead995 0xeae65c 0xe800cf 0xeaec36 0xe800cf 0xeb43de 0xe800cf 0xee12f1 0xe800cf 0xee4363 0xe800cf 0xee40fe 0xe800cf 0xeb45ec 0xe800cf 0xead950 0xe82c8c 0xe7ee27 0xc3bd81
+#	0xe3a814	compress/flate.(*compressor).initDeflate+0x5d4						C:/Program Files/Go/src/compress/flate/deflate.go:371
+#	0xe3a79b	compress/flate.(*compressor).init+0x55b							C:/Program Files/Go/src/compress/flate/deflate.go:592
+#	0xe3ae47	compress/flate.NewWriter+0x47								C:/Program Files/Go/src/compress/flate/deflate.go:667
+#	0xe44f18	compress/gzip.(*Writer).Write+0x2d8							C:/Program Files/Go/src/compress/gzip/gzip.go:191
+#	0xee1e19	github.com/go-chi/chi/v5/middleware.(*compressResponseWriter).Write+0x99		E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:333
+#	0xedfbc9	net/http/pprof.indexTmplExecute+0x129							C:/Program Files/Go/src/net/http/pprof/pprof.go:447
+#	0xedf964	net/http/pprof.Index+0x764								C:/Program Files/Go/src/net/http/pprof/pprof.go:402
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeaec35	github.com/go-chi/chi/v5.(*Mux).routeHTTP+0x215						E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:442
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee35b2	github.com/go-chi/chi/v5/middleware.NoCache.func1+0x1f2					E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/nocache.go:54
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xead994	github.com/go-chi/chi/v5.(*Mux).ServeHTTP+0x354						E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:71
+#	0xeae65b	github.com/go-chi/chi/v5.(*Mux).Mount.func1+0x19b					E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:314
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeaec35	github.com/go-chi/chi/v5.(*Mux).routeHTTP+0x215						E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:442
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeb43dd	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares.Decompress.func1+0x51d	E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/middlewares/custom.go:41
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee12f0	github.com/go-chi/chi/v5/middleware.(*Compressor).Handler.func1+0x270			E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:213
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee4362	github.com/go-chi/chi/v5/middleware.Recoverer.func1+0x82				E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/recoverer.go:38
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee40fd	github.com/go-chi/chi/v5/middleware.RealIP.func1+0x9d					E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/realip.go:35
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeb45eb	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares.TimerTrace.func1+0x8b	E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/middlewares/custom.go:48
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e							C:/Program Files/Go/src/net/http/server.go:2109
+#	0xead94f	github.com/go-chi/chi/v5.(*Mux).ServeHTTP+0x30f						E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:88
+#	0xe82c8b	net/http.serverHandler.ServeHTTP+0x30b							C:/Program Files/Go/src/net/http/server.go:2947
+#	0xe7ee26	net/http.(*conn).serve+0x606								C:/Program Files/Go/src/net/http/server.go:1991
+
+1: 6144 [1: 6144] @ 0xbdebee 0xbde989 0xd29b4b 0xc19ead 0xc19df1 0xc19df1 0xc19df1 0xc0cc5f 0xc3bd81
+#	0xd29b4a	github.com/lib/pq/oid.init+0x2a	E:/Projects/GOGO/pkg/mod/github.com/lib/pq@v1.10.0/oid/types.go:175
+#	0xc19eac	runtime.doInit+0x12c		C:/Program Files/Go/src/runtime/proc.go:6329
+#	0xc19df0	runtime.doInit+0x70		C:/Program Files/Go/src/runtime/proc.go:6306
+#	0xc19df0	runtime.doInit+0x70		C:/Program Files/Go/src/runtime/proc.go:6306
+#	0xc19df0	runtime.doInit+0x70		C:/Program Files/Go/src/runtime/proc.go:6306
+#	0xc0cc5e	runtime.main+0x1be		C:/Program Files/Go/src/runtime/proc.go:233
+
+2: 2048 [2: 2048] @ 0xc0ff9e 0xc1075b 0xc10dcf 0xc1133a 0xc12d05 0xc13145 0xc1364d 0xc39a0a
+#	0xc0ff9d	runtime.allocm+0x9d		C:/Program Files/Go/src/runtime/proc.go:1759
+#	0xc1075a	runtime.newm+0x3a		C:/Program Files/Go/src/runtime/proc.go:2109
+#	0xc10dce	runtime.startm+0xce		C:/Program Files/Go/src/runtime/proc.go:2325
+#	0xc11339	runtime.wakep+0x59		C:/Program Files/Go/src/runtime/proc.go:2430
+#	0xc12d04	runtime.resetspinning+0x44	C:/Program Files/Go/src/runtime/proc.go:3110
+#	0xc13144	runtime.schedule+0xe4		C:/Program Files/Go/src/runtime/proc.go:3220
+#	0xc1364c	runtime.park_m+0x14c		C:/Program Files/Go/src/runtime/proc.go:3363
+#	0xc39a09	runtime.mcall+0x49		C:/Program Files/Go/src/runtime/asm_amd64.s:448
+
+2: 2048 [2: 2048] @ 0xc0ff9e 0xc1075b 0xc10dcf 0xc1133a 0xc12d05 0xc13145 0xc0f7d7 0xc0f6cc 0xc39985
+#	0xc0ff9d	runtime.allocm+0x9d		C:/Program Files/Go/src/runtime/proc.go:1759
+#	0xc1075a	runtime.newm+0x3a		C:/Program Files/Go/src/runtime/proc.go:2109
+#	0xc10dce	runtime.startm+0xce		C:/Program Files/Go/src/runtime/proc.go:2325
+#	0xc11339	runtime.wakep+0x59		C:/Program Files/Go/src/runtime/proc.go:2430
+#	0xc12d04	runtime.resetspinning+0x44	C:/Program Files/Go/src/runtime/proc.go:3110
+#	0xc13144	runtime.schedule+0xe4		C:/Program Files/Go/src/runtime/proc.go:3220
+#	0xc0f7d6	runtime.mstart1+0xd6		C:/Program Files/Go/src/runtime/proc.go:1432
+#	0xc0f6cb	runtime.mstart0+0x6b		C:/Program Files/Go/src/runtime/proc.go:1382
+#	0xc39984	runtime.mstart+0x4		C:/Program Files/Go/src/runtime/asm_amd64.s:390
+
+1: 416 [1: 416] @ 0xc14fc8 0xc1529e 0xc151c5 0xc39a8e
+#	0xc14fc7	runtime.malg+0x27		C:/Program Files/Go/src/runtime/proc.go:4076
+#	0xc1529d	runtime.newproc1+0x7d		C:/Program Files/Go/src/runtime/proc.go:4123
+#	0xc151c4	runtime.newproc.func1+0x24	C:/Program Files/Go/src/runtime/proc.go:4098
+#	0xc39a8d	runtime.systemstack+0x4d	C:/Program Files/Go/src/runtime/asm_amd64.s:492
+
+1: 96 [1: 96] @ 0xc0d3d7 0xc1c82a 0xceb2f1 0xc3bd81
+#	0xceb2f0	net.(*netFD).connect.func2+0x70	C:/Program Files/Go/src/net/fd_windows.go:95
+
+1: 48 [1: 48] @ 0xcc3a1f 0xcc0f85 0xcc1d7b 0xcc0fbe 0xcc095e 0xcc0465 0xee9a6a 0xe800cf 0xeaec36 0xe800cf 0xeb43de 0xe800cf 0xee12f1 0xe800cf 0xee4363 0xe800cf 0xee40fe 0xe800cf 0xeb45ec 0xe800cf 0xead950 0xe82c8c 0xe7ee27 0xc3bd81
+#	0xcc3a1e	encoding/json.(*decodeState).object+0x19fe									C:/Program Files/Go/src/encoding/json/decode.go:743
+#	0xcc0f84	encoding/json.(*decodeState).value+0x44										C:/Program Files/Go/src/encoding/json/decode.go:374
+#	0xcc1d7a	encoding/json.(*decodeState).array+0x65a									C:/Program Files/Go/src/encoding/json/decode.go:562
+#	0xcc0fbd	encoding/json.(*decodeState).value+0x7d										C:/Program Files/Go/src/encoding/json/decode.go:364
+#	0xcc095d	encoding/json.(*decodeState).unmarshal+0x1dd									C:/Program Files/Go/src/encoding/json/decode.go:181
+#	0xcc0464	encoding/json.Unmarshal+0x124											C:/Program Files/Go/src/encoding/json/decode.go:108
+#	0xee9a69	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest.(*MetricsHandler).ReceptionMetricsHandler.func1+0x109	E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/metric_handler.go:238
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeaec35	github.com/go-chi/chi/v5.(*Mux).routeHTTP+0x215									E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:442
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeb43dd	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares.Decompress.func1+0x51d				E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/middlewares/custom.go:41
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee12f0	github.com/go-chi/chi/v5/middleware.(*Compressor).Handler.func1+0x270						E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:213
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee4362	github.com/go-chi/chi/v5/middleware.Recoverer.func1+0x82							E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/recoverer.go:38
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee40fd	github.com/go-chi/chi/v5/middleware.RealIP.func1+0x9d								E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/realip.go:35
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeb45eb	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares.TimerTrace.func1+0x8b				E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/middlewares/custom.go:48
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xead94f	github.com/go-chi/chi/v5.(*Mux).ServeHTTP+0x30f									E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:88
+#	0xe82c8b	net/http.serverHandler.ServeHTTP+0x30b										C:/Program Files/Go/src/net/http/server.go:2947
+#	0xe7ee26	net/http.(*conn).serve+0x606											C:/Program Files/Go/src/net/http/server.go:1991
+
+0: 0 [0: 0] @ 0xe16a05 0xe23795 0xe1fbc6 0xd1b9a4 0xd24fa5 0xd24bdd 0xeabf6d 0xeabe56 0xee9be2 0xe800cf 0xeaec36 0xe800cf 0xeb43de 0xe800cf 0xee12f1 0xe800cf 0xee4363 0xe800cf 0xee40fe 0xe800cf 0xeb45ec 0xe800cf 0xead950 0xe82c8c 0xe7ee27 0xc3bd81
+#	0xe16a04	github.com/lib/pq.(*readBuf).string+0xe4									E:/Projects/GOGO/pkg/mod/github.com/lib/pq@v1.10.0/buf.go:38
+#	0xe23794	github.com/lib/pq.(*conn).readExecuteResponse+0x194								E:/Projects/GOGO/pkg/mod/github.com/lib/pq@v1.10.0/conn.go:1878
+#	0xe1fbc5	github.com/lib/pq.(*stmt).Exec+0x145										E:/Projects/GOGO/pkg/mod/github.com/lib/pq@v1.10.0/conn.go:1376
+#	0xd1b9a3	database/sql.ctxDriverStmtExec+0x163										C:/Program Files/Go/src/database/sql/ctxutil.go:77
+#	0xd24fa4	database/sql.resultFromStatement+0x144										C:/Program Files/Go/src/database/sql/sql.go:2663
+#	0xd24bdc	database/sql.(*Stmt).ExecContext+0x1fc										C:/Program Files/Go/src/database/sql/sql.go:2636
+#	0xeabf6c	database/sql.(*Stmt).Exec+0x3ac											C:/Program Files/Go/src/database/sql/sql.go:2651
+#	0xeabe55	github.com/fev0ks/ydx-goadv-metrics/cmd/server/repositories.(*pgRepository).SaveMetric+0x295			E:/Projects/Go/ydx-goadv-metrics/cmd/server/repositories/pg_repository.go:132
+#	0xee9be1	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest.(*MetricsHandler).ReceptionMetricsHandler.func1+0x281	E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/metric_handler.go:257
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeaec35	github.com/go-chi/chi/v5.(*Mux).routeHTTP+0x215									E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:442
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeb43dd	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares.Decompress.func1+0x51d				E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/middlewares/custom.go:41
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee12f0	github.com/go-chi/chi/v5/middleware.(*Compressor).Handler.func1+0x270						E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:213
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee4362	github.com/go-chi/chi/v5/middleware.Recoverer.func1+0x82							E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/recoverer.go:38
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xee40fd	github.com/go-chi/chi/v5/middleware.RealIP.func1+0x9d								E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/realip.go:35
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xeb45eb	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares.TimerTrace.func1+0x8b				E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/middlewares/custom.go:48
+#	0xe800ce	net/http.HandlerFunc.ServeHTTP+0x2e										C:/Program Files/Go/src/net/http/server.go:2109
+#	0xead94f	github.com/go-chi/chi/v5.(*Mux).ServeHTTP+0x30f									E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/mux.go:88
+#	0xe82c8b	net/http.serverHandler.ServeHTTP+0x30b										C:/Program Files/Go/src/net/http/server.go:2947
+#	0xe7ee26	net/http.(*conn).serve+0x606											C:/Program Files/Go/src/net/http/server.go:1991
+
+0: 0 [1: 65536] @ 0xe3a7b0 0xe3a79c 0xe3ae48 0xee1fc5 0xee0a58 0xee0805 0xeea3e9 0xeea366 0xeebf65 0xc0cc9e 0xc3bd81
+#	0xe3a7af	compress/flate.(*compressor).initDeflate+0x56f				C:/Program Files/Go/src/compress/flate/deflate.go:369
+#	0xe3a79b	compress/flate.(*compressor).init+0x55b					C:/Program Files/Go/src/compress/flate/deflate.go:592
+#	0xe3ae47	compress/flate.NewWriter+0x47						C:/Program Files/Go/src/compress/flate/deflate.go:667
+#	0xee1fc4	github.com/go-chi/chi/v5/middleware.encoderDeflate+0x24			E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:394
+#	0xee0a57	github.com/go-chi/chi/v5/middleware.(*Compressor).SetEncoder+0x117	E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:167
+#	0xee0804	github.com/go-chi/chi/v5/middleware.NewCompressor+0x2c4			E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:119
+#	0xeea3e8	github.com/go-chi/chi/v5/middleware.Compress+0x428			E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:42
+#	0xeea365	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest.NewRouter+0x3a5	E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/router.go:15
+#	0xeebf64	main.main+0x524								E:/Projects/Go/ydx-goadv-metrics/cmd/server/main.go:50
+#	0xc0cc9d	runtime.main+0x1fd							C:/Program Files/Go/src/runtime/proc.go:250
+
+0: 0 [1: 663552] @ 0xe3ae2f 0xee1fc5 0xee0a58 0xee0805 0xeea3e9 0xeea366 0xeebf65 0xc0cc9e 0xc3bd81
+#	0xe3ae2e	compress/flate.NewWriter+0x2e						C:/Program Files/Go/src/compress/flate/deflate.go:666
+#	0xee1fc4	github.com/go-chi/chi/v5/middleware.encoderDeflate+0x24			E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:394
+#	0xee0a57	github.com/go-chi/chi/v5/middleware.(*Compressor).SetEncoder+0x117	E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:167
+#	0xee0804	github.com/go-chi/chi/v5/middleware.NewCompressor+0x2c4			E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:119
+#	0xeea3e8	github.com/go-chi/chi/v5/middleware.Compress+0x428			E:/Projects/GOGO/pkg/mod/github.com/go-chi/chi/v5@v5.0.7/middleware/compress.go:42
+#	0xeea365	github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest.NewRouter+0x3a5	E:/Projects/Go/ydx-goadv-metrics/cmd/server/rest/router.go:15
+#	0xeebf64	main.main+0x524								E:/Projects/Go/ydx-goadv-metrics/cmd/server/main.go:50
+#	0xc0cc9d	runtime.main+0x1fd							C:/Program Files/Go/src/runtime/proc.go:250
+
+
+# runtime.MemStats
+# Alloc = 2962384
+# TotalAlloc = 5988520
+# Sys = 19188376
+# Lookups = 0
+# Mallocs = 20584
+# Frees = 18506
+# HeapAlloc = 2962384
+# HeapSys = 8060928
+# HeapIdle = 3743744
+# HeapInuse = 4317184
+# HeapReleased = 2932736
+# HeapObjects = 2078
+# Stack = 327680 / 327680
+# MSpan = 98736 / 114240
+# MCache = 18688 / 32704
+# BuckHashSys = 1449791
+# GCSys = 6974144
+# OtherSys = 2228889
+# NextGC = 6351184
+# LastGC = 1678116876745129400
+# PauseNs = [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+# PauseEnd = [1678116794027917200 1678116801572247900 1678116876745129400 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+# NumGC = 3
+# NumForcedGC = 0
+# GCCPUFraction = 3.216446229162952e-06
+# DebugGC = false

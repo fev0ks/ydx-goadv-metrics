@@ -1,8 +1,152 @@
 package repositories
 
 import (
+	"fmt"
+	"math/rand"
 	"testing"
+	"time"
+
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 )
+
+type metricGenerator struct {
+	factory service.IMetricFactory
+}
+
+// 81          20681857 ns/op           32458 B/op        866 allocs/op
+func BenchmarkCommonRepository_SaveMetrics(b *testing.B) {
+	repo := NewCommonRepository()
+	generator := metricGenerator{service.NewMetricFactory("")}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		metrics := generator.generateMetrics(100)
+		b.StartTimer()
+		err := repo.SaveMetrics(metrics)
+		if err != nil {
+			b.Errorf("benchmark failed %v", err)
+		}
+	}
+}
+
+func (g *metricGenerator) generateMetrics(count int) []*model.Metric {
+	metrics := make([]*model.Metric, 0, count)
+	rand.Seed(time.Now().Unix())
+	for i := 0; i < count; i++ {
+		if rand.Intn(10) > 5 {
+			metrics = append(metrics, g.factory.NewCounterMetric(fmt.Sprintf("counter %d", i), model.CounterVT(rand.Uint64())))
+		} else {
+			metrics = append(metrics, g.factory.NewGaugeMetric(fmt.Sprintf("gauge %d", i), model.GaugeVT(rand.Float64())))
+		}
+	}
+	return metrics
+}
+
+func ExampleCommonRepository_SaveMetric() {
+	repo := NewCommonRepository()
+	counterValue := model.CounterVT(123)
+	metric := &model.Metric{
+		ID:    "metric name",
+		MType: model.CounterType,
+		Delta: &counterValue,
+		Hash:  "qwrtyuiopasjklzxcvbnm,",
+	}
+	err := repo.SaveMetric(metric)
+	if err != nil {
+		// err - ошибка сохранения метрики в хранилище
+		fmt.Print(err)
+	}
+	fmt.Println(metric)
+	// Output:
+	// ID: metric name, Type: counter, Value: 123
+}
+
+func ExampleCommonRepository_SaveMetrics() {
+	repo := NewCommonRepository()
+	counterValue := model.CounterVT(123)
+	gaugeValue := model.GaugeVT(123.321)
+	metrics := []*model.Metric{
+		{
+			ID:    "metric name1",
+			MType: model.CounterType,
+			Delta: &counterValue,
+			Hash:  "qwrtyuiopasjklzxcvbnm,",
+		},
+		{
+			ID:    "metric name2",
+			MType: model.GaugeType,
+			Value: &gaugeValue,
+			Hash:  "qwrtyuiopasjklzxcvbnm,",
+		},
+	}
+
+	err := repo.SaveMetrics(metrics)
+	if err != nil {
+		// err - ошибка сохранения метрик в хранилище
+		fmt.Print(err)
+	}
+	fmt.Println(metrics)
+	// Output:
+	// [ID: metric name1, Type: counter, Value: 123 ID: metric name2, Type: gauge, Value: 123.321000]
+}
+
+func ExampleCommonRepository_GetMetric() {
+	repo := NewCommonRepository()
+	counterValue := model.CounterVT(123)
+	metric := &model.Metric{
+		ID:    "metric name",
+		MType: model.CounterType,
+		Delta: &counterValue,
+		Hash:  "qwrtyuiopasjklzxcvbnm,",
+	}
+	err := repo.SaveMetric(metric)
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	metricRepo, err := repo.GetMetric("metric name")
+	if err != nil {
+		// error - ошибка получения метрики из хранилища
+		fmt.Print(err)
+	}
+	fmt.Println(metricRepo)
+	// Output:
+	// ID: metric name, Type: counter, Value: 123
+}
+
+func ExampleCommonRepository_GetMetrics() {
+	repo := NewCommonRepository()
+	counterValue := model.CounterVT(123)
+	gaugeValue := model.GaugeVT(123.321)
+	metrics := []*model.Metric{
+		{
+			ID:    "metric name1",
+			MType: model.CounterType,
+			Delta: &counterValue,
+			Hash:  "qwrtyuiopasjklzxcvbnm,",
+		},
+		{
+			ID:    "metric name2",
+			MType: model.GaugeType,
+			Value: &gaugeValue,
+			Hash:  "qwrtyuiopasjklzxcvbnm,",
+		},
+	}
+	err := repo.SaveMetrics(metrics)
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	metricsMap, err := repo.GetMetrics()
+	if err != nil {
+		// err - ошибка получения метрик из хранилища
+		fmt.Print(err)
+	}
+	fmt.Println(metricsMap)
+	// Output:
+	// map[metric name1:ID: metric name1, Type: counter, Value: 123 metric name2:ID: metric name2, Type: gauge, Value: 123.321000]
+}
 
 func TestGaugesMetrics(t *testing.T) {
 	//tc := struct {

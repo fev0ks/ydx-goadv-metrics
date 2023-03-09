@@ -11,21 +11,25 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/pages"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server/repository"
 
 	"github.com/go-chi/chi/v5"
 )
 
+// MetricsHandler - хендлер для обработки запросов по метрикам
 type MetricsHandler struct {
 	Ctx        context.Context
-	Repository server.MetricRepository
+	Repository repository.IMetricRepository
 	HashKey    string
 }
 
-func NewMetricsHandler(ctx context.Context, repository server.MetricRepository, hashKey string) *MetricsHandler {
+func NewMetricsHandler(ctx context.Context, repository repository.IMetricRepository, hashKey string) *MetricsHandler {
 	return &MetricsHandler{Ctx: ctx, Repository: repository, HashKey: hashKey}
 }
 
+// ReceptionMetricHandler - сохранение состояния метрики,
+// которое может быть представлено как в виде Json тела запроса,
+// так и в виде URL параметров
 func (mh *MetricsHandler) ReceptionMetricHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		contentType := request.Header.Get(rest.ContentType)
@@ -112,12 +116,19 @@ func (mh *MetricsHandler) receptionJSONMetricsHandler(writer http.ResponseWriter
 	writer.WriteHeader(http.StatusOK)
 }
 
+// GetMetricsHandler - получение состояние метрик в виде html таблицы
+// @Tags Таблица метрик
+// @Summary Запрос состояния метрик
+// @Produce json
+// @Success 200 {string} html страницы, в виде таблицы метрик
+// @Failure 500 {string} string "Внутренняя ошибка"
+// @Router / [get]
 func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		log.Println("Get metrics")
 		metrics, err := mh.Repository.GetMetrics()
 		if err != nil {
-			http.Error(writer, fmt.Sprintf("failed to get metrics: %v", err), http.StatusNotFound)
+			http.Error(writer, fmt.Sprintf("failed to get metrics: %v", err), http.StatusInternalServerError)
 			return
 		}
 		for _, metric := range metrics {
@@ -134,14 +145,17 @@ func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, r
 	}
 }
 
+// GetMetricHandler - получение состояние метрики,
+// указанной в виде JSON тела POST запроса
+// или в виде URL параметров GET запроса
 func (mh *MetricsHandler) GetMetricHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		contentType := request.Header.Get(rest.ContentType)
 		switch contentType {
 		case rest.Empty, rest.TextPlain:
-			mh.GetTextMetricHandler(writer, request)
+			mh.getTextMetricHandler(writer, request)
 		case rest.ApplicationJSON:
-			mh.GetJSONMetricHandler(writer, request)
+			mh.getJSONMetricHandler(writer, request)
 		default:
 			err := fmt.Errorf("Content-Type: '%s' - is not supported", contentType)
 			log.Printf("failed to save metric: %v", err)
@@ -150,7 +164,19 @@ func (mh *MetricsHandler) GetMetricHandler() func(writer http.ResponseWriter, re
 	}
 }
 
-func (mh *MetricsHandler) GetTextMetricHandler(writer http.ResponseWriter, request *http.Request) {
+// getTextMetricHandler - получение состояние метрики
+// @Tags Получение метрики
+// @Summary Запрос на получение метрики
+// @Produce json
+// @Param mType path string true "тип метрики"
+// @Param id path string true "имя метрики"
+// @Success 200 {object} model.Metric
+// @Failure 400 {string} string "Неверный формат запроса"
+// @Failure 404 {string} string "Метрика не найдена"
+// @Failure 500 {string} string "Внутренняя ошибка"
+// @Failure 501 {string} string "Запрашиваемый тип метрики не поддерживается"
+// @Router /value/{mType}/{id} [get]
+func (mh *MetricsHandler) getTextMetricHandler(writer http.ResponseWriter, request *http.Request) {
 	id := chi.URLParam(request, "id")
 	mType := chi.URLParam(request, "mType")
 	log.Printf("Get metric: request vars - id: '%s', type: '%s'", id, mType)
@@ -164,7 +190,8 @@ func (mh *MetricsHandler) GetTextMetricHandler(writer http.ResponseWriter, reque
 	}
 	metric, err := mh.Repository.GetMetric(id)
 	if err != nil {
-		http.Error(writer, fmt.Sprintf("failed to get metric %s: %v", id, err), http.StatusNotFound)
+		log.Printf("failed to get metric %s from repo: %v", id, err)
+		http.Error(writer, fmt.Sprintf("failed to get metric %s: %v", id, err), http.StatusInternalServerError)
 		return
 	}
 	if metric == nil {
@@ -184,7 +211,18 @@ func (mh *MetricsHandler) GetTextMetricHandler(writer http.ResponseWriter, reque
 	writer.WriteHeader(http.StatusOK)
 }
 
-func (mh *MetricsHandler) GetJSONMetricHandler(writer http.ResponseWriter, request *http.Request) {
+// getJSONMetricHandler - получение состояние метрики
+// @Tags Получение метрики
+// @Summary Запрос на получение метрики
+// @Accept  json
+// @Produce json
+// @Success 200 {object} model.Metric
+// @Failure 400 {string} string "Неверный формат запроса"
+// @Failure 404 {string} string "Метрика не найдена"
+// @Failure 500 {string} string "Внутренняя ошибка"
+// @Failure 501 {string} string "Запрашиваемый тип метрики не поддерживается"
+// @Router /value/ [post]
+func (mh *MetricsHandler) getJSONMetricHandler(writer http.ResponseWriter, request *http.Request) {
 	var metricToFind *model.Metric
 	body, _ := io.ReadAll(request.Body)
 	defer request.Body.Close()
@@ -203,7 +241,8 @@ func (mh *MetricsHandler) GetJSONMetricHandler(writer http.ResponseWriter, reque
 	}
 	metric, err := mh.Repository.GetMetric(metricToFind.ID)
 	if err != nil {
-		http.Error(writer, fmt.Sprintf("failed to get metric %s: %v", metricToFind.ID, err), http.StatusNotFound)
+		log.Printf("failed to get metric %s from repo: %v", metricToFind.ID, err)
+		http.Error(writer, fmt.Sprintf("failed to get metric %s: %v", metricToFind.ID, err), http.StatusInternalServerError)
 		return
 	}
 	if metric == nil {
@@ -229,6 +268,16 @@ func (mh *MetricsHandler) GetJSONMetricHandler(writer http.ResponseWriter, reque
 	writer.WriteHeader(http.StatusOK)
 }
 
+// ReceptionMetricsHandler - сохранение состояния списка метрик
+// @Tags Обновление метрик
+// @Summary Запрос на обновление списка метрик
+// @Accept  json
+// @Produce json
+// @Success 200 {string} string "OK"
+// @Failure 400 {string} string "Неверный формат запроса"
+// @Failure 500 {string} string "Внутренняя ошибка"
+// @Failure 501 {string} string "Тип метрики не поддерживается"
+// @Router /updates/ [post]
 func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		var metrics []*model.Metric

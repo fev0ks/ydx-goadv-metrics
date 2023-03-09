@@ -4,12 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 	"github.com/go-resty/resty/v2"
 	"log"
 	"strings"
 	"sync"
+
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 )
 
 type bulkSender struct {

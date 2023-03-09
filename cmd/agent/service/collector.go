@@ -18,15 +18,15 @@ import (
 const defaultCPUUsedMetricInterval = time.Second * 10
 
 type commonMetricCollector struct {
-	mr        agent.MetricRepository
-	mf        MetricFactory
+	mr        agent.IMetricRepository
+	mf        IMetricFactory
 	interval  time.Duration
 	pollCount uint64
 }
 
 func NewCommonMetricCollector(
-	metricRepository agent.MetricRepository,
-	metricFactory MetricFactory,
+	metricRepository agent.IMetricRepository,
+	metricFactory IMetricFactory,
 	interval time.Duration,
 ) agent.MetricCollector {
 	return &commonMetricCollector{

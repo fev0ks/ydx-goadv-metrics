@@ -1,12 +1,14 @@
 package rest
 
 import (
-	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 )
 
+// NewRouter - инициализация обьекта обработки запросов и настройка посредников
 func NewRouter() chi.Router {
 	router := chi.NewRouter()
 	router.Use(middlewares.TimerTrace)
@@ -17,6 +19,7 @@ func NewRouter() chi.Router {
 	return router
 }
 
+// HandleMetricRequests - настройка хендлеров для работы с метриками
 func HandleMetricRequests(router chi.Router, mh *MetricsHandler) {
 	router.Get("/", mh.GetMetricsHandler())
 	router.Post("/update/{mType}/{id}/{value}", mh.ReceptionMetricHandler())
@@ -26,6 +29,12 @@ func HandleMetricRequests(router chi.Router, mh *MetricsHandler) {
 	router.Post("/value/", mh.GetMetricHandler())
 }
 
+// HandleHeathCheck - настройка хендлеров для проверки состояния сервиса
 func HandleHeathCheck(router chi.Router, hc HealthChecker) {
 	router.Get("/ping", hc.CheckDBHandler())
+}
+
+// HandlePprof - настройка хендлеров для работы с профайлером
+func HandlePprof(router chi.Router) {
+	router.Mount("/debug", middleware.Profiler())
 }
