@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -17,7 +18,17 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server/repository"
 )
 
+var (
+	BuildVersion = "N/A"
+	BuildDate    = "N/A"
+	BuildCommit  = "N/A"
+)
+
+// go build -ldflags "-X github.com/fev0ks/ydx-goadv-metrics/cmd/server/main.BuildVersion=v1 -X 'github.com/fev0ks/ydx-goadv-metrics/cmd/server/main.BuildDate=$(date)' -X 'github.com/fev0ks/ydx-goadv-metrics/cmd/server/main.BuildCommit=$(git rev-parse HEAD)'" github.com/fev0ks/ydx-goadv-metrics/cmd/server/main.go
 func main() {
+	fmt.Printf("Build version: %s\n", BuildVersion)
+	fmt.Printf("Build date: %s\n", BuildDate)
+	fmt.Printf("Build commit: %s\n", BuildCommit)
 	ctx := context.Background()
 	var err error
 	log.Printf("Server args: %s", os.Args[1:])
