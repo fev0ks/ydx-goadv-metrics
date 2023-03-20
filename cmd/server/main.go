@@ -53,7 +53,6 @@ func main() {
 	rest.HandleMetricRequests(router, mh)
 	rest.HandleHeathCheck(router, hc)
 	rest.HandlePprof(router)
-
 	internal.ProperExitDefer(&internal.ExitHandler{
 		ToStop:    stopCh,
 		ToExecute: toExecute,
