@@ -5,15 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"time"
-
 	_ "net/http/pprof"
-
-	"github.com/go-resty/resty/v2"
+	"os"
 
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/configs"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/repositories"
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/rest"
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/rest/clients"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
@@ -40,13 +38,14 @@ func main() {
 	metricCollector := service.NewCommonMetricCollector(repository, metricFactory, appConfig.ReportInterval)
 	metricCollector.CollectMetrics(done)
 
-	client := getClient(appConfig.ServerAddress)
+	client := clients.CreateClient(appConfig.ServerAddress)
+	encryptor := rest.NewEncryptor(appConfig.PublicKey)
 
 	var metricSender sender.Sender
 	if appConfig.UseBuffSenderClient {
-		metricSender = sender.NewBulkMetricSender(client, appConfig.BuffBatchLimit)
+		metricSender = sender.NewBulkMetricSender(client, appConfig.BuffBatchLimit, encryptor)
 	} else {
-		metricSender = sender.NewJSONMetricSender(client)
+		metricSender = sender.NewJSONMetricSender(client, encryptor)
 	}
 
 	mpCtx, mpCancel := context.WithCancel(ctx)
@@ -60,13 +59,4 @@ func main() {
 	})
 
 	log.Fatal(http.ListenAndServe(appConfig.AgentAddress, nil))
-}
-
-func getClient(address string) *resty.Client {
-	client := resty.New().
-		SetBaseURL(fmt.Sprintf("http://%s", address)).
-		SetRetryCount(3).
-		SetRetryWaitTime(1 * time.Second).
-		SetRetryMaxWaitTime(2 * time.Second)
-	return client
 }

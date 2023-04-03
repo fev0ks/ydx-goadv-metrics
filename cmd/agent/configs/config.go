@@ -1,10 +1,16 @@
 package configs
 
 import (
-	"github.com/spf13/pflag"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
+	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/spf13/pflag"
 )
 
 const (
@@ -15,6 +21,7 @@ const (
 	defaultHashKey              = ""
 	defaultBuffBatchLimit       = 10
 	defaultUseBuffSendClient    = true
+	defaultPublicKeyPath        = "cmd/agent/pubkey.pem"
 )
 
 type AppConfig struct {
@@ -25,6 +32,7 @@ type AppConfig struct {
 	HashKey             string
 	UseBuffSenderClient bool
 	BuffBatchLimit      int
+	PublicKey           *rsa.PublicKey
 }
 
 func InitAppConfig() *AppConfig {
@@ -63,7 +71,10 @@ func InitAppConfig() *AppConfig {
 	if agentAddress == "" {
 		agentAddress = defaultAgentAddress
 	}
-
+	publicKey, err := readRsaPublicKey()
+	if err != nil {
+		log.Fatal(err)
+	}
 	return &AppConfig{
 		ServerAddress:       address,
 		AgentAddress:        agentAddress,
@@ -72,6 +83,7 @@ func InitAppConfig() *AppConfig {
 		HashKey:             hashKey,
 		UseBuffSenderClient: useBuffSenderClient(),
 		BuffBatchLimit:      defaultBuffBatchLimit,
+		PublicKey:           publicKey,
 	}
 }
 
@@ -119,4 +131,21 @@ func useBuffSenderClient() bool {
 		useBuffSendClient = defaultUseBuffSendClient
 	}
 	return useBuffSendClient
+}
+
+func readRsaPublicKey() (*rsa.PublicKey, error) {
+	cryptoKeyPath := os.Getenv("CRYPTO_KEY")
+	if cryptoKeyPath == "" {
+		cryptoKeyPath = defaultPublicKeyPath
+	}
+	pemBytes, err := os.ReadFile(cryptoKeyPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read publicKey by '%s': %v", cryptoKeyPath, err)
+	}
+	block, _ := pem.Decode(pemBytes)
+	key, err := x509.ParsePKCS1PublicKey(block.Bytes)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse publicKey: %v", err)
+	}
+	return key, nil
 }

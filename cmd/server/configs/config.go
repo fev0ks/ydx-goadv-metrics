@@ -1,6 +1,11 @@
 package configs
 
 import (
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
+	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -15,6 +20,7 @@ const (
 	defaultDoRestore           = true
 	defaultHashKey             = ""
 	defaultDBConfig            = ""
+	defaultPrivateKeyPath      = "cmd/server/privkey.pem"
 )
 
 type AppConfig struct {
@@ -30,7 +36,8 @@ type AppConfig struct {
 	// обязательно должно совпадать с аналогичным параметров в Агент сервисе для архивации//разархивации сообщений
 	HashKey string
 	// DBConfig - Конфиг подключения к базе
-	DBConfig string
+	DBConfig   string
+	PrivateKey *rsa.PrivateKey
 }
 
 func InitAppConfig() *AppConfig {
@@ -84,7 +91,10 @@ func InitAppConfig() *AppConfig {
 	if dbConfig == "" {
 		dbConfig = dbDsnF
 	}
-
+	privateKey, err := readRsaPrivateKey()
+	if err != nil {
+		log.Fatal(err)
+	}
 	return &AppConfig{
 		ServerAddress: address,
 		StoreInterval: storeInterval,
@@ -92,6 +102,7 @@ func InitAppConfig() *AppConfig {
 		StoreFile:     storeFile,
 		HashKey:       hashKey,
 		DBConfig:      dbConfig,
+		PrivateKey:    privateKey,
 	}
 }
 
@@ -134,4 +145,21 @@ func getDoReStore() *bool {
 
 func getDBConfig() string {
 	return os.Getenv("DATABASE_DSN")
+}
+
+func readRsaPrivateKey() (*rsa.PrivateKey, error) {
+	cryptoKeyPath := os.Getenv("CRYPTO_KEY")
+	if cryptoKeyPath == "" {
+		cryptoKeyPath = defaultPrivateKeyPath
+	}
+	pemBytes, err := os.ReadFile(cryptoKeyPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read publicKey by '%s': %v", cryptoKeyPath, err)
+	}
+	block, _ := pem.Decode(pemBytes)
+	key, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse publicKey: %v", err)
+	}
+	return key, nil
 }

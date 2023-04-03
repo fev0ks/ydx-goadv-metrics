@@ -13,6 +13,7 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/configs"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/repositories"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest"
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares"
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
 	backup2 "github.com/fev0ks/ydx-goadv-metrics/internal/model/server/backup"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server/repository"
@@ -61,6 +62,10 @@ func main() {
 	hc := rest.NewHealthChecker(ctx, metricRepo)
 
 	router := rest.NewRouter()
+
+	decrypter := middlewares.NewDecrypter(appConfig.PrivateKey)
+	router.Use(decrypter.Decrypt)
+
 	rest.HandleMetricRequests(router, mh)
 	rest.HandleHeathCheck(router, hc)
 	rest.HandlePprof(router)
