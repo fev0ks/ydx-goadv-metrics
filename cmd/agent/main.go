@@ -19,7 +19,17 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/internal"
 )
 
+var (
+	BuildVersion = "N/A"
+	BuildDate    = "N/A"
+	BuildCommit  = "N/A"
+)
+
+// go run -ldflags "-X github.com/fev0ks/ydx-goadv-metrics/cmd/agent/main.BuildVersion=v1 -X 'github.com/fev0ks/ydx-goadv-metrics/cmd/agent/main.BuildDate=$(date)' -X 'github.com/fev0ks/ydx-goadv-metrics/cmd/agent/main.BuildCommit=$(git rev-parse HEAD)'" github.com/fev0ks/ydx-goadv-metrics/cmd/agent/main.go
 func main() {
+	fmt.Printf("Build version: %s\n", BuildVersion)
+	fmt.Printf("Build date: %s\n", BuildDate)
+	fmt.Printf("Build commit: %s\n", BuildCommit)
 	ctx := context.Background()
 	log.Printf("Agent args: %s", os.Args[1:])
 	appConfig := configs.InitAppConfig()
