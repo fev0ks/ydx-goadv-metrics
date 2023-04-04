@@ -42,7 +42,7 @@ func (d *Decrypter) Decrypt(next http.Handler) http.Handler {
 				}
 				block, err := rsa.DecryptOAEP(sha256.New(), rand.Reader, d.privateKey, body[i:nextBlockLength], []byte("yandex"))
 				if err != nil {
-					log.Printf("failed to decrypt request body: %v", err)
+					log.Printf("failed to decrypt request data '%s': %v", body, err)
 					http.Error(w, fmt.Sprintf("failed to decrypt request data '%s': %v", body, err), http.StatusBadRequest)
 				}
 				decryptedBody = append(decryptedBody, block...)
