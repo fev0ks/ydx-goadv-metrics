@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
+	"log"
 )
 
 const blockLength = 128
@@ -35,5 +36,6 @@ func (e *Encryptor) Encrypt(data []byte) ([]byte, error) {
 		}
 		encrypted = append(encrypted, block...)
 	}
+	log.Printf("Encrypted data: %s", string(data))
 	return encrypted, nil
 }
