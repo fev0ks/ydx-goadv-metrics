@@ -76,12 +76,11 @@ func main() {
 
 	router := rest.NewRouter()
 
-	decrypter := middlewares.NewDecrypter(appConfig.PrivateKey)
-	router.Use(decrypter.Decrypt)
-
 	shutdownBlocker := middlewares.NewShutdownBlocker(exitHandler)
 	router.Use(shutdownBlocker.BlockTillFinish)
 
+	decrypter := middlewares.NewDecrypter(appConfig.PrivateKey)
+	rest.HandleEncryptedMetricRequests(router, mh, decrypter)
 	rest.HandleMetricRequests(router, mh)
 	rest.HandleHeathCheck(router, hc)
 	rest.HandlePprof(router)

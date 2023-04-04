@@ -36,6 +36,6 @@ func (e *Encryptor) Encrypt(data []byte) ([]byte, error) {
 		}
 		encrypted = append(encrypted, block...)
 	}
-	log.Printf("Encrypted data '%s': %s", string(data), encrypted)
+	log.Printf("Encrypted data '%s'", string(data))
 	return encrypted, nil
 }
