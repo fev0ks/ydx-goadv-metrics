@@ -68,13 +68,14 @@ func (cfg *AppConfig) UnmarshalJSON(data []byte) (err error) {
 }
 
 func InitAppConfig(configPath string) (*AppConfig, error) {
-	config, err := readConfig(configPath)
-	if err != nil {
-		return nil, err
-	}
+	//config, err := readConfig(configPath)
+	config := &AppConfig{}
+	//if err != nil {
+	//	return nil, err
+	//}
 	setupConfigByFlags(config)
 	setupConfigByEnvVars(config)
-	err = setupRSAKey(config)
+	err := setupRSAKey(config)
 	if err != nil {
 		return nil, err
 	}
