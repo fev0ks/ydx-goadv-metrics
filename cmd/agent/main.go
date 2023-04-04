@@ -14,7 +14,7 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/rest/clients"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender"
-	"github.com/fev0ks/ydx-goadv-metrics/internal"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/shutdown"
 )
 
 var (
@@ -43,8 +43,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	exitHandler := shutdown.NewExitHandler()
 
 	done := make(chan struct{})
+	exitHandler.ToStop = []chan struct{}{done}
+
 	repository := repositories.NewCommonMetricsRepository()
 	metricFactory := service.NewMetricFactory(appConfig.HashKey)
 	metricCollector := service.NewCommonMetricCollector(repository, metricFactory, appConfig.ReportInterval)
@@ -61,14 +64,12 @@ func main() {
 	}
 
 	mpCtx, mpCancel := context.WithCancel(ctx)
+	exitHandler.ToCancel = []context.CancelFunc{mpCancel}
+
 	metricPoller := service.NewCommonMetricPoller(client, metricSender, repository, appConfig.PollInterval)
-	metricPoller.PollMetrics(mpCtx, done)
+	metricPoller.PollMetrics(mpCtx, exitHandler, done)
 
 	log.Println("Agent started")
-	internal.ProperExitDefer(&internal.ExitHandler{
-		ToCancel: []context.CancelFunc{mpCancel},
-		ToStop:   []chan struct{}{done},
-	})
-
+	shutdown.ProperExitDefer(exitHandler)
 	log.Fatal(http.ListenAndServe(appConfig.AgentAddress, nil))
 }

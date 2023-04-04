@@ -72,8 +72,8 @@ func InitAppConfig(configPath string) (*AppConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-	setupConfigByEnvVars(config)
 	setupConfigByFlags(config)
+	setupConfigByEnvVars(config)
 	err = setupRSAKey(config)
 	if err != nil {
 		return nil, err

@@ -14,9 +14,9 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/repositories"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares"
-	"github.com/fev0ks/ydx-goadv-metrics/internal"
 	backup2 "github.com/fev0ks/ydx-goadv-metrics/internal/model/server/backup"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server/repository"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/shutdown"
 )
 
 var (
@@ -42,10 +42,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	exitHandler := shutdown.NewExitHandler()
 	var autoBackup backup2.IAutoBackup
+
 	stopCh := make([]chan struct{}, 0)
 	toExecute := make([]func() error, 0)
+
 	var metricRepo repository.IMetricRepository
 	if appConfig.DBConfig != "" {
 		metricRepo, err = repositories.NewPgRepository(appConfig.DBConfig, ctx)
@@ -65,6 +67,9 @@ func main() {
 		stopCh = append(stopCh, autoBackup.Start())
 		toExecute = append(toExecute, autoBackup.Backup)
 	}
+	exitHandler.ToStop = stopCh
+	exitHandler.ToExecute = toExecute
+	exitHandler.ToClose = []io.Closer{metricRepo}
 
 	mh := rest.NewMetricsHandler(ctx, metricRepo, appConfig.HashKey)
 	hc := rest.NewHealthChecker(ctx, metricRepo)
@@ -74,14 +79,14 @@ func main() {
 	decrypter := middlewares.NewDecrypter(appConfig.PrivateKey)
 	router.Use(decrypter.Decrypt)
 
+	shutdownBlocker := middlewares.NewShutdownBlocker(exitHandler)
+	router.Use(shutdownBlocker.BlockTillFinish)
+
 	rest.HandleMetricRequests(router, mh)
 	rest.HandleHeathCheck(router, hc)
 	rest.HandlePprof(router)
-	internal.ProperExitDefer(&internal.ExitHandler{
-		ToStop:    stopCh,
-		ToExecute: toExecute,
-		ToClose:   []io.Closer{metricRepo},
-	})
+
 	log.Printf("Server started on %s", appConfig.ServerAddress)
+	shutdown.ProperExitDefer(exitHandler)
 	log.Fatal(http.ListenAndServe(appConfig.ServerAddress, router))
 }

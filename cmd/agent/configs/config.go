@@ -71,8 +71,8 @@ func InitAppConfig(configPath string) (*AppConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-	setupConfigByEnvVars(config)
 	setupConfigByFlags(config)
+	setupConfigByEnvVars(config)
 	setupConfigByDefaults(config)
 	err = setupRSAKey(config)
 	if err != nil {
@@ -117,7 +117,7 @@ func setupConfigByFlags(cfg *AppConfig) {
 	pflag.StringVarP(&hashKeyF, "k", "k", defaultHashKey, "Hash key")
 
 	var cryptoKeyF string
-	pflag.StringVarP(&cryptoKeyF, "crypto-key", "crypto-key", defaultPublicKeyPath, "Path to public key")
+	pflag.StringVarP(&cryptoKeyF, "crypto-key", "c", defaultPublicKeyPath, "Path to public key")
 
 	pflag.Parse()
 
