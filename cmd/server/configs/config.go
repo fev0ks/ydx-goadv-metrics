@@ -130,25 +130,25 @@ func setupConfigByFlags(cfg *AppConfig) {
 
 	pflag.Parse()
 
-	if cfg.ServerAddress == "" {
+	if serverAddressF != "" {
 		cfg.ServerAddress = serverAddressF
 	}
-	if cfg.DoRestore == nil {
+	if !restoreF {
 		cfg.DoRestore = &restoreF
 	}
-	if cfg.StoreInterval == 0 {
+	if storeIntervalF != 0 {
 		cfg.StoreInterval = storeIntervalF
 	}
-	if cfg.StoreFile == "" {
+	if storeFileF != "" {
 		cfg.StoreFile = storeFileF
 	}
-	if cfg.HashKey == "" {
+	if hashKeyF != "" {
 		cfg.HashKey = hashKeyF
 	}
-	if cfg.DBConfig == "" {
+	if dbDsnF != "" {
 		cfg.DBConfig = dbDsnF
 	}
-	if cfg.privateKeyPath == "" {
+	if cryptoKeyF != "" {
 		cfg.privateKeyPath = cryptoKeyF
 	}
 }

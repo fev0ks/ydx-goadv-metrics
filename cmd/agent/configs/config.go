@@ -18,7 +18,7 @@ const (
 	defaultMetricReportInterval = time.Second * 2
 	defaultMetricPollInterval   = time.Second * 10
 	defaultServerAddress        = "localhost:8080"
-	defaultAgentAddress         = "localhost:8085"
+	defaultAgentAddress         = "localhost:8089"
 	defaultHashKey              = ""
 	defaultBuffBatchLimit       = 10
 	defaultUseBuffSendClient    = true
@@ -121,19 +121,19 @@ func setupConfigByFlags(cfg *AppConfig) {
 
 	pflag.Parse()
 
-	if cfg.ServerAddress == "" {
+	if serverAddressF != "" {
 		cfg.ServerAddress = serverAddressF
 	}
-	if cfg.ReportInterval == 0 {
+	if reportIntervalF != 0 {
 		cfg.ReportInterval = reportIntervalF
 	}
-	if cfg.PollInterval == 0 {
+	if pollIntervalF != 0 {
 		cfg.PollInterval = pollIntervalF
 	}
-	if cfg.HashKey == "" {
+	if hashKeyF != "" {
 		cfg.HashKey = hashKeyF
 	}
-	if cfg.publicKeyPath == "" {
+	if cryptoKeyF != "" {
 		cfg.publicKeyPath = cryptoKeyF
 	}
 }
