@@ -2,7 +2,9 @@ package configs
 
 import (
 	"crypto/rsa"
+	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"os"
@@ -19,7 +21,7 @@ const (
 	defaultDoRestore           = true
 	defaultHashKey             = ""
 	defaultDBConfig            = ""
-	defaultPrivateKeyPath      = "cmd/server/privkey.pem"
+	//defaultPrivateKeyPath      = "cmd/server/privkey.pem"
 )
 
 type AppConfig struct {
@@ -124,7 +126,7 @@ func setupConfigByFlags(cfg *AppConfig) {
 	pflag.StringVarP(&dbDsnF, "d", "d", defaultDBConfig, "Postgres DB DSN")
 
 	var cryptoKeyF string
-	pflag.StringVarP(&cryptoKeyF, "crypto-key", "c", defaultPrivateKeyPath, "Path to private key")
+	pflag.StringVarP(&cryptoKeyF, "crypto-key", "c", "", "Path to private key")
 
 	pflag.Parse()
 
@@ -224,15 +226,14 @@ func getCryptoKeyPath() string {
 }
 
 func readRsaPrivateKey(cryptoKeyPath string) (*rsa.PrivateKey, error) {
-	return nil, nil
-	//pemBytes, err := os.ReadFile(cryptoKeyPath)
-	//if err != nil {
-	//	return nil, fmt.Errorf("failed to read publicKey by '%s': %v", cryptoKeyPath, err)
-	//}
-	//block, _ := pem.Decode(pemBytes)
-	//key, err := x509.ParsePKCS1PrivateKey(block.Bytes)
-	//if err != nil {
-	//	return nil, fmt.Errorf("failed to parse publicKey: %v", err)
-	//}
-	//return key, nil
+	pemBytes, err := os.ReadFile(cryptoKeyPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read publicKey by '%s': %v", cryptoKeyPath, err)
+	}
+	block, _ := pem.Decode(pemBytes)
+	key, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse publicKey: %v", err)
+	}
+	return key, nil
 }

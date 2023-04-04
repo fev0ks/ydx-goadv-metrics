@@ -131,8 +131,14 @@ func (p *pgRepository) SaveMetric(metric *model.Metric) error {
 	var err error
 	switch metric.MType {
 	case model.GaugeType:
+		if metric.Value == nil {
+			return fmt.Errorf("metric value is nil: %v", metric)
+		}
 		_, err = p.statements[saveGaugeMetric].Exec(metric.ID, metric.MType, metric.Value, metric.Hash)
 	case model.CounterType:
+		if metric.Delta == nil {
+			return fmt.Errorf("metric delta is nil: %v", metric)
+		}
 		var currentMetric *model.Metric
 		currentMetric, err = p.GetMetric(metric.ID)
 		if err != nil && err != sql.ErrNoRows {

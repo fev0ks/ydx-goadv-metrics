@@ -2,7 +2,9 @@ package configs
 
 import (
 	"crypto/rsa"
+	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"os"
@@ -20,7 +22,7 @@ const (
 	defaultHashKey              = ""
 	defaultBuffBatchLimit       = 10
 	defaultUseBuffSendClient    = true
-	defaultPublicKeyPath        = "cmd/agent/pubkey.pem"
+	//defaultPublicKeyPath        = "cmd/agent/pubkey.pem"
 )
 
 type Duration struct {
@@ -115,7 +117,7 @@ func setupConfigByFlags(cfg *AppConfig) {
 	pflag.StringVarP(&hashKeyF, "k", "k", defaultHashKey, "Hash key")
 
 	var cryptoKeyF string
-	pflag.StringVarP(&cryptoKeyF, "crypto-key", "c", defaultPublicKeyPath, "Path to public key")
+	pflag.StringVarP(&cryptoKeyF, "crypto-key", "c", "", "Path to public key")
 
 	pflag.Parse()
 
@@ -217,23 +219,18 @@ func useBuffSenderClient() bool {
 }
 
 func getCryptoKeyPath() string {
-	cryptoKeyPath := os.Getenv("CRYPTO_KEY")
-	if cryptoKeyPath == "" {
-		cryptoKeyPath = defaultPublicKeyPath
-	}
-	return cryptoKeyPath
+	return os.Getenv("CRYPTO_KEY")
 }
 
 func readRsaPublicKey(cryptoKeyPath string) (*rsa.PublicKey, error) {
-	return nil, nil
-	//pemBytes, err := os.ReadFile(cryptoKeyPath)
-	//if err != nil {
-	//	return nil, fmt.Errorf("failed to read publicKey by '%s': %v", cryptoKeyPath, err)
-	//}
-	//block, _ := pem.Decode(pemBytes)
-	//key, err := x509.ParsePKCS1PublicKey(block.Bytes)
-	//if err != nil {
-	//	return nil, fmt.Errorf("failed to parse publicKey: %v", err)
-	//}
-	//return key, nil
+	pemBytes, err := os.ReadFile(cryptoKeyPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read publicKey by '%s': %v", cryptoKeyPath, err)
+	}
+	block, _ := pem.Decode(pemBytes)
+	key, err := x509.ParsePKCS1PublicKey(block.Bytes)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse publicKey: %v", err)
+	}
+	return key, nil
 }
