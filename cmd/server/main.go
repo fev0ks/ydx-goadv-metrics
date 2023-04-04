@@ -20,9 +20,11 @@ import (
 )
 
 var (
-	BuildVersion = "N/A"
-	BuildDate    = "N/A"
-	BuildCommit  = "N/A"
+	BuildVersion      = "N/A"
+	BuildDate         = "N/A"
+	BuildCommit       = "N/A"
+	configPathEnvVar  = "CONFIG"
+	defaultConfigPath = "cmd/server/config.json"
 )
 
 // go build -ldflags "-X github.com/fev0ks/ydx-goadv-metrics/cmd/server/main.BuildVersion=v1 -X 'github.com/fev0ks/ydx-goadv-metrics/cmd/server/main.BuildDate=$(date)' -X 'github.com/fev0ks/ydx-goadv-metrics/cmd/server/main.BuildCommit=$(git rev-parse HEAD)'" github.com/fev0ks/ydx-goadv-metrics/cmd/server/main.go
@@ -31,9 +33,15 @@ func main() {
 	fmt.Printf("Build date: %s\n", BuildDate)
 	fmt.Printf("Build commit: %s\n", BuildCommit)
 	ctx := context.Background()
-	var err error
 	log.Printf("Server args: %s", os.Args[1:])
-	appConfig := configs.InitAppConfig()
+	configPath := os.Getenv(configPathEnvVar)
+	if configPath == "" {
+		configPath = defaultConfigPath
+	}
+	appConfig, err := configs.InitAppConfig(configPath)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	var autoBackup backup2.IAutoBackup
 	stopCh := make([]chan struct{}, 0)
@@ -47,7 +55,7 @@ func main() {
 	} else {
 		metricRepo = repositories.NewCommonRepository()
 		autoBackup = backup.NewFileAutoBackup(metricRepo, appConfig)
-		if appConfig.DoRestore {
+		if *appConfig.DoRestore {
 			log.Println("trying to restore metrics...")
 			err := autoBackup.Restore()
 			if err != nil {

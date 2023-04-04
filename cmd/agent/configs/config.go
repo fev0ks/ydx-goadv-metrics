@@ -3,9 +3,10 @@ package configs
 import (
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
+	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"time"
@@ -24,6 +25,10 @@ const (
 	defaultPublicKeyPath        = "cmd/agent/pubkey.pem"
 )
 
+type Duration struct {
+	time.Duration
+}
+
 type AppConfig struct {
 	ServerAddress       string
 	AgentAddress        string
@@ -33,58 +38,138 @@ type AppConfig struct {
 	UseBuffSenderClient bool
 	BuffBatchLimit      int
 	PublicKey           *rsa.PublicKey
+	publicKeyPath       string
 }
 
-func InitAppConfig() *AppConfig {
-	address := getServerAddress()
-	var addressF string
-	pflag.StringVarP(&addressF, "a", "a", defaultServerAddress, "Address of the server")
+func (cfg *AppConfig) UnmarshalJSON(data []byte) (err error) {
+	cfgIn := struct {
+		ServerAddress  string `json:"address"`
+		ReportInterval string `json:"report_interval"`
+		PollInterval   string `json:"poll_interval"`
+		PublicKeyPath  string `json:"crypto_key"`
+	}{}
+	if err = json.Unmarshal(data, &cfgIn); err != nil {
+		return err
+	}
+	cfg.ServerAddress = cfgIn.ServerAddress
+	cfg.publicKeyPath = cfgIn.PublicKeyPath
+	if cfgIn.ReportInterval != "" {
+		if cfg.ReportInterval, err = time.ParseDuration(cfgIn.ReportInterval); err != nil {
+			return err
+		}
+	}
+	if cfgIn.PollInterval != "" {
+		if cfg.PollInterval, err = time.ParseDuration(cfgIn.PollInterval); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
-	reportInterval := getReportInterval()
+func InitAppConfig(configPath string) (*AppConfig, error) {
+	config, err := readConfig(configPath)
+	if err != nil {
+		return nil, err
+	}
+	setupConfigByEnvVars(config)
+	setupConfigByFlags(config)
+	setupConfigByDefaults(config)
+	err = setupRSAKey(config)
+	if err != nil {
+		return nil, err
+	}
+	return config, nil
+}
+
+func setupConfigByEnvVars(cfg *AppConfig) {
+	if serverAddress := getServerAddress(); serverAddress != "" {
+		cfg.ServerAddress = serverAddress
+	}
+	if reportInterval := getReportInterval(); reportInterval != 0 {
+		cfg.ReportInterval = reportInterval
+	}
+	if pollInterval := getPollInterval(); pollInterval != 0 {
+		cfg.PollInterval = pollInterval
+	}
+	if hashKey := getHashKey(); hashKey != "" {
+		cfg.HashKey = hashKey
+	}
+	if agentAddress := getAgentAddress(); agentAddress != "" {
+		cfg.AgentAddress = agentAddress
+	}
+	if cryptoKeyPath := getCryptoKeyPath(); cryptoKeyPath != "" {
+		cfg.publicKeyPath = cryptoKeyPath
+	}
+	cfg.UseBuffSenderClient = useBuffSenderClient()
+}
+
+func setupConfigByFlags(cfg *AppConfig) {
+	var serverAddressF string
+	pflag.StringVarP(&serverAddressF, "a", "a", defaultServerAddress, "Address of the server")
+
 	var reportIntervalF time.Duration
 	pflag.DurationVarP(&reportIntervalF, "r", "r", defaultMetricReportInterval, "Report to server interval in sec")
 
-	pollInterval := getPollInterval()
 	var pollIntervalF time.Duration
 	pflag.DurationVarP(&pollIntervalF, "p", "p", defaultMetricPollInterval, "Pool metrics interval in sec")
 
-	hashKey := getHashKey()
 	var hashKeyF string
 	pflag.StringVarP(&hashKeyF, "k", "k", defaultHashKey, "Hash key")
 
+	var cryptoKeyF string
+	pflag.StringVarP(&cryptoKeyF, "crypto-key", "crypto-key", defaultPublicKeyPath, "Path to public key")
+
 	pflag.Parse()
 
-	if address == "" {
-		address = addressF
+	if cfg.ServerAddress == "" {
+		cfg.ServerAddress = serverAddressF
 	}
-	if reportInterval == 0 {
-		reportInterval = reportIntervalF
+	if cfg.ReportInterval == 0 {
+		cfg.ReportInterval = reportIntervalF
 	}
-	if pollInterval == 0 {
-		pollInterval = pollIntervalF
+	if cfg.PollInterval == 0 {
+		cfg.PollInterval = pollIntervalF
 	}
-	if hashKey == "" {
-		hashKey = hashKeyF
+	if cfg.HashKey == "" {
+		cfg.HashKey = hashKeyF
 	}
+	if cfg.publicKeyPath == "" {
+		cfg.publicKeyPath = cryptoKeyF
+	}
+}
 
-	agentAddress := getAgentAddress()
-	if agentAddress == "" {
-		agentAddress = defaultAgentAddress
+func setupConfigByDefaults(cfg *AppConfig) {
+	if cfg.BuffBatchLimit == 0 {
+		cfg.BuffBatchLimit = defaultBuffBatchLimit
 	}
-	publicKey, err := readRsaPublicKey()
+	cfg.AgentAddress = defaultAgentAddress
+}
+
+func setupRSAKey(config *AppConfig) error {
+	if config.publicKeyPath != "" {
+		key, err := readRsaPublicKey(config.publicKeyPath)
+		if err != nil {
+			return err
+		}
+		config.PublicKey = key
+	}
+	return nil
+}
+
+func readConfig(configFilePath string) (*AppConfig, error) {
+	if configFilePath == "" {
+		return nil, errors.New("failed to init configuration: file path is not specified")
+	}
+	configBytes, err := os.ReadFile(configFilePath)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("failed to read configFile by '%s': %v", configFilePath, err)
 	}
-	return &AppConfig{
-		ServerAddress:       address,
-		AgentAddress:        agentAddress,
-		ReportInterval:      reportInterval,
-		PollInterval:        pollInterval,
-		HashKey:             hashKey,
-		UseBuffSenderClient: useBuffSenderClient(),
-		BuffBatchLimit:      defaultBuffBatchLimit,
-		PublicKey:           publicKey,
+	var config AppConfig
+	err = json.Unmarshal(configBytes, &config)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal config json '%s': %v", string(configBytes), err)
 	}
+	return &config, nil
 }
 
 func getReportInterval() time.Duration {
@@ -133,11 +218,15 @@ func useBuffSenderClient() bool {
 	return useBuffSendClient
 }
 
-func readRsaPublicKey() (*rsa.PublicKey, error) {
+func getCryptoKeyPath() string {
 	cryptoKeyPath := os.Getenv("CRYPTO_KEY")
 	if cryptoKeyPath == "" {
 		cryptoKeyPath = defaultPublicKeyPath
 	}
+	return cryptoKeyPath
+}
+
+func readRsaPublicKey(cryptoKeyPath string) (*rsa.PublicKey, error) {
 	pemBytes, err := os.ReadFile(cryptoKeyPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read publicKey by '%s': %v", cryptoKeyPath, err)

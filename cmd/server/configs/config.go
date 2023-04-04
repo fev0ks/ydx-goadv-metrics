@@ -3,9 +3,10 @@ package configs
 import (
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
+	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"time"
@@ -29,84 +30,157 @@ type AppConfig struct {
 	// StoreInterval - Временной интервал для беккапа метрик
 	StoreInterval time.Duration
 	// DoRestore - Восстанавливать ли метрики в память из беккапа при старте сервиса
-	DoRestore bool
+	DoRestore *bool
 	// StoreFile - Имя файла при беккапе метрик в файл
 	StoreFile string
 	// HashKey - Любое текстовое значение,
 	// обязательно должно совпадать с аналогичным параметров в Агент сервисе для архивации//разархивации сообщений
 	HashKey string
 	// DBConfig - Конфиг подключения к базе
-	DBConfig   string
-	PrivateKey *rsa.PrivateKey
+	DBConfig       string
+	PrivateKey     *rsa.PrivateKey
+	privateKeyPath string
 }
 
-func InitAppConfig() *AppConfig {
-	address := getAddress()
-	var addressF string
-	pflag.StringVarP(&addressF, "a", "a", defaultAddress, "Address of the server")
+func (cfg *AppConfig) UnmarshalJSON(data []byte) (err error) {
+	cfgIn := struct {
+		ServerAddress  string `json:"address"`
+		DoRestore      *bool  `json:"restore"`
+		StoreInterval  string `json:"store_interval"`
+		StoreFile      string `json:"store_file"`
+		DBConfig       string `json:"database_dsn"`
+		PrivateKeyPath string `json:"crypto_key"`
+	}{}
+	if err = json.Unmarshal(data, &cfgIn); err != nil {
+		return err
+	}
+	cfg.ServerAddress = cfgIn.ServerAddress
+	cfg.DoRestore = cfgIn.DoRestore
+	cfg.StoreFile = cfgIn.StoreFile
+	cfg.DBConfig = cfgIn.DBConfig
+	cfg.privateKeyPath = cfgIn.PrivateKeyPath
+	if cfgIn.StoreInterval != "" {
+		if cfg.StoreInterval, err = time.ParseDuration(cfgIn.StoreInterval); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
-	restore := getDoReStore()
+func InitAppConfig(configPath string) (*AppConfig, error) {
+	config, err := readConfig(configPath)
+	if err != nil {
+		return nil, err
+	}
+	setupConfigByEnvVars(config)
+	setupConfigByFlags(config)
+	err = setupRSAKey(config)
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
+}
+
+func setupConfigByEnvVars(cfg *AppConfig) {
+	if serverAddress := getServerAddress(); serverAddress != "" {
+		cfg.ServerAddress = serverAddress
+	}
+	if doRestore := getDoReStore(); doRestore != nil {
+		cfg.DoRestore = doRestore
+	}
+	if storeInterval := getStoreInterval(); storeInterval != 0 {
+		cfg.StoreInterval = storeInterval
+	}
+	if hashKey := getHashKey(); hashKey != "" {
+		cfg.HashKey = hashKey
+	}
+	if storeFile := getStoreFile(); storeFile != "" {
+		cfg.StoreFile = storeFile
+	}
+	if dbConfig := getDBConfig(); dbConfig != "" {
+		cfg.DBConfig = dbConfig
+	}
+	if cryptoKeyPath := getCryptoKeyPath(); cryptoKeyPath != "" {
+		cfg.privateKeyPath = cryptoKeyPath
+	}
+}
+
+func setupConfigByFlags(cfg *AppConfig) {
+	var serverAddressF string
+	pflag.StringVarP(&serverAddressF, "a", "a", defaultAddress, "Address of the server")
+
 	var restoreF bool
 	pflag.BoolVarP(&restoreF, "r", "r", defaultDoRestore, "Do autoBackup restore?")
 
-	storeInterval := getStoreInterval()
 	var storeIntervalF time.Duration
 	pflag.DurationVarP(&storeIntervalF, "i", "i", defaultMetricStoreInterval, "Backup interval in sec")
 
-	storeFile := getStoreFile()
 	var storeFileF string
 	pflag.StringVarP(&storeFileF, "f", "f", defaultStoreFile, "Path of Backup store file")
 
-	hashKey := getHashKey()
 	var hashKeyF string
 	pflag.StringVarP(&hashKeyF, "k", "k", defaultHashKey, "Hash key")
 
-	dbConfig := getDBConfig()
 	var dbDsnF string
 	pflag.StringVarP(&dbDsnF, "d", "d", defaultDBConfig, "Postgres DB DSN")
 
+	var cryptoKeyF string
+	pflag.StringVarP(&cryptoKeyF, "crypto-key", "c", defaultPrivateKeyPath, "Path to private key")
+
 	pflag.Parse()
 
-	if address == "" {
-		address = addressF
+	if cfg.ServerAddress == "" {
+		cfg.ServerAddress = serverAddressF
 	}
-	if restore == nil {
-		restore = &restoreF
+	if cfg.DoRestore == nil {
+		cfg.DoRestore = &restoreF
 	}
-	if storeInterval == 0 {
-		storeInterval = storeIntervalF
+	if cfg.StoreInterval == 0 {
+		cfg.StoreInterval = storeIntervalF
 	}
-	if address == "" {
-		address = addressF
+	if cfg.StoreFile == "" {
+		cfg.StoreFile = storeFileF
 	}
-	if restore == nil {
-		restore = &restoreF
+	if cfg.HashKey == "" {
+		cfg.HashKey = hashKeyF
 	}
-	if storeFile == "" {
-		storeFile = storeFileF
+	if cfg.DBConfig == "" {
+		cfg.DBConfig = dbDsnF
 	}
-	if hashKey == "" {
-		hashKey = hashKeyF
-	}
-	if dbConfig == "" {
-		dbConfig = dbDsnF
-	}
-	privateKey, err := readRsaPrivateKey()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return &AppConfig{
-		ServerAddress: address,
-		StoreInterval: storeInterval,
-		DoRestore:     *restore,
-		StoreFile:     storeFile,
-		HashKey:       hashKey,
-		DBConfig:      dbConfig,
-		PrivateKey:    privateKey,
+	if cfg.privateKeyPath == "" {
+		cfg.privateKeyPath = cryptoKeyF
 	}
 }
 
-func getAddress() string {
+func setupRSAKey(config *AppConfig) error {
+	if config.privateKeyPath != "" {
+		key, err := readRsaPrivateKey(config.privateKeyPath)
+		if err != nil {
+			return err
+		}
+		config.PrivateKey = key
+	}
+	return nil
+}
+
+func readConfig(configFilePath string) (*AppConfig, error) {
+	if configFilePath == "" {
+		return nil, errors.New("failed to init configuration: file path is not specified")
+	}
+	configBytes, err := os.ReadFile(configFilePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read configFile by '%s': %v", configFilePath, err)
+	}
+	var config AppConfig
+	err = json.Unmarshal(configBytes, &config)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal config json '%s': %v", string(configBytes), err)
+	}
+	return &config, nil
+}
+
+func getServerAddress() string {
 	return os.Getenv("ADDRESS")
 }
 
@@ -147,11 +221,11 @@ func getDBConfig() string {
 	return os.Getenv("DATABASE_DSN")
 }
 
-func readRsaPrivateKey() (*rsa.PrivateKey, error) {
-	cryptoKeyPath := os.Getenv("CRYPTO_KEY")
-	if cryptoKeyPath == "" {
-		cryptoKeyPath = defaultPrivateKeyPath
-	}
+func getCryptoKeyPath() string {
+	return os.Getenv("CRYPTO_KEY")
+}
+
+func readRsaPrivateKey(cryptoKeyPath string) (*rsa.PrivateKey, error) {
 	pemBytes, err := os.ReadFile(cryptoKeyPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read publicKey by '%s': %v", cryptoKeyPath, err)

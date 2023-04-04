@@ -1,0 +1,6 @@
+{
+  "address": "localhost:8085",
+  "report_interval": "1s",
+  "poll_interval": "10s",
+  "crypto_key": "cmd/agent/pubkey.pem"
+}
