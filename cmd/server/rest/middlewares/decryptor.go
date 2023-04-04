@@ -25,6 +25,7 @@ func (d *Decrypter) Decrypt(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if d.privateKey == nil {
 			next.ServeHTTP(w, r)
+			return
 		}
 		if r.Body != nil {
 			var body []byte
