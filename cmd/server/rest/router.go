@@ -25,12 +25,12 @@ func HandleMetricRequests(router chi.Router, mh *MetricsHandler) {
 	router.Post("/update/{mType}/{id}/{value}", mh.ReceptionMetricHandler())
 	router.Get("/value/{mType}/{id}", mh.GetMetricHandler())
 	router.Post("/value/", mh.GetMetricHandler())
+	router.Post("/update/", mh.ReceptionMetricHandler())
 }
 
 func HandleEncryptedMetricRequests(router chi.Router, mh *MetricsHandler, decrypter *middlewares.Decrypter) {
 	router.Group(func(r chi.Router) {
 		r.Use(decrypter.Decrypt)
-		r.Post("/update/", mh.ReceptionMetricHandler())
 		r.Post("/updates/", mh.ReceptionMetricsHandler())
 	})
 }

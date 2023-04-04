@@ -30,13 +30,9 @@ func (js *jsonSender) SendMetric(metric *model.Metric) error {
 	if err != nil {
 		return err
 	}
-	encryptedBody, err := js.encryptor.Encrypt(body)
-	if err != nil {
-		return err
-	}
 	resp, err := js.client.R().
 		SetHeader(consts.ContentType, consts.ApplicationJSON).
-		SetBody(encryptedBody).
+		SetBody(body).
 		Post("/update/")
 	if err != nil {
 		return err

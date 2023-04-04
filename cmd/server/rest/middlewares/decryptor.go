@@ -44,6 +44,7 @@ func (d *Decrypter) Decrypt(next http.Handler) http.Handler {
 				if err != nil {
 					log.Printf("failed to decrypt request data '%s': %v", body, err)
 					http.Error(w, fmt.Sprintf("failed to decrypt request data '%s': %v", body, err), http.StatusBadRequest)
+					return
 				}
 				decryptedBody = append(decryptedBody, block...)
 			}
