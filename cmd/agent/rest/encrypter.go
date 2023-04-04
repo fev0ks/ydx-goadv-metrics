@@ -19,6 +19,9 @@ func NewEncryptor(publicKey *rsa.PublicKey) *Encryptor {
 }
 
 func (e *Encryptor) Encrypt(data []byte) ([]byte, error) {
+	if e.publicKey == nil {
+		return data, nil
+	}
 	encrypted := make([]byte, 0, len(data))
 	var nextBlockLength int
 	for i := 0; i < len(data); i += blockLength {

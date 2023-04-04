@@ -2,9 +2,7 @@ package configs
 
 import (
 	"crypto/rsa"
-	"crypto/x509"
 	"encoding/json"
-	"encoding/pem"
 	"errors"
 	"fmt"
 	"os"
@@ -227,14 +225,15 @@ func getCryptoKeyPath() string {
 }
 
 func readRsaPublicKey(cryptoKeyPath string) (*rsa.PublicKey, error) {
-	pemBytes, err := os.ReadFile(cryptoKeyPath)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read publicKey by '%s': %v", cryptoKeyPath, err)
-	}
-	block, _ := pem.Decode(pemBytes)
-	key, err := x509.ParsePKCS1PublicKey(block.Bytes)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse publicKey: %v", err)
-	}
-	return key, nil
+	return nil, nil
+	//pemBytes, err := os.ReadFile(cryptoKeyPath)
+	//if err != nil {
+	//	return nil, fmt.Errorf("failed to read publicKey by '%s': %v", cryptoKeyPath, err)
+	//}
+	//block, _ := pem.Decode(pemBytes)
+	//key, err := x509.ParsePKCS1PublicKey(block.Bytes)
+	//if err != nil {
+	//	return nil, fmt.Errorf("failed to parse publicKey: %v", err)
+	//}
+	//return key, nil
 }
