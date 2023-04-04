@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
 	_ "net/http/pprof"
 	"os"
 
@@ -71,5 +70,6 @@ func main() {
 
 	log.Println("Agent started")
 	shutdown.ProperExitDefer(exitHandler)
-	log.Fatal(http.ListenAndServe(appConfig.AgentAddress, nil))
+	//log.Fatal(http.ListenAndServe(appConfig.AgentAddress, nil))
+	<-ctx.Done()
 }
