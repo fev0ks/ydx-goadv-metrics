@@ -26,39 +26,35 @@ const (
 
 type AppConfig struct {
 	// ServerAddress - Адресс сервиса
-	ServerAddress string
+	ServerAddress string `json:"address"`
 	// StoreInterval - Временной интервал для беккапа метрик
 	StoreInterval time.Duration
 	// DoRestore - Восстанавливать ли метрики в память из беккапа при старте сервиса
-	DoRestore *bool
+	DoRestore *bool `json:"restore"`
 	// StoreFile - Имя файла при беккапе метрик в файл
-	StoreFile string
+	StoreFile string `json:"store_file"`
 	// HashKey - Любое текстовое значение,
 	// обязательно должно совпадать с аналогичным параметров в Агент сервисе для архивации//разархивации сообщений
 	HashKey string
 	// DBConfig - Конфиг подключения к базе
-	DBConfig       string
+	DBConfig       string `json:"database_dsn"`
 	PrivateKey     *rsa.PrivateKey
-	privateKeyPath string
+	PrivateKeyPath string `json:"crypto_key"`
+	TrustedSubnet  string `json:"trusted_subnet"`
 }
 
 func (cfg *AppConfig) UnmarshalJSON(data []byte) (err error) {
-	cfgIn := struct {
-		ServerAddress  string `json:"address"`
-		DoRestore      *bool  `json:"restore"`
-		StoreInterval  string `json:"store_interval"`
-		StoreFile      string `json:"store_file"`
-		DBConfig       string `json:"database_dsn"`
-		PrivateKeyPath string `json:"crypto_key"`
-	}{}
-	if err = json.Unmarshal(data, &cfgIn); err != nil {
+	type mAlias AppConfig
+	cfgIn := &struct {
+		*mAlias
+		StoreInterval string `json:"store_interval"`
+	}{
+		mAlias: (*mAlias)(cfg),
+	}
+	if err := json.Unmarshal(data, &cfgIn); err != nil {
 		return err
 	}
-	cfg.ServerAddress = cfgIn.ServerAddress
-	cfg.DoRestore = cfgIn.DoRestore
-	cfg.StoreFile = cfgIn.StoreFile
-	cfg.DBConfig = cfgIn.DBConfig
-	cfg.privateKeyPath = cfgIn.PrivateKeyPath
+
 	if cfgIn.StoreInterval != "" {
 		if cfg.StoreInterval, err = time.ParseDuration(cfgIn.StoreInterval); err != nil {
 			return err
@@ -102,7 +98,10 @@ func setupConfigByEnvVars(cfg *AppConfig) {
 		cfg.DBConfig = dbConfig
 	}
 	if cryptoKeyPath := getCryptoKeyPath(); cryptoKeyPath != "" {
-		cfg.privateKeyPath = cryptoKeyPath
+		cfg.PrivateKeyPath = cryptoKeyPath
+	}
+	if trustedSubnet := getTrustedSubnet(); trustedSubnet != "" {
+		cfg.TrustedSubnet = trustedSubnet
 	}
 }
 
@@ -128,6 +127,9 @@ func setupConfigByFlags(cfg *AppConfig) {
 	var cryptoKeyF string
 	pflag.StringVarP(&cryptoKeyF, "crypto-key", "c", "", "Path to private key")
 
+	var trustedSubnetF string
+	pflag.StringVarP(&trustedSubnetF, "t", "t", "", "Trusted Subnet")
+
 	pflag.Parse()
 
 	if serverAddressF != "" {
@@ -149,13 +151,16 @@ func setupConfigByFlags(cfg *AppConfig) {
 		cfg.DBConfig = dbDsnF
 	}
 	if cryptoKeyF != "" {
-		cfg.privateKeyPath = cryptoKeyF
+		cfg.PrivateKeyPath = cryptoKeyF
+	}
+	if trustedSubnetF != "" {
+		cfg.TrustedSubnet = trustedSubnetF
 	}
 }
 
 func setupRSAKey(config *AppConfig) error {
-	if config.privateKeyPath != "" {
-		key, err := readRsaPrivateKey(config.privateKeyPath)
+	if config.PrivateKeyPath != "" {
+		key, err := readRsaPrivateKey(config.PrivateKeyPath)
 		if err != nil {
 			return err
 		}
@@ -223,6 +228,10 @@ func getDBConfig() string {
 
 func getCryptoKeyPath() string {
 	return os.Getenv("CRYPTO_KEY")
+}
+
+func getTrustedSubnet() string {
+	return os.Getenv("TRUSTED_SUBNET")
 }
 
 func readRsaPrivateKey(cryptoKeyPath string) (*rsa.PrivateKey, error) {

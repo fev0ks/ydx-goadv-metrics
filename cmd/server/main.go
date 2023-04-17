@@ -79,6 +79,9 @@ func main() {
 	shutdownBlocker := middlewares.NewShutdownBlocker(exitHandler)
 	router.Use(shutdownBlocker.BlockTillFinish)
 
+	ipChecker := middlewares.NewSubNetChecker(appConfig.TrustedSubnet)
+	router.Use(ipChecker.CheckRealIPRequestHeader)
+
 	decrypter := middlewares.NewDecrypter(appConfig.PrivateKey)
 	rest.HandleEncryptedMetricRequests(router, mh, decrypter)
 	rest.HandleMetricRequests(router, mh)
