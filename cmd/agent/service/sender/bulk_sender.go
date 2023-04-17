@@ -4,28 +4,33 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/go-resty/resty/v2"
 	"log"
 	"strings"
 	"sync"
 
+	"github.com/go-resty/resty/v2"
+
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/rest"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
-	"github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
+	consts "github.com/fev0ks/ydx-goadv-metrics/internal/model/consts/rest"
 )
 
 type bulkSender struct {
 	client     *resty.Client
 	batchLimit int
 	sync.RWMutex
+	encryptor *rest.Encryptor
 }
 
 func NewBulkMetricSender(
 	client *resty.Client,
 	batchLimit int,
+	encryptor *rest.Encryptor,
 ) Sender {
 	sender := &bulkSender{
 		client:     client,
 		batchLimit: batchLimit,
+		encryptor:  encryptor,
 	}
 	return sender
 }
@@ -65,9 +70,13 @@ func (s *bulkSender) sendMetrics(metrics []*model.Metric) error {
 	if err != nil {
 		return err
 	}
+	encryptedBody, err := s.encryptor.Encrypt(body)
+	if err != nil {
+		return err
+	}
 	resp, err := s.client.R().
-		SetHeader(rest.ContentType, rest.ApplicationJSON).
-		SetBody(body).
+		SetHeader(consts.ContentType, consts.ApplicationJSON).
+		SetBody(encryptedBody).
 		Post("/updates/")
 	if err != nil {
 		return err

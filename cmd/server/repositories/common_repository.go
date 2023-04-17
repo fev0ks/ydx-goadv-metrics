@@ -46,9 +46,15 @@ func (cr *CommonRepository) SaveMetric(metric *model.Metric) error {
 	}
 	switch metric.MType {
 	case model.GaugeType:
+		if metric.Value == nil {
+			return fmt.Errorf("metric value is nil: %v", metric)
+		}
 		cr.storage[metric.ID] = metric
 		log.Printf("Saved %v '%s' metric: '%s'", metric.MType, metric.ID, metric.GetValue())
 	case model.CounterType:
+		if metric.Delta == nil {
+			return fmt.Errorf("metric delta is nil: %v", metric)
+		}
 		if current, ok := cr.storage[metric.ID]; ok {
 			newValue := *current.Delta + *metric.Delta
 			current.Delta = &newValue

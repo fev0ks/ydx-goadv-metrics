@@ -8,6 +8,7 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/agent"
+	"github.com/fev0ks/ydx-goadv-metrics/internal/shutdown"
 
 	"github.com/go-resty/resty/v2"
 )
@@ -33,7 +34,7 @@ func NewCommonMetricPoller(
 	}
 }
 
-func (cmp *commonMetricPoller) PollMetrics(ctx context.Context, done chan struct{}) {
+func (cmp *commonMetricPoller) PollMetrics(ctx context.Context, eh *shutdown.ExitHandler, done chan struct{}) {
 	ticker := time.NewTicker(cmp.interval)
 	go func() {
 		for {
@@ -46,7 +47,7 @@ func (cmp *commonMetricPoller) PollMetrics(ctx context.Context, done chan struct
 				start := time.Now()
 				log.Println("Poll metrics start")
 				metrics := cmp.mr.GetMetrics()
-				err := cmp.sendMetrics(ctx, metrics)
+				err := cmp.forceSendMetrics(ctx, eh, metrics)
 				if err != nil {
 					log.Printf("[%v] Poll metrics finished with errors: %v", time.Since(start).String(), err)
 				} else {
@@ -55,6 +56,18 @@ func (cmp *commonMetricPoller) PollMetrics(ctx context.Context, done chan struct
 			}
 		}
 	}()
+}
+
+func (cmp *commonMetricPoller) forceSendMetrics(ctx context.Context, eh *shutdown.ExitHandler, metrics []*model.Metric) error {
+	alias := "sendMetrics"
+	if eh.IsNewFuncExecutionAllowed() {
+		eh.AddFuncInProcessing(alias)
+		defer eh.FuncFinished(alias)
+		return cmp.sendMetrics(ctx, metrics)
+	} else {
+		log.Println("System is going to shutdown, new func execution are rejected!")
+	}
+	return nil
 }
 
 func (cmp *commonMetricPoller) sendMetrics(ctx context.Context, metrics []*model.Metric) error {
