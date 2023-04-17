@@ -87,5 +87,10 @@ func main() {
 
 	log.Printf("Server started on %s", appConfig.ServerAddress)
 	shutdown.ProperExitDefer(exitHandler)
-	log.Fatal(http.ListenAndServe(appConfig.ServerAddress, router))
+	server := &http.Server{Addr: appConfig.ServerAddress, Handler: router}
+	exitHandler.ShutdownServerBeforeExit(server)
+	if err := server.ListenAndServe(); err != nil {
+		log.Printf("Server closed with msg: '%v'", err)
+	}
+	<-ctx.Done()
 }

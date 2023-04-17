@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"sync"
@@ -16,6 +17,7 @@ var (
 )
 
 type ExitHandler struct {
+	server            *http.Server
 	ToCancel          []context.CancelFunc
 	ToStop            []chan struct{}
 	ToClose           []io.Closer
@@ -41,6 +43,10 @@ func (eh *ExitHandler) setNewFuncExecutionAllowed(value bool) {
 	mu.Lock()
 	defer mu.Unlock()
 	eh.newFuncAllowed = value
+}
+
+func (eh *ExitHandler) ShutdownServerBeforeExit(server *http.Server) {
+	eh.server = server
 }
 
 func (eh *ExitHandler) AddFuncInProcessing(alias string) {
@@ -76,6 +82,7 @@ func ProperExitDefer(exitHandler *ExitHandler) {
 func (eh *ExitHandler) shutdown() {
 	successfullyFinished := make(chan struct{})
 	go func() {
+		eh.waitForShutdownServer()
 		eh.waitForFinishFunc()
 		eh.endHeldObjects()
 		successfullyFinished <- struct{}{}
@@ -94,6 +101,17 @@ func (eh *ExitHandler) waitForFinishFunc() {
 	log.Println("Waiting for functions finish work...")
 	eh.funcsInProcessing.Wait()
 	log.Println("All functions finished work successfully")
+}
+
+func (eh *ExitHandler) waitForShutdownServer() {
+	if eh.server != nil {
+		log.Println("Waiting for shutdown server...")
+		err := eh.server.Shutdown(context.Background())
+		log.Println("Server shutdown complete")
+		if err != nil {
+			log.Printf("failed to shutdown server: %v", err)
+		}
+	}
 }
 
 func (eh *ExitHandler) endHeldObjects() {
