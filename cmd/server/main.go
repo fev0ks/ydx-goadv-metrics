@@ -90,8 +90,8 @@ func main() {
 
 	shutdown.ProperExitDefer(exitHandler)
 
-	httpServer := servers.StartHttpServer(appConfig, router)
-	exitHandler.ShutdownHttpServerBeforeExit(httpServer)
+	httpServer := servers.StartHTTPServer(appConfig, router)
+	exitHandler.ShutdownHTTPServerBeforeExit(httpServer)
 
 	grpcServer := servers.StartGrpcServer(":3200", metricRepo, appConfig.HashKey)
 	exitHandler.ShutdownGrpcServerBeforeExit(grpcServer)

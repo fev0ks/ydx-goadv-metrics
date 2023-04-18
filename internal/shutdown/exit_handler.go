@@ -48,7 +48,7 @@ func (eh *ExitHandler) setNewFuncExecutionAllowed(value bool) {
 	eh.newFuncAllowed = value
 }
 
-func (eh *ExitHandler) ShutdownHttpServerBeforeExit(httpServer *http.Server) {
+func (eh *ExitHandler) ShutdownHTTPServerBeforeExit(httpServer *http.Server) {
 	eh.httpServer = httpServer
 }
 

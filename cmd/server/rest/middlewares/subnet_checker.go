@@ -23,8 +23,8 @@ func (sc *SubNetChecker) CheckRealIPRequestHeader(next http.Handler) http.Handle
 			return
 		}
 
-		if clientIPVal := sc.getClientIp(r); clientIPVal != "" {
-			ok, err := sc.isTrustedIp(clientIPVal)
+		if clientIPVal := sc.getClientIP(r); clientIPVal != "" {
+			ok, err := sc.isTrustedIP(clientIPVal)
 			if err != nil {
 				log.Printf("failed to check clientIP: %v", err)
 			} else if !ok {
@@ -37,7 +37,7 @@ func (sc *SubNetChecker) CheckRealIPRequestHeader(next http.Handler) http.Handle
 	})
 }
 
-func (sc *SubNetChecker) getClientIp(r *http.Request) (clientIPVal string) {
+func (sc *SubNetChecker) getClientIP(r *http.Request) (clientIPVal string) {
 	if ipHeader := r.Header.Get("X-Real-Ip"); ipHeader != "" {
 		clientIPVal = ipHeader
 	} else {
@@ -48,7 +48,7 @@ func (sc *SubNetChecker) getClientIp(r *http.Request) (clientIPVal string) {
 	return
 }
 
-func (sc *SubNetChecker) isTrustedIp(ipVal string) (bool, error) {
+func (sc *SubNetChecker) isTrustedIP(ipVal string) (bool, error) {
 	_, ipNet, err := net.ParseCIDR(ipVal)
 	if err != nil {
 		return false, err

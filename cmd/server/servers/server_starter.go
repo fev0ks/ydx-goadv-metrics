@@ -38,7 +38,7 @@ func StartGrpcServer(
 	return grpcServer
 }
 
-func StartHttpServer(appConfig *configs.AppConfig, router chi.Router) *http.Server {
+func StartHTTPServer(appConfig *configs.AppConfig, router chi.Router) *http.Server {
 	server := &http.Server{Addr: appConfig.ServerAddress, Handler: router}
 	go func() {
 		log.Printf("Http Server started on %s", appConfig.ServerAddress)

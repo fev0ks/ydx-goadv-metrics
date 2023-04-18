@@ -309,7 +309,14 @@ func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWri
 				http.Error(writer, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			writer.WriteHeader(http.StatusOK)
 		}
+		writer.Header().Add(rest.ContentType, rest.ApplicationJSON)
+		_, err = writer.Write([]byte("[]"))
+		if err != nil {
+			log.Printf("failed to write metric response: %v", err)
+			http.Error(writer, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		writer.WriteHeader(http.StatusOK)
 	}
 }
