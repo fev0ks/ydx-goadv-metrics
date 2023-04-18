@@ -16,13 +16,23 @@ type Server struct {
 	HashKey    string
 }
 
+func NewGrpcServer(
+	repo repository.IMetricRepository,
+	hashKey string,
+) *Server {
+	return &Server{
+		Repository: repo,
+		HashKey:    hashKey,
+	}
+}
+
 func (s *Server) SaveMetrics(ctx context.Context, in *pb.MetricsRequest) (*pb.Empty, error) {
 
-	for _, pbMetric := range in.Metrics {
+	for _, pbMetric := range in.GetMetrics() {
 
 		metric := &model.Metric{
 			ID:    pbMetric.Id,
-			MType: model.MTypeValueOf(string(pbMetric.MType)),
+			MType: model.MTypeValueOf(pb.MetricTypes_name[int32(pbMetric.MType)]),
 			Delta: (*model.CounterVT)(pbMetric.Delta),
 			Value: (*model.GaugeVT)(pbMetric.Value),
 		}
@@ -47,5 +57,6 @@ func (s *Server) SaveMetrics(ctx context.Context, in *pb.MetricsRequest) (*pb.Em
 			return nil, err
 		}
 	}
-	return nil, nil
+	log.Printf("Saved %d metrics throught grpc", len(in.GetMetrics()))
+	return &pb.Empty{}, nil
 }

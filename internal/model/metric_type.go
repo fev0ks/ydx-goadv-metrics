@@ -1,6 +1,8 @@
 package model
 
-import "strings"
+import (
+	"strings"
+)
 
 const (
 	GaugeTypeVal   = "gauge"
@@ -27,4 +29,8 @@ func MTypeValueOf(value string) MetricType {
 		mType = NanType
 	}
 	return mType
+}
+
+func (mt MetricType) String() string {
+	return string(mt)
 }

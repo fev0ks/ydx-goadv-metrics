@@ -93,7 +93,7 @@ func main() {
 	httpServer := servers.StartHttpServer(appConfig, router)
 	exitHandler.ShutdownHttpServerBeforeExit(httpServer)
 
-	grpcServer := servers.StartGrpcServer(":3200")
+	grpcServer := servers.StartGrpcServer(":3200", metricRepo, appConfig.HashKey)
 	exitHandler.ShutdownGrpcServerBeforeExit(grpcServer)
 
 	<-ctx.Done()

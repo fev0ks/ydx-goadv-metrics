@@ -1,6 +1,7 @@
 package sender
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model"
@@ -21,7 +22,7 @@ func NewTextMetricSender(client *resty.Client) Sender {
 	}
 }
 
-func (ts *textSender) SendMetric(metric *model.Metric) error {
+func (ts *textSender) SendMetric(_ context.Context, metric *model.Metric) error {
 	value := metric.GetValue()
 	if value == model.NanVal {
 		return fmt.Errorf("metric type '%s' is not supported", metric.MType)

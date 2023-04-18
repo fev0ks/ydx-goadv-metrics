@@ -1,6 +1,7 @@
 package sender
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/go-resty/resty/v2"
@@ -25,7 +26,7 @@ func NewJSONMetricSender(client *resty.Client, encryptor *rest.Encryptor) Sender
 	return sender
 }
 
-func (js *jsonSender) SendMetric(metric *model.Metric) error {
+func (js *jsonSender) SendMetric(ctx context.Context, metric *model.Metric) error {
 	body, err := json.Marshal(*metric)
 	if err != nil {
 		return err
@@ -33,6 +34,7 @@ func (js *jsonSender) SendMetric(metric *model.Metric) error {
 	resp, err := js.client.R().
 		SetHeader(consts.ContentType, consts.ApplicationJSON).
 		SetBody(body).
+		SetContext(ctx).
 		Post("/update/")
 	if err != nil {
 		return err
