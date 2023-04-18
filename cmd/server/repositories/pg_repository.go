@@ -117,9 +117,9 @@ func (p *pgRepository) migrationUp() {
 	log.Printf("migrations are finished, total count: %d", countOfMigrations)
 }
 
-func (p *pgRepository) SaveMetrics(metrics []*model.Metric) error {
+func (p *pgRepository) SaveMetrics(ctx context.Context, metrics []*model.Metric) error {
 	for _, metric := range metrics {
-		err := p.SaveMetric(metric)
+		err := p.SaveMetric(ctx, metric)
 		if err != nil {
 			return err
 		}
@@ -127,20 +127,20 @@ func (p *pgRepository) SaveMetrics(metrics []*model.Metric) error {
 	return nil
 }
 
-func (p *pgRepository) SaveMetric(metric *model.Metric) error {
+func (p *pgRepository) SaveMetric(ctx context.Context, metric *model.Metric) error {
 	var err error
 	switch metric.MType {
 	case model.GaugeType:
 		if metric.Value == nil {
 			return fmt.Errorf("metric value is nil: %v", metric)
 		}
-		_, err = p.statements[saveGaugeMetric].Exec(metric.ID, metric.MType, metric.Value, metric.Hash)
+		_, err = p.statements[saveGaugeMetric].ExecContext(ctx, metric.ID, metric.MType, metric.Value, metric.Hash)
 	case model.CounterType:
 		if metric.Delta == nil {
 			return fmt.Errorf("metric delta is nil: %v", metric)
 		}
 		var currentMetric *model.Metric
-		currentMetric, err = p.GetMetric(metric.ID)
+		currentMetric, err = p.GetMetric(ctx, metric.ID)
 		if err != nil && err != sql.ErrNoRows {
 			return err
 		}
@@ -148,13 +148,13 @@ func (p *pgRepository) SaveMetric(metric *model.Metric) error {
 			newValue := *currentMetric.Delta + *metric.Delta
 			metric.Delta = &newValue
 		}
-		_, err = p.statements[saveCounterMetric].Exec(metric.ID, metric.MType, metric.Delta, metric.Hash)
+		_, err = p.statements[saveCounterMetric].ExecContext(ctx, metric.ID, metric.MType, metric.Delta, metric.Hash)
 	}
 	return err
 }
 
-func (p *pgRepository) GetMetrics() (map[string]*model.Metric, error) {
-	metricsList, err := p.GetMetricsList()
+func (p *pgRepository) GetMetrics(ctx context.Context) (map[string]*model.Metric, error) {
+	metricsList, err := p.GetMetricsList(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -165,9 +165,9 @@ func (p *pgRepository) GetMetrics() (map[string]*model.Metric, error) {
 	return metrics, nil
 }
 
-func (p *pgRepository) GetMetricsList() ([]*model.Metric, error) {
+func (p *pgRepository) GetMetricsList(ctx context.Context) ([]*model.Metric, error) {
 	metrics := make([]*model.Metric, 0)
-	rows, err := p.statements[getMetrics].Query()
+	rows, err := p.statements[getMetrics].QueryContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -185,8 +185,8 @@ func (p *pgRepository) GetMetricsList() ([]*model.Metric, error) {
 	return metrics, nil
 }
 
-func (p *pgRepository) GetMetric(name string) (*model.Metric, error) {
-	row := p.statements[getMetric].QueryRow(name)
+func (p *pgRepository) GetMetric(ctx context.Context, name string) (*model.Metric, error) {
+	row := p.statements[getMetric].QueryRowContext(ctx, name)
 	metric := &model.Metric{}
 	err := row.Scan(&metric.ID, &metric.MType, &metric.Delta, &metric.Value, &metric.Hash)
 	if err != nil {
@@ -198,8 +198,8 @@ func (p *pgRepository) GetMetric(name string) (*model.Metric, error) {
 	return metric, nil
 }
 
-func (p *pgRepository) Clear() error {
-	exec, err := p.statements[truncate].Exec()
+func (p *pgRepository) Clear(ctx context.Context) error {
+	exec, err := p.statements[truncate].ExecContext(ctx)
 	if err != nil {
 		return err
 	}

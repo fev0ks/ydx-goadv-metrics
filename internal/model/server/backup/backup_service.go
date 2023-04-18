@@ -1,11 +1,13 @@
 package backup
 
+import "context"
+
 // IAutoBackup - интерфейс для реализации автоматической выгрузки и восстановления состояния
 type IAutoBackup interface {
 	// Start -
-	Start() chan struct{}
+	Start(ctx context.Context) chan struct{}
 	// Restore -
-	Restore() error
+	Restore(ctx context.Context) error
 	// Backup -
-	Backup() error
+	Backup(ctx context.Context) error
 }

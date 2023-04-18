@@ -21,7 +21,7 @@ const (
 	defaultAgentAddress         = "localhost:8089"
 	defaultHashKey              = ""
 	defaultBuffBatchLimit       = 10
-	defaultUseBuffSendClient    = true
+	defaultClientType           = "common"
 	//defaultPublicKeyPath        = "cmd/agent/pubkey.pem"
 )
 
@@ -30,15 +30,15 @@ type Duration struct {
 }
 
 type AppConfig struct {
-	ServerAddress       string
-	AgentAddress        string
-	ReportInterval      time.Duration
-	PollInterval        time.Duration
-	HashKey             string
-	UseBuffSenderClient bool
-	BuffBatchLimit      int
-	PublicKey           *rsa.PublicKey
-	publicKeyPath       string
+	ServerAddress  string
+	AgentAddress   string
+	ReportInterval time.Duration
+	PollInterval   time.Duration
+	HashKey        string
+	ClientType     string
+	BuffBatchLimit int
+	PublicKey      *rsa.PublicKey
+	publicKeyPath  string
 }
 
 func (cfg *AppConfig) UnmarshalJSON(data []byte) (err error) {
@@ -100,7 +100,7 @@ func setupConfigByEnvVars(cfg *AppConfig) {
 	if cryptoKeyPath := getCryptoKeyPath(); cryptoKeyPath != "" {
 		cfg.publicKeyPath = cryptoKeyPath
 	}
-	cfg.UseBuffSenderClient = useBuffSenderClient()
+	cfg.ClientType = getClientType()
 }
 
 func setupConfigByFlags(cfg *AppConfig) {
@@ -210,12 +210,12 @@ func getHashKey() string {
 	return os.Getenv("KEY")
 }
 
-func useBuffSenderClient() bool {
-	useBuffSendClient, err := strconv.ParseBool(os.Getenv("USE_BUFF_SEND_CLIENT"))
-	if err != nil {
-		useBuffSendClient = defaultUseBuffSendClient
+func getClientType() string {
+	clientType := os.Getenv("CLIENT_TYPE")
+	if clientType == "" {
+		clientType = defaultClientType
 	}
-	return useBuffSendClient
+	return clientType
 }
 
 func getCryptoKeyPath() string {

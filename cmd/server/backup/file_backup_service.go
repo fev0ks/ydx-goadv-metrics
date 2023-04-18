@@ -1,6 +1,7 @@
 package backup
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"os"
@@ -42,7 +43,7 @@ func initDir(storeFile string) error {
 	return os.MkdirAll(dir, 0755)
 }
 
-func (b *fileAutoBackup) Start() chan struct{} {
+func (b *fileAutoBackup) Start(ctx context.Context) chan struct{} {
 	log.Println("FileAutoBackup activated")
 	ticker := time.NewTicker(b.interval)
 	done := make(chan struct{})
@@ -55,7 +56,7 @@ func (b *fileAutoBackup) Start() chan struct{} {
 				return
 			case <-ticker.C:
 				log.Println("FileAutoBackup metrics start")
-				err := b.Backup()
+				err := b.Backup(ctx)
 				if err != nil {
 					log.Printf("failed to backup metrics: %v", err)
 				}
@@ -65,14 +66,14 @@ func (b *fileAutoBackup) Start() chan struct{} {
 	return done
 }
 
-func (b *fileAutoBackup) Restore() error {
+func (b *fileAutoBackup) Restore(ctx context.Context) error {
 	start := time.Now()
 	metrics, err := b.readBackup()
 	if err != nil {
 		return err
 	}
 	for _, m := range metrics {
-		err := b.repository.SaveMetric(m)
+		err := b.repository.SaveMetric(ctx, m)
 		if err != nil {
 			return err
 		}
@@ -81,9 +82,9 @@ func (b *fileAutoBackup) Restore() error {
 	return nil
 }
 
-func (b *fileAutoBackup) Backup() error {
+func (b *fileAutoBackup) Backup(ctx context.Context) error {
 	start := time.Now()
-	metrics, err := b.repository.GetMetricsList()
+	metrics, err := b.repository.GetMetricsList(ctx)
 	if err != nil {
 		return err
 	}

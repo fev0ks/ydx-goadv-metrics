@@ -46,9 +46,9 @@ func (s *bulkSender) SendMetrics(ctx context.Context, metrics []*model.Metric) e
 			return nil
 		default:
 			if i+s.batchLimit > metricsSize {
-				err = s.sendMetrics(metrics[i:metricsSize])
+				err = s.sendMetrics(ctx, metrics[i:metricsSize])
 			} else {
-				err = s.sendMetrics(metrics[i : i+s.batchLimit])
+				err = s.sendMetrics(ctx, metrics[i:i+s.batchLimit])
 			}
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("{%s}", err.Error()))
@@ -61,11 +61,11 @@ func (s *bulkSender) SendMetrics(ctx context.Context, metrics []*model.Metric) e
 	return nil
 }
 
-func (s *bulkSender) SendMetric(metric *model.Metric) error {
-	return s.sendMetrics([]*model.Metric{metric})
+func (s *bulkSender) SendMetric(ctx context.Context, metric *model.Metric) error {
+	return s.sendMetrics(ctx, []*model.Metric{metric})
 }
 
-func (s *bulkSender) sendMetrics(metrics []*model.Metric) error {
+func (s *bulkSender) sendMetrics(ctx context.Context, metrics []*model.Metric) error {
 	body, err := json.Marshal(metrics)
 	if err != nil {
 		return err
@@ -77,6 +77,7 @@ func (s *bulkSender) sendMetrics(metrics []*model.Metric) error {
 	resp, err := s.client.R().
 		SetHeader(consts.ContentType, consts.ApplicationJSON).
 		SetBody(encryptedBody).
+		SetContext(ctx).
 		Post("/updates/")
 	if err != nil {
 		return err

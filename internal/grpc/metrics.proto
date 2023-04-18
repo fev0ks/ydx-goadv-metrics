@@ -1,0 +1,41 @@
+syntax = "proto3";
+option go_package = "./";
+
+enum MetricTypes {
+  COUNTER = 0;
+  GAUGE = 1;
+  NAN = 2;
+}
+
+message Metric {
+  string id = 1;
+  MetricTypes mType = 2;
+  optional uint64 delta = 3;
+  optional double value = 4;
+  optional string hash = 5;
+}
+
+message MetricsRequest {
+  repeated Metric metrics = 1;
+}
+
+message Empty {
+}
+
+service Metrics {
+  rpc SaveMetrics(MetricsRequest) returns (Empty);
+}
+
+// protoc --go_out=. --go_opt=paths=source_relative  --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/metrics.proto
+
+//Вызовите утилиту protoc для генерации соответствующих go-файлов.
+// Для этого перейдите в директорию demo и выполните команду:
+//protoc --go_out=. --go_opt=paths=source_relative \
+//  --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+//  proto/demo.proto
+//В --go-out запишется файл с кодом для Protobuf-сериализации.
+//В --go-grpc_out сохранится файл с gRPC-интерфейсами и методами.
+//Так как вы указали параметр paths=source_relative, сгенерированные файлы создадутся в поддиректории ./proto. Если бы указали параметр paths=import, то сгенерированные файлы создались бы в директории, указанной в директиве go_package, то есть ./demo/proto.
+//В случае успешного выполнения будут созданы два go-файла:
+//./proto/demo.pb.go — содержит код для сериализации и десериализации структур User, AddUserRequest, AddUserResponse и остальных.
+//./proto/demo_grpc.pb.go — содержит код интерфейса UsersClient.

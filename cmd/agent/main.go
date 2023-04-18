@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	_ "net/http/pprof"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/rest/clients"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/agent/service/sender"
+	pb "github.com/fev0ks/ydx-goadv-metrics/internal/grpc"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/shutdown"
 )
 
@@ -56,10 +58,19 @@ func main() {
 	encryptor := rest.NewEncryptor(appConfig.PublicKey)
 
 	var metricSender sender.Sender
-	if appConfig.UseBuffSenderClient {
-		metricSender = sender.NewBulkMetricSender(client, appConfig.BuffBatchLimit, encryptor)
-	} else {
+	switch appConfig.ClientType {
+	case "common":
+		log.Println("common metricSender is used")
 		metricSender = sender.NewJSONMetricSender(client, encryptor)
+	case "bulk":
+		log.Println("bulk metricSender is used")
+		metricSender = sender.NewBulkMetricSender(client, appConfig.BuffBatchLimit, encryptor)
+	case "grpc":
+		log.Println("grpc metricSender is used")
+		grpcConn := clients.CreateGrpcConnection(":3200")
+		grpcClient := pb.NewMetricsClient(grpcConn)
+		metricSender = sender.NewGrpcMetricSender(grpcClient)
+		exitHandler.ToClose = []io.Closer{grpcConn}
 	}
 
 	mpCtx, mpCancel := context.WithCancel(ctx)

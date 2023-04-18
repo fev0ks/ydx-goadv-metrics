@@ -18,7 +18,7 @@ type Sender interface {
 }
 
 type MetricSender interface {
-	SendMetric(metric *model.Metric) error
+	SendMetric(ctx context.Context, metric *model.Metric) error
 }
 
 type MetricsSender interface {
@@ -37,7 +37,7 @@ func (ms *metricsSender) SendMetrics(ctx context.Context, metrics []*model.Metri
 			log.Println("Context was cancelled!")
 			return nil
 		default:
-			err := ms.MetricSender.SendMetric(metric)
+			err := ms.MetricSender.SendMetric(ctx, metric)
 			if err != nil {
 				errors = append(errors, fmt.Sprintf("{%v: %v}", metric, err))
 			}

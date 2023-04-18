@@ -75,7 +75,7 @@ func (mh *MetricsHandler) receptionTextMetricsHandler(writer http.ResponseWriter
 		http.Error(writer, err.Error(), http.StatusNotImplemented)
 		return
 	}
-	err = mh.Repository.SaveMetric(metric)
+	err = mh.Repository.SaveMetric(request.Context(), metric)
 	if err != nil {
 		log.Printf("failed to save metric: %v", err)
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
@@ -107,7 +107,7 @@ func (mh *MetricsHandler) receptionJSONMetricsHandler(writer http.ResponseWriter
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = mh.Repository.SaveMetric(metric)
+	err = mh.Repository.SaveMetric(request.Context(), metric)
 	if err != nil {
 		log.Printf("failed to save metric: %v", err)
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
@@ -126,7 +126,7 @@ func (mh *MetricsHandler) receptionJSONMetricsHandler(writer http.ResponseWriter
 func (mh *MetricsHandler) GetMetricsHandler() func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		log.Println("Get metrics")
-		metrics, err := mh.Repository.GetMetrics()
+		metrics, err := mh.Repository.GetMetrics(request.Context())
 		if err != nil {
 			http.Error(writer, fmt.Sprintf("failed to get metrics: %v", err), http.StatusInternalServerError)
 			return
@@ -188,7 +188,7 @@ func (mh *MetricsHandler) getTextMetricHandler(writer http.ResponseWriter, reque
 		http.Error(writer, "metric 'mType' must be specified", http.StatusBadRequest)
 		return
 	}
-	metric, err := mh.Repository.GetMetric(id)
+	metric, err := mh.Repository.GetMetric(request.Context(), id)
 	if err != nil {
 		log.Printf("failed to get metric %s from repo: %v", id, err)
 		http.Error(writer, fmt.Sprintf("failed to get metric %s: %v", id, err), http.StatusInternalServerError)
@@ -239,7 +239,7 @@ func (mh *MetricsHandler) getJSONMetricHandler(writer http.ResponseWriter, reque
 		http.Error(writer, err.Error(), http.StatusNotImplemented)
 		return
 	}
-	metric, err := mh.Repository.GetMetric(metricToFind.ID)
+	metric, err := mh.Repository.GetMetric(request.Context(), metricToFind.ID)
 	if err != nil {
 		log.Printf("failed to get metric %s from repo: %v", metricToFind.ID, err)
 		http.Error(writer, fmt.Sprintf("failed to get metric %s: %v", metricToFind.ID, err), http.StatusInternalServerError)
@@ -303,13 +303,20 @@ func (mh *MetricsHandler) ReceptionMetricsHandler() func(writer http.ResponseWri
 				http.Error(writer, err.Error(), http.StatusBadRequest)
 				return
 			}
-			err = mh.Repository.SaveMetric(metric)
+			err = mh.Repository.SaveMetric(request.Context(), metric)
 			if err != nil {
 				log.Printf("failed to save metric '%s': %v", metric.ID, err)
 				http.Error(writer, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			writer.WriteHeader(http.StatusOK)
 		}
+		writer.Header().Add(rest.ContentType, rest.ApplicationJSON)
+		_, err = writer.Write([]byte("[]"))
+		if err != nil {
+			log.Printf("failed to write metric response: %v", err)
+			http.Error(writer, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		writer.WriteHeader(http.StatusOK)
 	}
 }

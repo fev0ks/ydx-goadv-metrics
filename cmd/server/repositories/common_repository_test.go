@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"testing"
@@ -19,11 +20,12 @@ func BenchmarkCommonRepository_SaveMetrics(b *testing.B) {
 	repo := NewCommonRepository()
 	generator := metricGenerator{service.NewMetricFactory("")}
 	b.ResetTimer()
+	ctx := context.Background()
 	for i := 0; i < b.N; i++ {
 		b.StopTimer()
 		metrics := generator.generateMetrics(100)
 		b.StartTimer()
-		err := repo.SaveMetrics(metrics)
+		err := repo.SaveMetrics(ctx, metrics)
 		if err != nil {
 			b.Errorf("benchmark failed %v", err)
 		}
@@ -52,7 +54,7 @@ func ExampleCommonRepository_SaveMetric() {
 		Delta: &counterValue,
 		Hash:  "qwrtyuiopasjklzxcvbnm,",
 	}
-	err := repo.SaveMetric(metric)
+	err := repo.SaveMetric(context.Background(), metric)
 	if err != nil {
 		// err - ошибка сохранения метрики в хранилище
 		fmt.Print(err)
@@ -81,7 +83,7 @@ func ExampleCommonRepository_SaveMetrics() {
 		},
 	}
 
-	err := repo.SaveMetrics(metrics)
+	err := repo.SaveMetrics(context.Background(), metrics)
 	if err != nil {
 		// err - ошибка сохранения метрик в хранилище
 		fmt.Print(err)
@@ -100,12 +102,12 @@ func ExampleCommonRepository_GetMetric() {
 		Delta: &counterValue,
 		Hash:  "qwrtyuiopasjklzxcvbnm,",
 	}
-	err := repo.SaveMetric(metric)
+	err := repo.SaveMetric(context.Background(), metric)
 	if err != nil {
 		fmt.Print(err)
 	}
 
-	metricRepo, err := repo.GetMetric("metric name")
+	metricRepo, err := repo.GetMetric(context.Background(), "metric name")
 	if err != nil {
 		// error - ошибка получения метрики из хранилища
 		fmt.Print(err)
@@ -133,12 +135,12 @@ func ExampleCommonRepository_GetMetrics() {
 			Hash:  "qwrtyuiopasjklzxcvbnm,",
 		},
 	}
-	err := repo.SaveMetrics(metrics)
+	err := repo.SaveMetrics(context.Background(), metrics)
 	if err != nil {
 		fmt.Print(err)
 	}
 
-	metricsMap, err := repo.GetMetrics()
+	metricsMap, err := repo.GetMetrics(context.Background())
 	if err != nil {
 		// err - ошибка получения метрик из хранилища
 		fmt.Print(err)
