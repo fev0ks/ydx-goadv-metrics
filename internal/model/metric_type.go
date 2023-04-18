@@ -1,9 +1,11 @@
 package model
 
+import "strings"
+
 const (
 	GaugeTypeVal   = "gauge"
 	CounterTypeVal = "counter"
-	NanVal         = "NaN"
+	NanVal         = "nan"
 )
 
 var (
@@ -16,7 +18,7 @@ type MetricType string
 
 func MTypeValueOf(value string) MetricType {
 	var mType MetricType
-	switch value {
+	switch strings.ToLower(value) {
 	case GaugeTypeVal:
 		mType = GaugeType
 	case CounterTypeVal:

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net/http"
 	_ "net/http/pprof"
 	"os"
 
@@ -14,6 +13,7 @@ import (
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/repositories"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest"
 	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/rest/middlewares"
+	"github.com/fev0ks/ydx-goadv-metrics/cmd/server/servers"
 	backup2 "github.com/fev0ks/ydx-goadv-metrics/internal/model/server/backup"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/model/server/repository"
 	"github.com/fev0ks/ydx-goadv-metrics/internal/shutdown"
@@ -46,7 +46,7 @@ func main() {
 	var autoBackup backup2.IAutoBackup
 
 	stopCh := make([]chan struct{}, 0)
-	toExecute := make([]func() error, 0)
+	toExecute := make([]func(ctx context.Context) error, 0)
 
 	var metricRepo repository.IMetricRepository
 	if appConfig.DBConfig != "" {
@@ -59,12 +59,12 @@ func main() {
 		autoBackup = backup.NewFileAutoBackup(metricRepo, appConfig)
 		if *appConfig.DoRestore {
 			log.Println("trying to restore metrics...")
-			err := autoBackup.Restore()
+			err := autoBackup.Restore(ctx)
 			if err != nil {
 				log.Fatalf("failed to restore metrics: %v", err)
 			}
 		}
-		stopCh = append(stopCh, autoBackup.Start())
+		stopCh = append(stopCh, autoBackup.Start(ctx))
 		toExecute = append(toExecute, autoBackup.Backup)
 	}
 	exitHandler.ToStop = stopCh
@@ -88,12 +88,13 @@ func main() {
 	rest.HandleHeathCheck(router, hc)
 	rest.HandlePprof(router)
 
-	log.Printf("Server started on %s", appConfig.ServerAddress)
 	shutdown.ProperExitDefer(exitHandler)
-	server := &http.Server{Addr: appConfig.ServerAddress, Handler: router}
-	exitHandler.ShutdownServerBeforeExit(server)
-	if err := server.ListenAndServe(); err != nil {
-		log.Printf("Server closed with msg: '%v'", err)
-	}
+
+	httpServer := servers.StartHttpServer(appConfig, router)
+	exitHandler.ShutdownHttpServerBeforeExit(httpServer)
+
+	grpcServer := servers.StartGrpcServer(":3200")
+	exitHandler.ShutdownGrpcServerBeforeExit(grpcServer)
+
 	<-ctx.Done()
 }

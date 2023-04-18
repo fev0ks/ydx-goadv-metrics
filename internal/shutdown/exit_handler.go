@@ -10,6 +10,8 @@ import (
 	"sync"
 	"syscall"
 	"time"
+
+	"google.golang.org/grpc"
 )
 
 var (
@@ -17,11 +19,12 @@ var (
 )
 
 type ExitHandler struct {
-	server            *http.Server
+	httpServer        *http.Server
+	grpcServer        *grpc.Server
 	ToCancel          []context.CancelFunc
 	ToStop            []chan struct{}
 	ToClose           []io.Closer
-	ToExecute         []func() error
+	ToExecute         []func(ctx context.Context) error
 	funcsInProcessing sync.WaitGroup
 	newFuncAllowed    bool
 }
@@ -45,8 +48,12 @@ func (eh *ExitHandler) setNewFuncExecutionAllowed(value bool) {
 	eh.newFuncAllowed = value
 }
 
-func (eh *ExitHandler) ShutdownServerBeforeExit(server *http.Server) {
-	eh.server = server
+func (eh *ExitHandler) ShutdownHttpServerBeforeExit(httpServer *http.Server) {
+	eh.httpServer = httpServer
+}
+
+func (eh *ExitHandler) ShutdownGrpcServerBeforeExit(grpcServer *grpc.Server) {
+	eh.grpcServer = grpcServer
 }
 
 func (eh *ExitHandler) AddFuncInProcessing(alias string) {
@@ -104,20 +111,25 @@ func (eh *ExitHandler) waitForFinishFunc() {
 }
 
 func (eh *ExitHandler) waitForShutdownServer() {
-	if eh.server != nil {
-		log.Println("Waiting for shutdown server...")
-		err := eh.server.Shutdown(context.Background())
-		log.Println("Server shutdown complete")
+	if eh.httpServer != nil {
+		log.Println("Waiting for shutdown http server...")
+		err := eh.httpServer.Shutdown(context.Background())
+		log.Println("Http Server shutdown complete")
 		if err != nil {
 			log.Printf("failed to shutdown server: %v", err)
 		}
+	}
+	if eh.grpcServer != nil {
+		log.Println("Waiting for shutdown grpc server...")
+		eh.grpcServer.GracefulStop()
+		log.Println("Grpc Server shutdown complete")
 	}
 }
 
 func (eh *ExitHandler) endHeldObjects() {
 	log.Println("ToExecute final funcs")
 	for _, execute := range eh.ToExecute {
-		err := execute()
+		err := execute(context.Background())
 		if err != nil {
 			log.Printf("func error: %v", err)
 		}

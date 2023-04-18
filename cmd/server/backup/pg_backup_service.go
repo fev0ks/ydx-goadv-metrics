@@ -1,6 +1,7 @@
 package backup
 
 import (
+	"context"
 	"log"
 	"sync"
 	"time"
@@ -27,19 +28,19 @@ func NewPgAutoBackup(interval time.Duration, repository repository.IMetricReposi
 	}
 }
 
-func (b *pgAutoBackup) Start() chan struct{} {
+func (b *pgAutoBackup) Start(ctx context.Context) chan struct{} {
 	log.Println("PgAutoBackup activated")
 	ticker := time.NewTicker(b.interval)
 	done := make(chan struct{})
 	go func(one chan struct{}, ticker *time.Ticker) {
 		for {
-			b.doBackupIfNotCanceled(done, ticker)
+			b.doBackupIfNotCanceled(ctx, done, ticker)
 		}
 	}(done, ticker)
 	return done
 }
 
-func (b *pgAutoBackup) doBackupIfNotCanceled(done chan struct{}, ticker *time.Ticker) {
+func (b *pgAutoBackup) doBackupIfNotCanceled(ctx context.Context, done chan struct{}, ticker *time.Ticker) {
 	select {
 	case <-done:
 		log.Println("PgAutoBackup metrics interrupted!")
@@ -47,21 +48,21 @@ func (b *pgAutoBackup) doBackupIfNotCanceled(done chan struct{}, ticker *time.Ti
 		return
 	case <-ticker.C:
 		log.Println("PgAutoBackup metrics start")
-		err := b.Backup()
+		err := b.Backup(ctx)
 		if err != nil {
 			log.Printf("failed to backup metrics: %v", err)
 		}
 	}
 }
 
-func (b *pgAutoBackup) Restore() error {
+func (b *pgAutoBackup) Restore(ctx context.Context) error {
 	start := time.Now()
-	metrics, err := b.readBackup()
+	metrics, err := b.readBackup(ctx)
 	if err != nil {
 		return err
 	}
 	for _, m := range metrics {
-		err := b.repository.SaveMetric(m)
+		err := b.repository.SaveMetric(ctx, m)
 		if err != nil {
 			return err
 		}
@@ -70,9 +71,9 @@ func (b *pgAutoBackup) Restore() error {
 	return nil
 }
 
-func (b *pgAutoBackup) Backup() error {
+func (b *pgAutoBackup) Backup(ctx context.Context) error {
 	start := time.Now()
-	metrics, err := b.repository.GetMetricsList()
+	metrics, err := b.repository.GetMetricsList(ctx)
 	if err != nil {
 		return err
 	}
@@ -81,7 +82,7 @@ func (b *pgAutoBackup) Backup() error {
 	}
 	b.Lock()
 	defer b.Unlock()
-	err = b.storage.SaveMetrics(metrics)
+	err = b.storage.SaveMetrics(ctx, metrics)
 	if err != nil {
 		return err
 	}
@@ -89,8 +90,8 @@ func (b *pgAutoBackup) Backup() error {
 	return nil
 }
 
-func (b *pgAutoBackup) readBackup() ([]*model.Metric, error) {
+func (b *pgAutoBackup) readBackup(ctx context.Context) ([]*model.Metric, error) {
 	b.RLock()
 	defer b.RUnlock()
-	return b.storage.GetMetricsList()
+	return b.storage.GetMetricsList(ctx)
 }

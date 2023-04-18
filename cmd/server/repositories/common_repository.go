@@ -28,9 +28,9 @@ func (cr *CommonRepository) HealthCheck(_ context.Context) error {
 	return nil
 }
 
-func (cr *CommonRepository) SaveMetrics(metrics []*model.Metric) error {
+func (cr *CommonRepository) SaveMetrics(ctx context.Context, metrics []*model.Metric) error {
 	for _, metric := range metrics {
-		err := cr.SaveMetric(metric)
+		err := cr.SaveMetric(ctx, metric)
 		if err != nil {
 			return err
 		}
@@ -38,7 +38,7 @@ func (cr *CommonRepository) SaveMetrics(metrics []*model.Metric) error {
 	return nil
 }
 
-func (cr *CommonRepository) SaveMetric(metric *model.Metric) error {
+func (cr *CommonRepository) SaveMetric(_ context.Context, metric *model.Metric) error {
 	cr.Lock()
 	defer cr.Unlock()
 	if metric == nil {
@@ -69,13 +69,13 @@ func (cr *CommonRepository) SaveMetric(metric *model.Metric) error {
 	return nil
 }
 
-func (cr *CommonRepository) GetMetrics() (map[string]*model.Metric, error) {
+func (cr *CommonRepository) GetMetrics(_ context.Context) (map[string]*model.Metric, error) {
 	cr.RLock()
 	defer cr.RUnlock()
 	return cr.storage, nil
 }
 
-func (cr *CommonRepository) GetMetricsList() ([]*model.Metric, error) {
+func (cr *CommonRepository) GetMetricsList(_ context.Context) ([]*model.Metric, error) {
 	cr.RLock()
 	defer cr.RUnlock()
 	metrics := make([]*model.Metric, 0, len(cr.storage))
@@ -85,13 +85,13 @@ func (cr *CommonRepository) GetMetricsList() ([]*model.Metric, error) {
 	return metrics, nil
 }
 
-func (cr *CommonRepository) GetMetric(name string) (*model.Metric, error) {
+func (cr *CommonRepository) GetMetric(_ context.Context, name string) (*model.Metric, error) {
 	cr.RLock()
 	defer cr.RUnlock()
 	return cr.storage[name], nil
 }
 
-func (cr *CommonRepository) Clear() error {
+func (cr *CommonRepository) Clear(_ context.Context) error {
 	cr.Lock()
 	defer cr.Unlock()
 	cr.storage = make(map[string]*model.Metric)
